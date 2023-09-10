@@ -25,6 +25,7 @@ public class User {
     private String userName; //사용자 이름
     private String phone; //사용자 전화번호
     private char userState; //사용자 활동 상태
+    private UserRole role; //접속한 유저
 
     @CreationTimestamp
     private Timestamp enrollDate; //회원가입 일자
