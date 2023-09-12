@@ -1,4 +1,4 @@
-package doubleni.mealrecipe.model.Recipe;
+package doubleni.mealrecipe.model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,37 +11,36 @@ import javax.persistence.*;
 @Entity
 @Table(name = "Recipe")
 public class Recipe {
-    // getter
     // 레시피 = 메뉴
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "recipe_id")
-    private Long recipe_id; // ID
-    private String recipe_name; // 이름
+    private Long recipe_id; // ID = RCP_SEQ
+    private String recipe_name; // 이름 = RCP_NM
     private String recipe_image; // 이미지
     @Column(columnDefinition = "LONGTEXT")
-    private String recipe_description; // 설명
-    private String recipe_type; // 종류
-    private int recipe_cookTime; // 조리 시간
+    private String recipe_description; // 설명 = MANUAL01 ~
+    private String recipe_type; // 종류 = RCP_PAT2
 
     // 재료 어케하노 리스트?
-    //    private Set<Ingredient> ingredientSet = new HashSet<>();
+    //    private Set<Ingredient> ingredientSet = new HashSet<>(); // 재료 = RCP_PARTS_DTLS
     private int review_count; // 평점
-    private double average_rating; //
+    private double average_rating; // ??
 
 
     public Recipe(String recipe_name, String recipe_image, String recipe_description,
-                  int recipe_cookTime, int review_count, double average_rating, String recipe_type){
+                  int review_count, double average_rating, String recipe_type){
         this.recipe_name = recipe_name;
         this.recipe_image = recipe_image;
         this.recipe_description = recipe_description;
         this.recipe_type = recipe_type;
-        this.recipe_cookTime = recipe_cookTime;
         this.average_rating = average_rating;
         this.review_count = review_count;
     }
 
     public Recipe() {}
+
+    // getter
 
     // setter
     public void setRecipe_id(Long recipe_id) {
@@ -62,10 +61,6 @@ public class Recipe {
 
     public void setRecipe_type(String recipe_type) {
         this.recipe_type = recipe_type;
-    }
-
-    public void setRecipe_cookTime(int recipe_cookTime) {
-        this.recipe_cookTime = recipe_cookTime;
     }
 
     public void setReview_count(int review_count) {
