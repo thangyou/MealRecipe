@@ -1,44 +1,46 @@
 package doubleni.mealrecipe.service;
 
-import doubleni.mealrecipe.model.Recipe_mfds;
+import doubleni.mealrecipe.model.Recipe;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class RecipeServiceImpl implements RecipeService{
 
     @Override
-    public List<Recipe_mfds> recipeSelect() {
+    public List<Recipe> recipeSelect() {
         return null;
     }
 
     @Override
-    public List<Recipe_mfds> recipeSelectAll() {
+    public List<Recipe> recipeSelectAll() {
         return null;
     }
 
     @Override
-    public Recipe_mfds recipeSearch(Recipe_mfds recipe_mfds) {
+    public Recipe recipeSearch(Recipe recipe) {
+        return null;
+    }
+
+
+    @Override
+    public Recipe recipeSave(Recipe recipe) {
         return null;
     }
 
     @Override
-    public Recipe_mfds recipeSave(Recipe_mfds recipe_mfds) {
+    public Recipe recipeDelete() {
         return null;
     }
 
     @Override
-    public Recipe_mfds recipeDelete() {
+    public List<Recipe> recipeRecommend(Recipe recipe) {
         return null;
     }
 
     @Override
-    public List<Recipe_mfds> recipeRecommend(Recipe_mfds recipe_mfds) {
+    public Recipe recipeEvaluate() {
         return null;
     }
-
-    @Override
-    public Recipe_mfds recipeEvaluate() {
-        return null;
-    }
-
 }

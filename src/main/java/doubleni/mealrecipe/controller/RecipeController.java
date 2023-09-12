@@ -1,20 +1,15 @@
 package doubleni.mealrecipe.controller;
 
 import doubleni.mealrecipe.service.RecipeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.logging.Logger;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@RestController
 public class RecipeController {
-    private Logger logger = Logger.getLogger(String.valueOf(RecipeController.class));
     private RecipeService recipeService;
-
-    public RecipeController() {
-    } // constructor
-
-    public RecipeController(RecipeService recipeService) {
-        this.recipeService = recipeService;
-    }
-
 
 }
