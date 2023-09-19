@@ -1,28 +1,63 @@
 package doubleni.mealrecipe.service;
 
-import doubleni.mealrecipe.model.Recipe;
+import doubleni.mealrecipe.Repository.RecipeRepository;
+import doubleni.mealrecipe.model.dto.AddRecipeRequest;
+import doubleni.mealrecipe.model.dto.Recipe;
+import doubleni.mealrecipe.model.dto.UpdateRecipeRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface RecipeService {
+@Service
+@RequiredArgsConstructor
+public class RecipeService {
 
-    // 레시피 조회
-    public List<Recipe> recipeSelect();
-    public List<Recipe> recipeSelectAll();
+    private final RecipeRepository recipeRepository;
 
-    // 레시피 검색
-    public Recipe recipeSearch(Recipe recipe);
+    // 조회 -----------------------------------------
 
-    // 레시피 저장
-    public Recipe recipeSave(Recipe recipe);
+    public List<Recipe> findAll() {
+        return recipeRepository.findAll();
+    }
 
-    // 레시피 삭제
-    public Recipe recipeDelete();
 
-    // 레시피 추천
-    public List<Recipe> recipeRecommend(Recipe recipe);
+    public Recipe findById(String rcp_seq) {
+        return recipeRepository.findById(rcp_seq)
+                .orElseThrow(() -> new IllegalArgumentException("not found : " + rcp_seq));}
 
-    // 레시피 평가
-    public Recipe recipeEvaluate();
+
+    // 생성
+
+    public Recipe save(AddRecipeRequest request) {
+        return recipeRepository.save(request.toEntity());
+        // addRecipeRequest 클래스에 저장된 값들을 Recipe 데이터베이스에 저장
+    }
+
+    // 삭제
+
+    public void deleteRecipe(String rcp_seq) {
+        recipeRepository.deleteById(rcp_seq);
+    }
+
+    // 수정
+
+    @Transactional
+    public Recipe update(String rcp_seq, UpdateRecipeRequest request) {
+        Recipe recipe = recipeRepository.findById(rcp_seq)
+                .orElseThrow(() -> new IllegalArgumentException("not found : " + rcp_seq));
+
+//        recipe.update(request.getRcp_nm(), request.getRcp_way2(), request.getRcp_pat2(),
+//                request.getInfo_wgt(), request.getHash_tag(), request.getAtt_file_no_main(), request.getAtt_file_no_mk(),
+//                request.getRcp_parts_dtls(), request.getManual01(), request.getManual_img01());
+        recipe.update(recipe.getRcp_seq(), request.getRcp_nm(), request.getRcp_way2(), request.getRcp_pat2(),
+                request.getManual01(), request.getManual_img01());
+
+
+
+        return recipe;
+    }
+
 
 }
