@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class UpdateRecipeRequest {
+    private String rcp_seq; // 일련 번호
     private String rcp_nm; // 레시피명
     private String rcp_way2; // 조리 방법
     private String rcp_pat2; // 요리 종류

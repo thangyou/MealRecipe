@@ -20,7 +20,7 @@ const modifyButton = document.getElementById('modify-btn');
 if (modifyButton) {
     modifyButton.addEventListener('click', event => {
         let params = new URLSearchParams(location.search);
-        let id = params.get('rcp_seq');
+        let id = params.get('id');
 
         fetch(`/api/recipes/${id}`, {
             method: 'PUT',
@@ -28,8 +28,12 @@ if (modifyButton) {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
+                rcp_seq: document.getElementById('rcp_seq').value,
                 rcp_nm: document.getElementById('rcp_nm').value,
-                rcp_way2: document.getElementById('rcp_way2').value
+                rcp_way2: document.getElementById('rcp_way2').value,
+                rcp_pat2: document.getElementById('rcp_pat2').value,
+                manual01: document.getElementById('manual01').value,
+                manual_img01: document.getElementById('manual_img01').value
             })
         })
             .then(() => {
@@ -50,8 +54,12 @@ if (createButton) {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
+                rcp_seq: document.getElementById('rcp_seq').value,
                 rcp_nm: document.getElementById('rcp_nm').value,
-                rcp_way2: document.getElementById('rcp_way2').value
+                rcp_way2: document.getElementById('rcp_way2').value,
+                rcp_pat2: document.getElementById('rcp_pat2').value,
+                manual01: document.getElementById('manual01').value,
+                manual_img01: document.getElementById('manual_img01').value
             })
         })
             .then(() => {

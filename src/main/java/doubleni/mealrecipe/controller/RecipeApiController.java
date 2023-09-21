@@ -37,28 +37,55 @@ public class RecipeApiController {
                 .body(recipes);
     }
 
-    @GetMapping("/api/recipes/{rcp_seq}")
+//    @GetMapping("/api/recipes/{rcp_seq}")
+//    // URL에서 값 추출
+//    public ResponseEntity<RecipeResponse> findRecipeId(@PathVariable String rcp_seq) {
+//        Recipe recipe = recipeService.findById(rcp_seq);
+//
+//        return ResponseEntity.ok()
+//                .body(new RecipeResponse(recipe));
+//    }
+//
+//
+//    @DeleteMapping("/api/recipes/{rcp_seq}")
+//    public ResponseEntity<RecipeResponse> deleteRecipe(@PathVariable String rcp_seq) {
+//        recipeService.deleteRecipe(rcp_seq);
+//
+//        return ResponseEntity.ok()
+//                .build();
+//    }
+//
+//    @PutMapping("/api/recipes/{rcp_seq}")
+//    public ResponseEntity<Recipe> updateArticle(@PathVariable String rcp_seq,
+//                                                 @RequestBody UpdateRecipeRequest request) {
+//        Recipe updateRecipe = recipeService.update(rcp_seq, request);
+//
+//        return ResponseEntity.ok()
+//                .body(updateRecipe);
+//    }
+
+    @GetMapping("/api/recipes/{id}")
     // URL에서 값 추출
-    public ResponseEntity<RecipeResponse> findRecipeId(@PathVariable String rcp_seq) {
-        Recipe recipe = recipeService.findById(rcp_seq);
+    public ResponseEntity<RecipeResponse> findRecipeId(@PathVariable Long id) {
+        Recipe recipe = recipeService.findById(id);
 
         return ResponseEntity.ok()
                 .body(new RecipeResponse(recipe));
     }
 
 
-    @DeleteMapping("/api/recipes/{rcp_seq}")
-    public ResponseEntity<RecipeResponse> deleteRecipe(@PathVariable String rcp_seq) {
-        recipeService.deleteRecipe(rcp_seq);
+    @DeleteMapping("/api/recipes/{id}")
+    public ResponseEntity<RecipeResponse> deleteRecipe(@PathVariable Long id) {
+        recipeService.deleteRecipe(id);
 
         return ResponseEntity.ok()
                 .build();
     }
 
-    @PutMapping("/api/recipes/{rcp_seq}")
-    public ResponseEntity<Recipe> updateArticle(@PathVariable String rcp_seq,
-                                                 @RequestBody UpdateRecipeRequest request) {
-        Recipe updateRecipe = recipeService.update(rcp_seq, request);
+    @PutMapping("/api/recipes/{id}")
+    public ResponseEntity<Recipe> updateArticle(@PathVariable Long id,
+                                                @RequestBody UpdateRecipeRequest request) {
+        Recipe updateRecipe = recipeService.update(id, request);
 
         return ResponseEntity.ok()
                 .body(updateRecipe);

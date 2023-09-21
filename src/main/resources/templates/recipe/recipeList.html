@@ -16,12 +16,12 @@
             class="btn btn-secondary btn-sm mb-3">레시피 등록</button>
     <div class="row-6" th:each="recipe : ${recipes}">
         <div class="card">
-            <div class="card-header" th:text="${recipe.rcp_seq}">
+            <div class="card-header" th:text="${recipe.id}">
             </div>
             <div class="card-body">
                 <h5 class="card-title" th:text="${recipe.rcp_nm}"></h5>
-                <p class="card-text" th:text="${recipe.rcp_way2}"></p>
-                <a th:href="@{/recipes/{id}(id=${recipe.rcp_seq})}" class="btn btn-primary">보러 가기</a>
+                <p class="card-text" th:text="${recipe.rcp_pat2}"></p>
+                <a th:href="@{/recipes/{id}(id=${recipe.id})}" class="btn btn-primary">보러 가기</a>
             </div>
         </div>
         <br>

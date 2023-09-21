@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@Table(name = "recipe")
 public class Recipe {
     // Data Transfer Object
     // getter/setter 메서드만 가진 클래스
@@ -46,10 +47,10 @@ public class Recipe {
     @Column(name = "rcp_nm", nullable = false)
     private String rcp_nm; // 레시피명
 
-    @Column(name="rcp_way2", nullable = true)
+    @Column(name="rcp_way2", nullable = false)
     private String rcp_way2; // 조리 방법
 
-    @Column(name="rcp_pat2", nullable = true)
+    @Column(name="rcp_pat2", nullable = false)
     private String rcp_pat2; // 요리 종류
 //    private String info_wgt; // 중량(1인분)
 //    private String info_eng; // 열량
@@ -61,9 +62,9 @@ public class Recipe {
 //    private String att_file_no_main; // 이미지 경로(소)
 //    private String att_file_no_mk; // 이미지 경로(대)
 //    private String rcp_parts_dtls; // 재료 정보
-    @Column(name="manual01", nullable = true)
+    @Column(name="manual01")
     private String manual01; // 레시피 설명
-    @Column(name="manual_img01", nullable = true)
+    @Column(name="manual_img01")
     private String manual_img01; // 레시피 이미지
 //    private String manual02;
 //    private String manual_img02;
@@ -156,9 +157,9 @@ public class Recipe {
 //        this.manual01 = manual01;
 //        this.manual_img01 = manual_img01;
 //    }
-    public void update(String rcp_seq, String rcpNm, String rcpWay2, String rcpPat2,
+    public void update(String rcpSeq, String rcpNm, String rcpWay2, String rcpPat2,
                        String manual01, String manual_img01) {
-        this.rcp_seq = rcp_seq;
+        this.rcp_seq = rcpSeq;
         this.rcp_nm = rcpNm;
         this.rcp_way2 = rcpWay2;
         this.rcp_pat2 = rcpPat2;

@@ -14,9 +14,10 @@
     <div class="row">
         <div class="col-lg-8">
             <article>
-                <input type="hidden" id="recipe-id" th:value="${recipe.rcp_seq}">
+                <input type="hidden" id="recipe-id" th:value="${recipe.id}">
 
                 <header class="mb-4">
+                    <input type="text" class="form-control" placeholder="일련 번호" id="rcp_seq" th:value="${recipe.rcp_seq}">
                     <input type="text" class="form-control" placeholder="레시피명" id="rcp_nm" th:value="${recipe.rcp_nm}">
                 </header>
                 <section class="mb-5">
@@ -25,8 +26,8 @@
                     <textarea class="form-control h-25" rows="10" placeholder="레시피 설명" id="manual01" th:text="${recipe.manual01}"></textarea>
                     <input type="text" class="form-control" placeholder="레시피 설명 이미지" id="manual_img01" th:value="${recipe.manual_img01}">
                 </section>
-                <button th:if="${recipe.rcp_seq} != null" type="button" id="modify-btn" class="btn btn-primary btn-sm">레시피 수정</button>
-                <button th:if="${recipe.rcp_seq} == null" type="button" id="create-btn" class="btn btn-primary btn-sm">레시피 등록</button>
+                <button th:if="${recipe.id} != null" type="button" id="modify-btn" class="btn btn-primary btn-sm">레시피 수정</button>
+                <button th:if="${recipe.id} == null" type="button" id="create-btn" class="btn btn-primary btn-sm">레시피 등록</button>
             </article>
         </div>
     </div>
