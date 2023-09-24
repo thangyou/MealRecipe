@@ -1,9 +1,6 @@
 package doubleni.mealrecipe.model.dto;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -28,6 +25,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @Table(name = "recipe")
+@ToString
 public class Recipe {
     // Data Transfer Object
     // getter/setter 메서드만 가진 클래스
@@ -157,12 +155,12 @@ public class Recipe {
 //        this.manual01 = manual01;
 //        this.manual_img01 = manual_img01;
 //    }
-    public void update(String rcpSeq, String rcpNm, String rcpWay2, String rcpPat2,
+    public void update(String rcp_seq, String rcp_nm, String rcp_way2, String rcp_pat2,
                        String manual01, String manual_img01) {
-        this.rcp_seq = rcpSeq;
-        this.rcp_nm = rcpNm;
-        this.rcp_way2 = rcpWay2;
-        this.rcp_pat2 = rcpPat2;
+        this.rcp_seq = rcp_seq;
+        this.rcp_nm = rcp_nm;
+        this.rcp_way2 = rcp_way2;
+        this.rcp_pat2 = rcp_pat2;
         this.manual01 = manual01;
         this.manual_img01 = manual_img01;
     }

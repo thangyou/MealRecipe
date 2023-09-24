@@ -1,5 +1,7 @@
 package doubleni.mealrecipe.model.vo;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.json.simple.JSONObject;
 
 import java.io.FileReader;
@@ -9,6 +11,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
+@NoArgsConstructor
+@Getter
 public class ReadJsonFile {
 
     public static void main(String[] args)throws IOException, ParseException {
