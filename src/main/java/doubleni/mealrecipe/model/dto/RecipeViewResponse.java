@@ -27,7 +27,6 @@ public class RecipeViewResponse {
     private String rcp_parts_dtls;*/
     private String manual01;
     private String manual_img01;
-    private LocalDateTime createdAt;
 
     public RecipeViewResponse(Recipe recipe) {
         this.id = recipe.getId();
@@ -47,7 +46,6 @@ public class RecipeViewResponse {
 //        this.rcp_parts_dtls = recipe.getRcp_parts_dtls();
         this.manual01 = recipe.getManual01();
         this.manual_img01 = recipe.getManual_img01();
-        this.createdAt = recipe.getCreatedAt();
 
     }
 }

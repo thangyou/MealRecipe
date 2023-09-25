@@ -104,13 +104,13 @@ public class Recipe {
 //    private String manual_img20;
 //    private boolean rcp_delete_yn; // 레시피 삭제 확인 (default = 0)
 
-    @CreatedDate // 엔티티가 생성될 때 생성 시간 저장
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate // 엔티티가 수정될 때 수정 시간 저장
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+//    @CreatedDate // 엔티티가 생성될 때 생성 시간 저장
+//    @Column(name = "created_at")
+//    private LocalDateTime createdAt;
+//
+//    @LastModifiedDate // 엔티티가 수정될 때 수정 시간 저장
+//    @Column(name = "updated_at")
+//    private LocalDateTime updatedAt;
 
 //    // 페이징 *************************************************
 //    private int pageSize;

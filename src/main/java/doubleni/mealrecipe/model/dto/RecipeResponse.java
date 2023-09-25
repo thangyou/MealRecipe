@@ -1,6 +1,10 @@
 package doubleni.mealrecipe.model.dto;
 
 import lombok.Getter;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import javax.persistence.Column;
+import java.time.LocalDateTime;
 
 @Getter
 public class RecipeResponse {
@@ -58,6 +62,7 @@ public class RecipeResponse {
 //    private String manual_img19;
 //    private String manual20;
 //    private String manual_img20;
+
 
     public RecipeResponse(Recipe recipe) {
         this.rcp_seq = recipe.getRcp_seq();

@@ -56,7 +56,7 @@ public class RecipeService {
 //
 //        return recipe;
 //    }
-public Recipe findById(Long id) {
+public Recipe findById(long id) {
     return recipeRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("not found : " + id));}
 
@@ -70,25 +70,26 @@ public Recipe findById(Long id) {
 
     // 삭제
 
-    public void deleteRecipe(Long id) {
+    public void deleteRecipe(long id) {
         recipeRepository.deleteById(id);
     }
 
     // 수정
 
     @Transactional
-    public Recipe update(Long id, UpdateRecipeRequest request) {
+    public Recipe update(long id, UpdateRecipeRequest request) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
 
 //        recipe.update(request.getRcp_nm(), request.getRcp_way2(), request.getRcp_pat2(),
 //                request.getInfo_wgt(), request.getHash_tag(), request.getAtt_file_no_main(), request.getAtt_file_no_mk(),
 //                request.getRcp_parts_dtls(), request.getManual01(), request.getManual_img01());
-        recipe.update(recipe.getRcp_seq(), request.getRcp_nm(), request.getRcp_way2(), request.getRcp_pat2(),
-                request.getManual01(), request.getManual_img01());
+        recipe.update(recipe.getRcp_seq(), request.getRcp_nm(), request.getRcp_way2(), request.getRcp_pat2(), request.getManual01(), request.getManual_img01());
 
         return recipe;
+
     }
+
 
 
 }

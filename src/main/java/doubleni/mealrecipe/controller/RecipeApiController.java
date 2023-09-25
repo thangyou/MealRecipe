@@ -19,7 +19,7 @@ public class RecipeApiController {
     private final RecipeService recipeService;
 
     @PostMapping("/api/recipes")
-    public ResponseEntity<Recipe> addArticle(@RequestBody AddRecipeRequest request) {
+    public ResponseEntity<Recipe> addRecipe(@RequestBody AddRecipeRequest request) {
         Recipe savedRecipe = recipeService.save(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -27,7 +27,7 @@ public class RecipeApiController {
     }
 
     @GetMapping("/api/recipes")
-    public ResponseEntity<List<RecipeResponse>> findAllRecipe() {
+    public ResponseEntity<List<RecipeResponse>> findAllRecipes() {
         List<RecipeResponse> recipes = recipeService.findAll()
                 .stream()
                 .map(RecipeResponse::new)
@@ -66,7 +66,7 @@ public class RecipeApiController {
 
     @GetMapping("/api/recipes/{id}")
     // URL에서 값 추출
-    public ResponseEntity<RecipeResponse> findRecipeId(@PathVariable Long id) {
+    public ResponseEntity<RecipeResponse> findRecipe(@PathVariable long id) {
         Recipe recipe = recipeService.findById(id);
 
         return ResponseEntity.ok()
@@ -75,7 +75,7 @@ public class RecipeApiController {
 
 
     @DeleteMapping("/api/recipes/{id}")
-    public ResponseEntity<RecipeResponse> deleteRecipe(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteRecipe(@PathVariable long id) {
         recipeService.deleteRecipe(id);
 
         return ResponseEntity.ok()
@@ -83,12 +83,11 @@ public class RecipeApiController {
     }
 
     @PutMapping("/api/recipes/{id}")
-    public ResponseEntity<Recipe> updateArticle(@PathVariable Long id,
+    public ResponseEntity<Recipe> updateRecipe(@PathVariable long id,
                                                 @RequestBody UpdateRecipeRequest request) {
         Recipe updateRecipe = recipeService.update(id, request);
 
         return ResponseEntity.ok()
                 .body(updateRecipe);
     }
-
 }
