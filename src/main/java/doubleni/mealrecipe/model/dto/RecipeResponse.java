@@ -1,10 +1,6 @@
 package doubleni.mealrecipe.model.dto;
 
 import lombok.Getter;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import javax.persistence.Column;
-import java.time.LocalDateTime;
 
 @Getter
 public class RecipeResponse {

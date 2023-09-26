@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -90,4 +91,24 @@ public class RecipeApiController {
         return ResponseEntity.ok()
                 .body(updateRecipe);
     }
+
+    // TEST
+//    @RequestMapping(method = RequestMethod.GET, value = "/recipeJsonInsert")
+//    @ResponseBody
+//    public HashMap<String, Integer> recipeJsonInsert() {
+//        HashMap<String, Integer> result = new HashMap<String, Integer>();
+//        result.put("cnt", recipeService.recipeJsonInsert());
+//        return result;
+//    }
+
+    @GetMapping("/recipeJsonInsert")
+    public HashMap<String, Integer> recipeJsonInsert() {
+        HashMap<String, Integer> result = new HashMap<String, Integer>();
+        result.put("cnt", recipeService.recipeJsonInsert());
+        return result;
+    }
+
+
+
+
 }

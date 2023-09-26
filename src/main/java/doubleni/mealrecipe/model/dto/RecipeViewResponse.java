@@ -3,8 +3,6 @@ package doubleni.mealrecipe.model.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @NoArgsConstructor
 @Getter
 public class RecipeViewResponse {

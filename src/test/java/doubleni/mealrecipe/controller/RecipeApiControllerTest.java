@@ -1,7 +1,7 @@
 package doubleni.mealrecipe.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import doubleni.mealrecipe.Repository.RecipeRepository;
+import doubleni.mealrecipe.repository.RecipeRepository;
 import doubleni.mealrecipe.model.dto.AddRecipeRequest;
 import doubleni.mealrecipe.model.dto.Recipe;
 import doubleni.mealrecipe.model.dto.UpdateRecipeRequest;
