@@ -25,25 +25,14 @@
 //            JSONObject element = (JSONObject) jsonObject.get(i);
 //            JSONObject rows = (JSONObject) element.get("rows");
 //
-//
 //        }
 //
-//
-//
-//
 //        // 값 확인
-////        String rcp_seq = (String) jsonObject.get("rcp_seq");
-////        String rcp_nm = (String) jsonObject.get("rcp_nm");
-////        String rcp_way2 = (String) jsonObject.get("rcp_way2");
-////        System.out.println("rcp_seq : " + rcp_seq);
-////        System.out.println("rcp_nm : " + rcp_nm);
-////        System.out.println("rcp_way2 : " + rcp_way2);
-//
-//
-//
-//
-//
-//
-//
+//        String rcp_seq = (String) jsonObject.get("rcp_seq");
+//        String rcp_nm = (String) jsonObject.get("rcp_nm");
+//        String rcp_way2 = (String) jsonObject.get("rcp_way2");
+//        System.out.println("rcp_seq : " + rcp_seq);
+//        System.out.println("rcp_nm : " + rcp_nm);
+//        System.out.println("rcp_way2 : " + rcp_way2);
 //    }
 //}

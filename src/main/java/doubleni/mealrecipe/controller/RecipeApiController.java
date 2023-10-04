@@ -1,23 +1,26 @@
 package doubleni.mealrecipe.controller;
-
-import doubleni.mealrecipe.model.dto.AddRecipeRequest;
-import doubleni.mealrecipe.model.dto.Recipe;
-import doubleni.mealrecipe.model.dto.RecipeResponse;
-import doubleni.mealrecipe.model.dto.UpdateRecipeRequest;
+import doubleni.mealrecipe.model.dto.*;
+import doubleni.mealrecipe.model.dto.RecipeJSON;
+import doubleni.mealrecipe.service.DataService;
 import doubleni.mealrecipe.service.RecipeService;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @RestController // HTTP Response Body에 객체 데이터를 JSON 형식으로 반환하는 컨트롤러
 public class RecipeApiController {
 
     private final RecipeService recipeService;
+    private final DataService dataService;
 
     @PostMapping("/api/recipes")
     public ResponseEntity<Recipe> addRecipe(@RequestBody AddRecipeRequest request) {
@@ -37,33 +40,6 @@ public class RecipeApiController {
         return ResponseEntity.ok()
                 .body(recipes);
     }
-
-//    @GetMapping("/api/recipes/{rcp_seq}")
-//    // URL에서 값 추출
-//    public ResponseEntity<RecipeResponse> findRecipeId(@PathVariable String rcp_seq) {
-//        Recipe recipe = recipeService.findById(rcp_seq);
-//
-//        return ResponseEntity.ok()
-//                .body(new RecipeResponse(recipe));
-//    }
-//
-//
-//    @DeleteMapping("/api/recipes/{rcp_seq}")
-//    public ResponseEntity<RecipeResponse> deleteRecipe(@PathVariable String rcp_seq) {
-//        recipeService.deleteRecipe(rcp_seq);
-//
-//        return ResponseEntity.ok()
-//                .build();
-//    }
-//
-//    @PutMapping("/api/recipes/{rcp_seq}")
-//    public ResponseEntity<Recipe> updateArticle(@PathVariable String rcp_seq,
-//                                                 @RequestBody UpdateRecipeRequest request) {
-//        Recipe updateRecipe = recipeService.update(rcp_seq, request);
-//
-//        return ResponseEntity.ok()
-//                .body(updateRecipe);
-//    }
 
     @GetMapping("/api/recipes/{id}")
     // URL에서 값 추출
@@ -92,20 +68,37 @@ public class RecipeApiController {
                 .body(updateRecipe);
     }
 
-    // TEST
-//    @RequestMapping(method = RequestMethod.GET, value = "/recipeJsonInsert")
-//    @ResponseBody
-//    public HashMap<String, Integer> recipeJsonInsert() {
-//        HashMap<String, Integer> result = new HashMap<String, Integer>();
-//        result.put("cnt", recipeService.recipeJsonInsert());
-//        return result;
+
+
+
+    // JSON 테스트
+    @GetMapping("/api/test")
+    public ResponseEntity<String> fetchAndConvert() {
+        return recipeService.fetchDataAndConvertToJson();
+    }
+
+//    @GetMapping("/api/fetchAndSaveData")
+//    public ResponseEntity<String> fetchAndSaveData() {
+//        try {
+//            // fetchDataAndConvertToJson() 메서드를 호출하여 JSON 데이터 가져오기
+////            String jsonData = recipeService.fetchDataAndConvertToJson();
+//
+//            // JSON 데이터를 데이터베이스에 저장
+////            recipeService.saveJsonDataToDatabase(jsonData);
+//
+////            return ResponseEntity.ok("Data fetched and saved to database successfully.");
+//            return recipeService.fetchDataAndConvertToJson();
+//
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(500).body("Failed to fetch and save data to database.");
+//        }
 //    }
 
-    @GetMapping("/recipeJsonInsert")
-    public HashMap<String, Integer> recipeJsonInsert() {
-        HashMap<String, Integer> result = new HashMap<String, Integer>();
-        result.put("cnt", recipeService.recipeJsonInsert());
-        return result;
+    @GetMapping("/fetchAndSaveData")
+    public ResponseEntity<String> fetchDataAndSaveToDatabase() {
+        return dataService.fetchDataAndSaveToDatabase();
     }
 
 

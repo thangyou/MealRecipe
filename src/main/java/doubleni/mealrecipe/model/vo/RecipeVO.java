@@ -14,7 +14,6 @@ import javax.persistence.*;
 @ToString
 public class RecipeVO extends BaseTimeEntity implements Persistable<Long> {
     // 식약처 공공 데이터 레시피
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rcp_id", nullable = false)
@@ -87,7 +86,7 @@ public class RecipeVO extends BaseTimeEntity implements Persistable<Long> {
     private String manual_img19;
     private String manual20;
     private String manual_img20;
-    private String RCP_NA_TIP;
+    private String rcp_na_tip;
 
     @Override
     public Long getId() {

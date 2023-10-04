@@ -45,7 +45,9 @@ dependencies {
 //    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
 //    compileOnly 'javax.servlet:jstl:1.2'
 
-
+    // API 호출 및 XML to JSON 변환 수행
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.3'
 
 
 }
