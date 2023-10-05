@@ -38,8 +38,13 @@ dependencies {
     // JSON
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
-    // thymeleaf
+    // Thymeleaf, Validation
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+// Spring Security
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.7.5'
 
     // jsp
 //    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'

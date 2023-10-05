@@ -21,7 +21,9 @@
             <div class="card-body">
                 <h5 class="card-title" th:text="${recipe.rcp_nm}"></h5>
                 <p class="card-text" th:text="${recipe.rcp_pat2}"></p>
-                <a th:href="@{/recipes/{id}(id=${recipe.id})}" class="btn btn-primary">보러 가기</a>
+<!--                <a th:href="@{/recipes/{id}(id=${recipe.id})}" class="btn btn-primary">보러 가기</a>-->
+                <a th:href="@{/recipes/id={id}(id=${recipe.id})}" class="btn btn-primary">보러 가기</a>
+
             </div>
         </div>
         <br>

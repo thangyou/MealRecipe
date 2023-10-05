@@ -1,24 +1,25 @@
 package doubleni.mealrecipe.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import doubleni.mealrecipe.model.dto.AddRecipeRequest;
 import doubleni.mealrecipe.model.dto.Recipe;
-import doubleni.mealrecipe.model.dto.RecipeJSON;
 import doubleni.mealrecipe.model.dto.UpdateRecipeRequest;
 import doubleni.mealrecipe.repository.RecipeRepository;
+import doubleni.mealrecipe.repository.RecipeRepositoryImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-@Configuration
+//@Configuration
 @Service
 @RequiredArgsConstructor
 public class RecipeService {
@@ -26,31 +27,50 @@ public class RecipeService {
 
     private final RestTemplate restTemplate;
     private final RecipeRepository recipeRepository;
+    private final RecipeRepositoryImpl repositoryImpl;
 
-    // 조회
+    /* 전체 레시피 조회 */
     public List<Recipe> findAll() {
         return recipeRepository.findAll();
     }
 
+    /* id로 레시피 조회 */
     public Recipe findById(long id) {
         return recipeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
     }
+    /*
+    public Optional<Recipe> findById(long id) {
+        return recipeRepository.findById(id);
+        ** Optional<Recipe> recipe = recipeRepository.findById(id);
+        ** Recipe findRecipe = recipe.get();
+    }
 
-    // 생성
+     */
+
+    /* name 으로 레시피 조회 */
+//    public Recipe findByName(String rcpNm) {
+//        return recipeRepository.findByName(rcpNm);
+//                .orElseThrow(() -> new IllegalArgumentException("not found : " + rcpNm));
+//    }
+    public Recipe findByName(String rcpNm) {
+        return repositoryImpl.findByName(rcpNm);
+    }
+
+    /* 레시피 추가 */
     public Recipe save(AddRecipeRequest request) {
         return recipeRepository.save(request.toEntity());
         // addRecipeRequest 클래스에 저장된 값들을 Recipe 데이터베이스에 저장
     }
 
-    // 삭제
-    public void deleteRecipe(long id) {
+    /* 레시피 삭제 */
+    public void deleteRecipe(long id) { 
         recipeRepository.deleteById(id);
     }
 
-    // 수정
+    /* 레시피 수정 */
     @Transactional
-    public Recipe update(long id, UpdateRecipeRequest request) {
+    public Recipe update(long id, UpdateRecipeRequest request) { 
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
 
@@ -62,14 +82,42 @@ public class RecipeService {
         return recipe;
     }
 
+    /* Update */
+
+
+    /* 레시피 생성 */
     public void saveRecipe(Recipe recipe) {
         recipeRepository.save(recipe);
     }
 
-    // Test
-//    public String fetchDataAndConvertToJson() {
+    public void write(Recipe recipe, MultipartFile file) throws Exception{
+        /* 경로를 지정 */
+        String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
+
+        /* 식별자 . 랜덤으로 이름 만들어줌 */
+        UUID uuid = UUID.randomUUID();
+
+        /* 랜덤식별자_원래파일이름 = 저장될 파일이름 지정 */
+        String fileName = uuid + "_" + file.getOriginalFilename();
+
+        /* File을 생성 - 이름은 "name", projectPath 라는 경로에 담긴다 */
+        File saveFile = new File(projectPath, fileName);
+
+        file.transferTo(saveFile);
+
+        /* 디비에 파일 넣기 */
+        recipe.setManual_img01(fileName);
+        /* 저장되는 경로 */
+        recipe.setManual_img01("/files/" + fileName); /* 저장된파일의이름, 저장된파일의경로 */
+
+        /*파일 저장*/
+        recipeRepository.save(recipe);
+    }
+
+    // ====================================================================
+
+    /* 레시피 API to JSON 저장 */
     public ResponseEntity<String> fetchDataAndConvertToJson() {
-        StringBuilder apiResponse = new StringBuilder();
         try {
             // API 요청
             String xmlResponse = restTemplate.getForObject(API_URL, String.class);
@@ -87,11 +135,12 @@ public class RecipeService {
 //            return jsonResponseMapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
         } catch (Exception e) {
             e.printStackTrace();
-            return null; // 에러가 발생하면 null을 반환하거나 적절한 오류 처리를 수행할 수 있습니다.
+            return null; // 에러가 발생하면 null을 반환
         }
 
     }
 
+    // dataService.saveJsonDataToDatabase() 와 중복
 //    public void saveJsonDataToDatabase(String jsonData) {
 //        try {
 //            // JSON 데이터를 Recipe 객체로 변환
@@ -101,8 +150,10 @@ public class RecipeService {
 //            // Recipe 객체를 데이터베이스에 저장
 //            recipeRepository.save(recipe);
 //        } catch (JsonProcessingException e) {
-//            e.printStackTrace(); // JSON 처리 예외 발생 시 예외 처리를 수행하세요.
+//            e.printStackTrace(); 
 //        }
 //    }
+
+
 
 }

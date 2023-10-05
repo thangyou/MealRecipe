@@ -4,7 +4,7 @@ const deleteButton = document.getElementById('delete-btn');
 if (deleteButton) {
     deleteButton.addEventListener('click', event => {
         let id = document.getElementById('recipe-id').value;
-        fetch(`/api/recipes/${id}`, {
+        fetch(`/api/recipes/id=${id}`, {
             method: 'DELETE'
         })
             .then(() => {
@@ -22,7 +22,7 @@ if (modifyButton) {
         let params = new URLSearchParams(location.search);
         let id = params.get('id');
 
-        fetch(`/api/recipes/${id}`, {
+        fetch(`/api/recipes/id=${id}`, {
             method: 'PUT',
             headers: {
                 "Content-Type": "application/json",
@@ -38,7 +38,7 @@ if (modifyButton) {
         })
             .then(() => {
                 alert('수정이 완료되었습니다.');
-                location.replace(`/recipes/${id}`);
+                location.replace(`/recipes/id=${id}`);
             });
     });
 }

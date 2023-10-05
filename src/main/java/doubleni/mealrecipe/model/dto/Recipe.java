@@ -1,11 +1,10 @@
 package doubleni.mealrecipe.model.dto;
 
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * @Entity : 실제 DataBase의 테이블과 1 : 1로 Mapping 되는 Class
  * DB의 테이블내에 존재하는 컬럼만을 속성(필드)으로 가져야 한다.
@@ -23,6 +22,7 @@ import java.time.LocalDateTime;
  */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Setter
 @Entity
 @Table(name = "recipe")
 @ToString
@@ -64,6 +64,7 @@ public class Recipe {
     private String manual01; // 레시피 설명
     @Column(name="manual_img01")
     private String manual_img01; // 레시피 이미지
+
 //    private String manual02;
 //    private String manual_img02;
 //    private String manual03;
@@ -164,4 +165,5 @@ public class Recipe {
         this.manual01 = manual01;
         this.manual_img01 = manual_img01;
     }
+
 }

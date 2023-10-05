@@ -24,7 +24,8 @@
                     <p class="fs-5 mb-4" th:text="${recipe.rcp_way2}"></p>
                     <p class="fs-5 mb-4" th:text="${recipe.rcp_pat2}"></p>
                     <p class="fs-5 mb-4" th:text="${recipe.manual01}"></p>
-                    <p class="fs-5 mb-4" th:text="${recipe.manual_img01}"></p>
+                    <p class="fs-5 mb-4" th:text="${recipe.manual_img01} "></p>
+                    <a th:href="@{${recipe.manual_img01}}">이미지 다운로드</a>
                 </section>
                 <button type="button" id="modify-btn"
                         th:onclick="|location.href='@{/new-recipe?id={id}(id=${recipe.id})}'|"

@@ -1,5 +1,6 @@
 package doubleni.mealrecipe.service;
 import doubleni.mealrecipe.model.dto.Recipe;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -9,17 +10,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 @Service
+@AllArgsConstructor
 public class DataService {
+    /*
+    API_URL로부터 데이터를 가져와서
+    API 응답 데이터를 JSON 형태로 파싱하여 데이터베이스로 저장
+     */
 
+    // API 요청을 보낼 URL
     private static final String API_URL = "http://openapi.foodsafetykorea.go.kr/api/7c74eb77831147ba9e86/COOKRCP01/xml/0/1";
 
     private final RestTemplate restTemplate;
-    private final RecipeService recipeService; // RecipeService를 주입받아야 합니다.
+    private final RecipeService recipeService;
 
-    public DataService(RestTemplate restTemplate, RecipeService recipeService) {
-        this.restTemplate = restTemplate;
-        this.recipeService = recipeService;
-    }
+//    public DataService(RestTemplate restTemplate, RecipeService recipeService) {
+//        this.restTemplate = restTemplate;
+//        this.recipeService = recipeService;
+//    }
 
     public ResponseEntity<String> fetchDataAndSaveToDatabase() {
         try {
