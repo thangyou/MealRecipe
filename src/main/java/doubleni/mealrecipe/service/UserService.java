@@ -1,102 +1,52 @@
 package doubleni.mealrecipe.service;
 
+import doubleni.mealrecipe.config.exception.BaseException;
+import doubleni.mealrecipe.config.exception.BaseResponse;
 import doubleni.mealrecipe.model.DTO.JoinRequest;
-import doubleni.mealrecipe.model.DTO.LoginRequest;
 import doubleni.mealrecipe.model.User;
+import doubleni.mealrecipe.model.UserRole;
 import doubleni.mealrecipe.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static doubleni.mealrecipe.config.exception.BaseResponseStatus.*;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    //Spring Security를 사용해서 로그인 구현시 사용해야 함
-    //private final BCryptPasswordEncoder encoder;
+    public void signUp(JoinRequest joinRequest) throws BaseException {
+        try{
+            if(userRepository.findByEmail(joinRequest.getEmail()).isPresent()){
+                throw new BaseException(POST_USERS_EXISTS_EMAIL);
+            }
+            if (userRepository.findByNickname(joinRequest.getNickname()).isPresent()){
+                throw new BaseException(POST_USERS_EXISTS_NICKNAME);
+            }
 
-    /**
-     * email 중복체크
-     * 회원가입 기능 구현시 사용
-     * 중복되면 true return
-     */
-    public boolean checkLoginEmailDuplicate(String email) {
-        return userRepository.existsByEmail(email);
-    }
+            User user = User.builder()
+                    .email(joinRequest.getEmail())
+                    .password(joinRequest.getPassword())
+                    .nickname(joinRequest.getNickname())
+                    .imageUrl(joinRequest.getImageUrl())
+                    .phone(joinRequest.getPhone())
+                    .role(UserRole.USER)
+                    .build();
 
-    /**
-     * userName 중복체크
-     * 회원가입 기능 구현 시 사용
-     * 중복되면 true return
-     */
-    public boolean checkUserNameDuplicate(String userName) {
-        return userRepository.existsByUserName(userName);
-    }
+            user.passwordEncode(passwordEncoder);
+            userRepository.save(user);
 
-    /**
-     * 회원가입 기능1
-     */
-    public void join(JoinRequest req) {
-        userRepository.save(req.toEntity());
-    }
-
-    /**
-     * 회원가입 기능2
-     * */
-//    public void join2(JoinRequest req){
-//        userRepository.save(req.toEntity(encoder.encode(req.getPassword())));
-//    }
-
-    /**
-     * 로그인 기능
-     */
-    public User login(LoginRequest req) {
-        Optional<User> optionalUser = userRepository.findByEmail(req.getEmail());
-
-
-        //email와 일치하는 User가 없으면 null return
-        if (optionalUser.isEmpty()) {
-            return null;
+        } catch (Exception exception){
+            throw new BaseException(JOIN_ERROR);
         }
 
-        User user = optionalUser.get();
-
-        //찾아온 User의 password와 입력된 password가 다르면 null return
-        if (!user.getPassword().equals(req.getPassword())) {
-            return null;
-        }
-
-        return user;
-    }
-
-    /**
-     * email를 입력받아 User을 return 해주는 기능
-     * 인증,인가 시 사용
-     */
-    public User getLoginUserByEmail(String email) {
-        if (email == null) return null;
-
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        if (optionalUser.isEmpty()) return null;
-
-        return optionalUser.get();
-    }
-
-    /**
-     * userId를 입력받아서 User를 retrun 해주는 기능
-     * 인증,인가 시 사용
-     */
-    public User getLoginUserById(Long userId){
-        if(userId == null) return null;
-
-        Optional<User> optionalUser = userRepository.findByUserId(userId);
-        if (optionalUser.isEmpty()) return null;
-
-        return optionalUser.get();
     }
 
 }
