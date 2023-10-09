@@ -1,18 +1,19 @@
 package doubleni.mealrecipe.model.vo;
 
+import doubleni.mealrecipe.model.BaseEntity;
 import lombok.*;
 import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
 
 @NoArgsConstructor
-//@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
 @Entity
 @Table(name = "recipe_api")
 @ToString
-public class RecipeVO extends BaseTimeEntity implements Persistable<Long> {
+//public class RecipeVO extends BaseEntity implements Persistable<Long> {
+public class RecipeVO extends BaseEntity {
     // 식약처 공공 데이터 레시피
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -88,13 +89,14 @@ public class RecipeVO extends BaseTimeEntity implements Persistable<Long> {
     private String manual_img20;
     private String rcp_na_tip;
 
-    @Override
-    public Long getId() {
-        return rcp_id;
-    }
+//    @Override
+//    public Long getId() {
+//        return rcp_id;
+//    }
 
-    @Override
-    public boolean isNew() {
-        return getCreatedDate() == null;
-    }
+//    @Override
+//    public boolean isNew() {
+//        return getCreatedDate() == null;
+//    }
+
 }

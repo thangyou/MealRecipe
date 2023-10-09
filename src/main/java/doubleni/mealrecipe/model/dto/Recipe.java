@@ -1,9 +1,8 @@
 package doubleni.mealrecipe.model.dto;
-
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
+import java.time.LocalDateTime;
 
 /**
  * @Entity : 실제 DataBase의 테이블과 1 : 1로 Mapping 되는 Class
@@ -20,10 +19,12 @@ import java.util.List;
  * 결국 DTO는 Domain Model 객체(Entity)를 그대로 두고 복사하여,
  * 다양한 Presentation Logic을 추가한 정도로 사용하며 Domain Model 객체(Entity)는 Persistent만을 위해서 사용해야한다.
  */
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "recipe")
 @ToString
 public class Recipe {
@@ -106,8 +107,8 @@ public class Recipe {
 //    private boolean rcp_delete_yn; // 레시피 삭제 확인 (default = 0)
 
 //    @CreatedDate // 엔티티가 생성될 때 생성 시간 저장
-//    @Column(name = "created_at")
-//    private LocalDateTime createdAt;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 //
 //    @LastModifiedDate // 엔티티가 수정될 때 수정 시간 저장
 //    @Column(name = "updated_at")
@@ -129,17 +130,6 @@ public class Recipe {
 //    private String rcpHits;
 
     //******************************************************
-
-    @Builder
-    public Recipe(String rcp_seq, String rcp_nm, String rcp_way2, String rcp_pat2,
-                  String manual01, String manual_img01) {
-        this.rcp_seq = rcp_seq;
-        this.rcp_nm = rcp_nm;
-        this.rcp_way2 = rcp_way2;
-        this.rcp_pat2 = rcp_pat2;
-        this.manual01 = manual01;
-        this.manual_img01 = manual_img01;
-    }
 
 
 //    public void update(String rcpNm, String rcpWay2, String rcpPat2,

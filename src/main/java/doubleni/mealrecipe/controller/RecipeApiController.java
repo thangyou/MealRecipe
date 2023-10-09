@@ -1,16 +1,18 @@
 package doubleni.mealrecipe.controller;
-import doubleni.mealrecipe.model.dto.AddRecipeRequest;
-import doubleni.mealrecipe.model.dto.Recipe;
-import doubleni.mealrecipe.model.dto.RecipeResponse;
-import doubleni.mealrecipe.model.dto.UpdateRecipeRequest;
+import com.google.gson.Gson;
+import doubleni.mealrecipe.model.dto.*;
 import doubleni.mealrecipe.service.DataService;
 import doubleni.mealrecipe.service.RecipeService;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -82,6 +84,73 @@ public class RecipeApiController {
     public ResponseEntity<String> fetchDataAndSaveToDatabase() {
         return dataService.fetchDataAndSaveToDatabase();
     }
+
+    /* JsonString -> Recipe, CookBook */
+    @PostMapping("/gson/string-to-recipe")
+    public Recipe convertStringToRecipe(@RequestBody String jsonStr) throws ParseException {
+        Gson gson = new Gson();
+        Recipe recipe = gson.fromJson(jsonStr, Recipe.class);
+        return recipe;
+    }
+
+    @PostMapping("/gson/string-to-cookbook")
+    public COOKRCP01 convertStringToCookBook(@RequestBody String jsonStr) {
+        Gson gson = new Gson();
+        COOKRCP01 cookbook = gson.fromJson(jsonStr, COOKRCP01.class);
+        return cookbook;
+    }
+
+
+    /* JSON 수신 확인 */
+    @GetMapping("/api/RecipeTest")
+    public ArrayList<Recipe> getOnlyRecipes() {
+        return recipeService.getOnlyRecipes();
+    }
+
+    @GetMapping("/api/RecipeAllTest")
+    public COOKRCP01 getAllCookBook() {
+        return recipeService.getAllCookBook();
+    }
+
+    @PostMapping("/api/RecipeTest")
+    public String postOneRecipe(@RequestBody Recipe request) {
+        String response = String.format("<레시피 정보>\n번호 : %s\n레시피명 : %s\n조리법 : %s",
+                request.getRcp_seq(), request.getRcp_nm(), request.getRcp_way2());
+        return response;
+    }
+
+    /* 다중 객체 수신 */
+    @PostMapping("/api/RecipeListTest") // /api/RecipeAllTest
+    public String postAllRecipes(@RequestBody List<Recipe> recipes) {
+        String response = "<레시피 정보>\n";
+
+        int i = 1;
+        for (Recipe recipe : recipes) {
+            response += String.format("순서%d: 번호 : %s\n레시피명 : %s\n조리법 : %s\n",
+                    i, recipe.getRcp_seq(), recipe.getRcp_nm(), recipe.getRcp_way2());
+           i++;
+        }
+        return response;
+    }
+
+    @PostMapping("/api/RecipeAllTest")
+//    public String postCookBook(@RequestBody COOKRCP01 cookbook) {
+    public String postCookBook(@RequestBody RecipeAPI recipeAPI) {
+
+//        RecipeAPI recipeAPI = cookbook.getRecipeAPI();
+
+        String response = String.format("<레시피북 정보>\n레시피 개수 : %s\n", recipeAPI.getTotal_count());
+
+        int i = 1;
+        for (Recipe recipe : recipeAPI.getRecipes()) {
+            response += String.format("순서%d: 번호 : %s\n레시피명 : %s\n조리법 : %s\n",
+                    i, recipe.getRcp_seq(), recipe.getRcp_nm(), recipe.getRcp_way2());
+            i++;
+        }
+
+        return response;
+    }
+
 
 
 //    @GetMapping("/api/fetchAndSaveData")

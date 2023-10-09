@@ -10,6 +10,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
 @EnableJpaAuditing // createdDate, updatedDate 자동 업데이트
 @SpringBootApplication
 @ComponentScan(basePackages = "doubleni")
@@ -18,6 +21,12 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class MealRecipeApplication {
     // 스프링 부트를 실행할 용도의 클래스 - Application
+
+    @PostConstruct
+    public void setTimeZone(){
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(MealRecipeApplication.class, args);
     }

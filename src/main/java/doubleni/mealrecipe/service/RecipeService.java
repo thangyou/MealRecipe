@@ -2,12 +2,13 @@ package doubleni.mealrecipe.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import doubleni.mealrecipe.model.dto.AddRecipeRequest;
-import doubleni.mealrecipe.model.dto.Recipe;
-import doubleni.mealrecipe.model.dto.UpdateRecipeRequest;
+import doubleni.mealrecipe.model.dto.*;
 import doubleni.mealrecipe.repository.RecipeRepository;
 import doubleni.mealrecipe.repository.RecipeRepositoryImpl;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -153,6 +157,40 @@ public class RecipeService {
 //            e.printStackTrace(); 
 //        }
 //    }
+
+    public ArrayList<Recipe> getOnlyRecipes() {
+        Recipe recipe1 = new Recipe(3L, "일련번호1", "레시피명1", "조리방법1",
+                "요리종류1", "메뉴얼1", "이미지1", LocalDateTime.now());
+        Recipe recipe2 = new Recipe(3L, "일련번호1", "레시피명1", "조리방법1",
+                "요리종류1", "메뉴얼1", "이미지1", LocalDateTime.now());
+        Recipe recipe3 = new Recipe(3L, "일련번호1", "레시피명1", "조리방법1",
+                "요리종류1", "메뉴얼1", "이미지1", LocalDateTime.now());
+
+        ArrayList<Recipe> recipes = new ArrayList<>();
+        recipes.add(recipe1);
+        recipes.add(recipe2);
+        recipes.add(recipe3);
+        return recipes;
+    }
+
+    public COOKRCP01 getAllCookBook() {
+        Recipe recipe1 = new Recipe(3L, "일련번호1", "레시피명1", "조리방법1",
+                "요리종류1", "메뉴얼1", "이미지1", LocalDateTime.now());
+        Recipe recipe2 = new Recipe(3L, "일련번호1", "레시피명1", "조리방법1",
+                "요리종류1", "메뉴얼1", "이미지1", LocalDateTime.now());
+        Recipe recipe3 = new Recipe(3L, "일련번호1", "레시피명1", "조리방법1",
+                "요리종류1", "메뉴얼1", "이미지1", LocalDateTime.now());
+
+        ArrayList<Recipe> recipes = new ArrayList<>();
+        recipes.add(recipe1);
+        recipes.add(recipe2);
+        recipes.add(recipe3);
+
+        RecipeAPI api = new RecipeAPI("1114", recipes);
+
+        return new COOKRCP01("", api);
+    }
+
 
 
 

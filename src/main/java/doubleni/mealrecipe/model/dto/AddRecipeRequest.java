@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -35,6 +37,7 @@ public class AddRecipeRequest {
                 .rcp_pat2(rcp_pat2)
                 .manual01(manual01)
                 .manual_img01(manual_img01)
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 
