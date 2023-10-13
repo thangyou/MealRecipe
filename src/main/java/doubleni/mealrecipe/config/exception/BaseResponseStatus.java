@@ -33,7 +33,8 @@ public enum BaseResponseStatus {
     POST_USERS_EMPTY_PWD(false, 2021, "비밀번호를 입력해주세요."),
     DELETE_FAIL_USER(false, 2022, "회원 탈퇴가 되지 않았습니다."),
     POST_USERS_EMPTY_NICKNAME(false,2023,"닉네임을 입력해주세요."),
-    POST_USERS_EXISTS_NICKNAME(false,2023,"중복된 닉네임입니다."),
+    POST_USERS_EXISTS_NICKNAME(false,2024,"중복된 닉네임입니다."),
+    POST_USERS_INVALID_NICKNAME(false, 2025, "닉네임은 2 ~ 20자 사이로 입력해주세요."),
 
 
     // reviews

@@ -2,18 +2,28 @@ package doubleni.mealrecipe.auth.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.repository.UserRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.Optional;
+
+import static doubleni.mealrecipe.config.exception.BaseResponseStatus.EMPTY_JWT;
+import static doubleni.mealrecipe.config.exception.BaseResponseStatus.INVALID_JWT;
 
 @Service
 @RequiredArgsConstructor
@@ -173,4 +183,58 @@ public class JwtService {
             return false;
         }
     }
+
+
+    /*
+   JWT 생성
+   @param userIdx
+   @return String
+    */
+    public String createJwt(Long id){
+        Date now = new Date();
+        return Jwts.builder()
+                .setHeaderParam("type","jwt")
+                .claim("id",id)
+                .setIssuedAt(now)
+                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*60*24*365)))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
+
+    /*
+    Header에서 X-ACCESS-TOKEN 으로 JWT 추출
+    @return String
+     */
+    public String getJwt(){
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        return request.getHeader("X-ACCESS-TOKEN");
+    }
+
+    /*
+    JWT에서 userIdx 추출
+    @return Long
+    @throws BaseException
+     */
+    public Long getUserIdx() throws BaseException {
+        //1. JWT 추출
+        String accessToken = getJwt();
+        if(accessToken == null || accessToken.length() == 0){
+            throw new BaseException(EMPTY_JWT);
+        }
+
+        // 2. JWT parsing
+        Jws<Claims> claims;
+        try{
+            claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(accessToken);
+        } catch (Exception ignored) {
+            throw new BaseException(INVALID_JWT);
+        }
+
+        // 3. userIdx 추출
+        return claims.getBody().get("id",Long.class);
+    }
+
+
 }

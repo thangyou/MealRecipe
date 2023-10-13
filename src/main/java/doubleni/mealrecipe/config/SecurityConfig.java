@@ -30,7 +30,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
  * JwtAuthenticationProcessingFilter는 AccessToken, RefreshToken 재발급
  */
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity  //spring security 설정들을 활성화시켜 줌
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -48,7 +48,7 @@ public class SecurityConfig {
                 .formLogin().disable() // FormLogin 사용 X
                 .httpBasic().disable() // httpBasic 사용 X
                 .csrf().disable() // csrf 보안 사용 X
-                .headers().frameOptions().disable()
+                .headers().frameOptions().disable() //h2-console 화면을 사용하기 위해 해당 옵션들을 disable 함
                 .and()
 
                 // 세션 사용하지 않으므로 STATELESS로 설정
@@ -57,19 +57,22 @@ public class SecurityConfig {
                 .and()
 
                 //== URL별 권한 관리 옵션 ==//
+                //authorizeRequests가 선언되어야만 andMatchers옵션을 사용할 수 있음
                 .authorizeRequests()
 
                 // 아이콘, css, js 관련
                 // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
                 .antMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**").permitAll()
-                .antMatchers("/sign-up").permitAll() // 회원가입 접근 가능
+                .antMatchers("/users/sign-up").permitAll() // 회원가입 접근 가능
                 .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 .and()
                 //== 소셜 로그인 설정 ==//
-                .oauth2Login()
+                .oauth2Login()// oauth2 로그인 기능에 대한 여러 설정의 진입점
                 .successHandler(oAuth2LoginSuccessHandler) // 동의하고 계속하기를 눌렀을 때 Handler 설정
                 .failureHandler(oAuth2LoginFailureHandler) // 소셜 로그인 실패 시 핸들러 설정
+                //oauth2 로그인 성공 이후 사용자 정보를 가져올 때의 설정들을 담당함
                 .userInfoEndpoint().userService(customOAuth2UserService); // customUserService 설정
+        // (소셜 로그인 성공 시 후속 조치를 진행할 리소서 서버에서 사용자 정보를 가져온 상태에서 추가로 진행하고자 하는 기능을 명시할 수 있음)
 
         // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
         // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
