@@ -2,6 +2,9 @@ package doubleni.mealrecipe.config.exception;
 
 import lombok.Getter;
 
+/**
+ * error code
+ * */
 @Getter
 public enum BaseResponseStatus {
 
@@ -22,6 +25,7 @@ public enum BaseResponseStatus {
 
     // users
     USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),
+    USERS_NOT_EXISTS(false, 2011, "존재하지 않는 유저입니다."),
 
     // [POST] /users
     POST_USERS_EMPTY_EMAIL(false, 2015, "이메일을 입력해주세요."),
@@ -35,7 +39,8 @@ public enum BaseResponseStatus {
     POST_USERS_EMPTY_NICKNAME(false,2023,"닉네임을 입력해주세요."),
     POST_USERS_EXISTS_NICKNAME(false,2024,"중복된 닉네임입니다."),
     POST_USERS_INVALID_NICKNAME(false, 2025, "닉네임은 2 ~ 20자 사이로 입력해주세요."),
-
+    POST_USERS_INVALID_PHONENO(false, 2026, "휴대폰 번호는 숫자만 입력이 가능합니다."),
+    POST_USERS_INVALID_PHONENO_LENGTH(false, 2027, "휴대폰 번호는 최대 11자리까지 입력이 가능합니다."),
 
     // reviews
     POST_REVIEWS_INVALID_CONTENT(false,2030, "최대 입력 글자 수는 1000자입니다."),
@@ -71,7 +76,8 @@ public enum BaseResponseStatus {
     UPDATE_FAIL_USER(false,4014,"유저 정보를 수정하는데 실패했습니다."),
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
-    PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");
+    PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다."),
+    KAKAO_CONNECTION_ERROR(false, 4013, "카카오톡 연결에 실패하였습니다.");
 
 
 

@@ -1,17 +1,11 @@
 package doubleni.mealrecipe.controller;
 
-import doubleni.mealrecipe.auth.jwt.JwtService;
+import doubleni.mealrecipe.utils.JwtService;
 import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.config.exception.BaseResponse;
-import doubleni.mealrecipe.config.exception.BaseResponseStatus;
-import doubleni.mealrecipe.model.DTO.JoinRequest;
-import doubleni.mealrecipe.model.DTO.PostExtraReq;
-import doubleni.mealrecipe.model.DTO.PostUserRes;
-import doubleni.mealrecipe.model.User;
+import doubleni.mealrecipe.model.DTO.*;
 import doubleni.mealrecipe.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,22 +19,70 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
 
+    /**
+     * 회원가입 API
+     * [POST] /users
+     * @return BaseResponse<JoinRes>
+     */
+
     @ResponseBody
     @Transactional
-    @PostMapping("/users/sign-up")
-    public BaseResponse<PostUserRes> joinUser(@RequestBody JoinRequest joinRequest) throws BaseException {
+    @PostMapping("/users")
+    public BaseResponse<JoinRes> joinUser(@RequestBody JoinRequest joinRequest)  {
+        //회원가입 시 이메일을 입력하지 않았을 때
+        if (joinRequest.getEmail() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
+        }
+
+        //회원가입 시 비밀번호를 입력하지 않았을 때
+        if (joinRequest.getPassword() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_PWD);
+        }
+
+        //회원가입 시 휴대폰번호를 입력하지 않았을 때
+        if (joinRequest.getPhone() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_TELNUM);
+        }
+
+
         try{
-            PostUserRes postUserRes = userService.signUp(joinRequest);
-            return new BaseResponse<>(postUserRes);
+            JoinRes joinRes = userService.signUp(joinRequest);
+            return new BaseResponse<>(joinRes);
         }catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
     }
 
-    @GetMapping("/jwt-test")
-    public String jwtTest() {
-        return "jwtTest 요청 성공";
+    /**
+     * 로그인 API
+     * [POST] /users/login
+     *
+     * @return BaseResponse<LoginRes>
+     *
+     * */
+    @ResponseBody
+    @Transactional
+    @PostMapping("/users/login")
+    public BaseResponse<LoginRes> Login(@RequestBody LoginRequest loginRequest){
+        //로그인 시 이메일 입력하지 않았을 때
+        if(loginRequest.getEmail() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
+        }
+
+        //로그인 시 비밀번호를 입력하지 않았을 때
+        if(loginRequest.getPassword() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_PWD);
+        }
+
+        try{
+            LoginRes loginRes = userService.login(loginRequest);
+            return new BaseResponse<>(loginRes);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
     }
+
+
 
     /**
      * 소셜 로그인 추가 정보 API
@@ -53,7 +95,7 @@ public class UserController {
     @ResponseBody
     @Transactional
     @PostMapping("/users/sns")
-    public BaseResponse<PostUserRes> saveUserAfterInfo (@RequestBody PostExtraReq postExtraReq){
+    public BaseResponse<LoginRes> saveUserAfterInfo (@RequestBody PostExtraReq postExtraReq){
         if (postExtraReq.getNickname()==null){
             return new BaseResponse<>(POST_USERS_EMPTY_NICKNAME);
         }
@@ -75,8 +117,8 @@ public class UserController {
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
 
-            PostUserRes postUserRes = userService.saveUserSNSInfo(postExtraReq);
-            return new BaseResponse<>(postUserRes);
+            LoginRes loginRes = userService.saveUserSNSInfo(postExtraReq);
+            return new BaseResponse<>(loginRes);
         }catch(BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }

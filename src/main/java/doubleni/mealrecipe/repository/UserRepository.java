@@ -1,6 +1,5 @@
 package doubleni.mealrecipe.repository;
 
-import doubleni.mealrecipe.model.SocialType;
 import doubleni.mealrecipe.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -11,16 +10,14 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     Optional<User> findByNickname(String nickname);
-    Optional<User> findByRefreshToken(String refreshToken);
 
-    /**
-     * 소셜 타입과 소셜 식별값으로 회원 찾는 메소드
-     * 정보 제공을 동의한 순간 db에 저장해야 하지만, 아직 추가 정보 (전화번호 등)를 입력받지 않아서
-     * 유저 객체는 db에 있지만, 추가 정보가 빠진 상태임
-     * 따라서, 추가정보를 입력받아 회원 가입을 진행할 때 소셜타입, 식별자로 해당 회원을 찾기 위한 메소드
-     * */
+    Optional<User> findByPhone(String phone);
 
-    Optional<User> findBySocialTypeAndSocialId (SocialType socialType, String socialId);
+    Optional<User> findByEmailAndAndPassword(String email, String password);
+
+
+
+
 
     /*
     *  // 사용자의 이메일로 사용자 찾기
