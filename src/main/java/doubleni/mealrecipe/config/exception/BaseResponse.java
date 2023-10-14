@@ -12,6 +12,7 @@ import static doubleni.mealrecipe.config.exception.BaseResponseStatus.*;
 @AllArgsConstructor
 @JsonPropertyOrder({"isSuccess","code","message","result"})
 public class BaseResponse<T> {
+    // BaseResponse : Response할 때, 공통 부분은 묶고 다른 부분은 제네릭을 통해 구현함으로써 반복되는 코드를 줄여준다.
     @JsonProperty("isSuccess")
     private final Boolean isSuccess;
     private final String message;
