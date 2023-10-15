@@ -1,32 +1,23 @@
-package doubleni.mealrecipe.model;
+package doubleni.mealrecipe.model.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@Entity
-@Table(name = "recipe")
-public class Recipe {
-    // 식약처 공공 데이터 레시피
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "rcp_id", nullable = false)
+@NoArgsConstructor
+@AllArgsConstructor
+public class GetRecipeIdRes {
     private Long rcpId;
 
-    @Column(name = "rcp_seq", nullable = false)
     private String rcpSeq; // 일련 번호
 
-    @Column(name = "rcp_nm", nullable = false)
     private String rcpNm; // 레시피명
 
-    @Column(nullable = true)
     private String rcpWay2; // 조리 방법
     private String rcpPat2; // 요리 종류
 
@@ -36,12 +27,6 @@ public class Recipe {
     private String infoPro; // 단백질
     private String infoFat; // 지방
     private String infoNa; // 나트륨
-//    private double info_wgt; // 중량(1인분)
-//    private double info_eng; // 열량
-//    private double info_car; // 탄수화물
-//    private double info_pro; // 단백질
-//    private double info_fat; // 지방
-//    private double info_na; // 나트륨
 
     private String hashTag; // 해시태그
     private String attFileNoMain; // 이미지 경로(소)

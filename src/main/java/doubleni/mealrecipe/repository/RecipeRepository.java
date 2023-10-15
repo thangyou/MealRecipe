@@ -11,4 +11,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     //레시피이름으로 찾기
     Optional<Recipe> findByRcpNm(String rcpNm);
+
+    //레시피 id 찾기
+    Optional<Recipe> findByRcpId(Long rcpId);
 }
