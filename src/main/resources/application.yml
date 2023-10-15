@@ -28,7 +28,6 @@ spring:
     oauth2:
       client:
         registration:
-
           kakao:
             client-id:
             client-secret:
