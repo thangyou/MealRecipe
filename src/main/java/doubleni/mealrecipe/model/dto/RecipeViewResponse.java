@@ -1,49 +1,51 @@
 package doubleni.mealrecipe.model.dto;
 
+import doubleni.mealrecipe.model.entity.UploadImage;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @Getter
+@Setter
 public class RecipeViewResponse {
 
-    private Long id;
-
-    private String rcp_seq;
-    private String rcp_nm;
-    private String rcp_way2;
-    private String rcp_pat2;
-    /*private String info_wgt;
-    private String info_eng;
-    private String info_car;
-    private String info_pro;
-    private String info_fat;
-    private String info_na;
-    private String hash_tag;
-    private String att_file_no_main;
-    private String att_file_no_mk;
-    private String rcp_parts_dtls;*/
-    private String manual01;
-    private String manual_img01;
+    private Long rcpId;
+    private String rcpSeq; // 일련 번호
+    private String rcpNm; // 레시피명
+    private String rcpWay2; // 조리 방법
+    private String rcpPat2; // 요리 종류
+    private String infoWgt; // 중량(1인분)
+    private String infoEng; // 열량
+    private String infoCar; // 탄수화물
+    private String infoPro; // 단백질
+    private String infoFat; // 지방
+    private String infoNa; // 나트륨
+    private String hashTag; // 해시태그
+    private String attFileNoMain; // 이미지 경로(소)
+    private String attFileNoMk; // 이미지 경로(대)
+    private String rcpPartsDtls; // 재료 정보
+    private String manual01; // 레시피 설명
+    private String manualImg01; // 레시피 이미지
 
     public RecipeViewResponse(Recipe recipe) {
-        this.id = recipe.getId();
-        this.rcp_seq = recipe.getRcp_seq();
-        this.rcp_nm = recipe.getRcp_nm();
-        this.rcp_way2 = recipe.getRcp_way2();
-        this.rcp_pat2 = recipe.getRcp_pat2();
-//        this.info_wgt = recipe.getInfo_wgt();
-//        this.info_eng = recipe.getInfo_eng();
-//        this.info_car = recipe.getInfo_car();
-//        this.info_pro = recipe.getInfo_pro();
-//        this.info_fat = recipe.getInfo_fat();
-//        this.info_na = recipe.getInfo_na();
-//        this.hash_tag = recipe.getHash_tag();
-//        this.att_file_no_main = recipe.getAtt_file_no_main();
-//        this.att_file_no_mk = recipe.getAtt_file_no_mk();
-//        this.rcp_parts_dtls = recipe.getRcp_parts_dtls();
+        this.rcpId = recipe.getRcpId();
+        this.rcpSeq = recipe.getRcpSeq();
+        this.rcpNm = recipe.getRcpNm();
+        this.rcpWay2 = recipe.getRcpWay2();
+        this.rcpPat2 = recipe.getRcpPat2();
+        this.infoWgt = recipe.getInfoWgt();
+        this.infoEng = recipe.getInfoEng();
+        this.infoCar = recipe.getInfoCar();
+        this.infoPro = recipe.getInfoPro();
+        this.infoFat = recipe.getInfoFat();
+        this.infoNa = recipe.getInfoNa();
+        this.hashTag = recipe.getHashTag();
+        this.attFileNoMain = recipe.getAttFileNoMain();
+        this.attFileNoMk = recipe.getAttFileNoMk();
+        this.rcpPartsDtls = recipe.getRcpPartsDtls();
         this.manual01 = recipe.getManual01();
-        this.manual_img01 = recipe.getManual_img01();
+        this.manualImg01 = recipe.getManualImg01();
 
     }
 }

@@ -1,11 +1,11 @@
 package doubleni.mealrecipe.controller;
 import com.google.gson.Gson;
+import doubleni.mealrecipe.config.exception.BaseException;
+import doubleni.mealrecipe.config.exception.BaseResponse;
 import doubleni.mealrecipe.model.dto.*;
 import doubleni.mealrecipe.service.DataService;
 import doubleni.mealrecipe.service.RecipeService;
 import lombok.RequiredArgsConstructor;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,6 +22,43 @@ public class RecipeApiController {
 
     private final RecipeService recipeService;
     private final DataService dataService;
+
+    /**
+     * json 저장 api
+     * [POST] /recipe
+     *
+     * @return BaseResponse<String>
+     */
+    @PostMapping("/recipe")
+//    @ApiOperation(value="json 읽어들이기", notes="식약처 API 사용")
+    public ResponseEntity<String> readRecipes() {
+        try {
+            // JSON 파일을 읽고 데이터베이스에 저장하는 작업 수행
+            recipeService.read();
+            return ResponseEntity.ok("레시피를 성공적으로 저장했습니다!");
+        } catch (BaseException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    /**
+     * rcpId 레시피 조회 api
+     * [GET] /recipe/{rcpId}
+     *
+     * @return BaseResponse<GetRecipeIdRes>
+     */
+
+    @GetMapping("/recipe/{rcpId}")
+//    @ApiOperation(value="rcpId로 레시피 하나 조회", notes="식약처 API 사용")
+    public BaseResponse<RecipeViewResponse> RecipeByRecipeId (@PathVariable Long rcpId){
+        try{
+            RecipeViewResponse getRecipeIdRes = recipeService.getRecipeIdRes(rcpId);
+            return new BaseResponse<>(getRecipeIdRes);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
     /* 레시피 추가 */
     @PostMapping("/api/recipes")
@@ -71,109 +108,90 @@ public class RecipeApiController {
         return ResponseEntity.ok()
                 .body(updateRecipe);
     }
-    
+
     // JSON 테스트 ===================================================================
     /* API 응답 데이터 출력 확인 */
-    @GetMapping("/api/test")
-    public ResponseEntity<String> fetchAndConvert() {
-        return recipeService.fetchDataAndConvertToJson();
-    }
-
-    /* API 응답 데이터를 DB에 저장 */
-    @GetMapping("/api/fetchAndSaveData")
-    public ResponseEntity<String> fetchDataAndSaveToDatabase() {
-        return dataService.fetchDataAndSaveToDatabase();
-    }
-
-    /* JsonString -> Recipe, CookBook */
-    @PostMapping("/gson/string-to-recipe")
-    public Recipe convertStringToRecipe(@RequestBody String jsonStr) throws ParseException {
-        Gson gson = new Gson();
-        Recipe recipe = gson.fromJson(jsonStr, Recipe.class);
-        return recipe;
-    }
-
-    @PostMapping("/gson/string-to-cookbook")
-    public COOKRCP01 convertStringToCookBook(@RequestBody String jsonStr) {
-        Gson gson = new Gson();
-        COOKRCP01 cookbook = gson.fromJson(jsonStr, COOKRCP01.class);
-        return cookbook;
-    }
-
-
-    /* JSON 수신 확인 */
-    @GetMapping("/api/RecipeTest")
-    public ArrayList<Recipe> getOnlyRecipes() {
-        return recipeService.getOnlyRecipes();
-    }
-
-    @GetMapping("/api/RecipeAllTest")
-    public COOKRCP01 getAllCookBook() {
-        return recipeService.getAllCookBook();
-    }
-
-    @PostMapping("/api/RecipeTest")
-    public String postOneRecipe(@RequestBody Recipe request) {
-        String response = String.format("<레시피 정보>\n번호 : %s\n레시피명 : %s\n조리법 : %s",
-                request.getRcp_seq(), request.getRcp_nm(), request.getRcp_way2());
-        return response;
-    }
-
-    /* 다중 객체 수신 */
-    @PostMapping("/api/RecipeListTest") // /api/RecipeAllTest
-    public String postAllRecipes(@RequestBody List<Recipe> recipes) {
-        String response = "<레시피 정보>\n";
-
-        int i = 1;
-        for (Recipe recipe : recipes) {
-            response += String.format("순서%d: 번호 : %s\n레시피명 : %s\n조리법 : %s\n",
-                    i, recipe.getRcp_seq(), recipe.getRcp_nm(), recipe.getRcp_way2());
-           i++;
-        }
-        return response;
-    }
-
-    @PostMapping("/api/RecipeAllTest")
-//    public String postCookBook(@RequestBody COOKRCP01 cookbook) {
-    public String postCookBook(@RequestBody RecipeAPI recipeAPI) {
-
-//        RecipeAPI recipeAPI = cookbook.getRecipeAPI();
-
-        String response = String.format("<레시피북 정보>\n레시피 개수 : %s\n", recipeAPI.getTotal_count());
-
-        int i = 1;
-        for (Recipe recipe : recipeAPI.getRecipes()) {
-            response += String.format("순서%d: 번호 : %s\n레시피명 : %s\n조리법 : %s\n",
-                    i, recipe.getRcp_seq(), recipe.getRcp_nm(), recipe.getRcp_way2());
-            i++;
-        }
-
-        return response;
-    }
-
-
-
+//    @GetMapping("/api/test")
+//    public ResponseEntity<String> fetchAndConvert() {
+//        return recipeService.fetchDataAndConvertToJson();
+//    }
+//
+//    /* API 응답 데이터를 DB에 저장 */
 //    @GetMapping("/api/fetchAndSaveData")
-//    public ResponseEntity<String> fetchAndSaveData() {
-//        try {
-//            // fetchDataAndConvertToJson() 메서드를 호출하여 JSON 데이터 가져오기
-////            String jsonData = recipeService.fetchDataAndConvertToJson();
+//    public ResponseEntity<String> fetchDataAndSaveToDatabase() {
+//        return dataService.fetchDataAndSaveToDatabase();
+//    }
 //
-//            // JSON 데이터를 데이터베이스에 저장
-////            recipeService.saveJsonDataToDatabase(jsonData);
+//    /* JsonString -> Recipe, CookBook */
+//    @PostMapping("/gson/string-to-recipe")
+//    public Recipe convertStringToRecipe(@RequestBody String jsonStr) throws ParseException {
+//        Gson gson = new Gson();
+//        Recipe recipe = gson.fromJson(jsonStr, Recipe.class);
+//        return recipe;
+//    }
 //
-////            return ResponseEntity.ok("Data fetched and saved to database successfully.");
-//            return recipeService.fetchDataAndConvertToJson();
-//
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(500).body("Failed to fetch and save data to database.");
-//        }
+//    @PostMapping("/gson/string-to-cookbook")
+//    public COOKRCP01 convertStringToCookBook(@RequestBody String jsonStr) {
+//        Gson gson = new Gson();
+//        COOKRCP01 cookbook = gson.fromJson(jsonStr, COOKRCP01.class);
+//        return cookbook;
 //    }
 
 
-
+    /* JSON 수신 확인 */
+//    @GetMapping("/api/RecipeTest")
+//    public ArrayList<Recipe> getOnlyRecipes() {
+//        return recipeService.getOnlyRecipes();
+//    }
+//
+//    @GetMapping("/api/RecipeAllTest")
+//    public COOKRCP01 getAllCookBook() {
+//        return recipeService.getAllCookBook();
+//    }
+//
+//    //@PostMapping("/api/RecipeTest")
+//    @RequestMapping(value="/api/RecipeTest", method=RequestMethod.POST)
+////    public String postOneRecipe(@RequestBody Recipe request) {
+//    public String postOneRecipe(@ModelAttribute Recipe request) {
+//        String response = String.format("<레시피 정보>\n번호 : %s\n레시피명 : %s\n조리법 : %s",
+//                request.getRcpSeq(), request.getRcpNm(), request.getRcpWay2());
+//        return response;
+//    }
+//
+//
+//    /* 다중 객체 수신 */
+//    @PostMapping("/api/RecipeListTest") // /api/RecipeAllTest
+////    public String postAllRecipes(@RequestBody List<Recipe> recipes) {
+//    public String postAllRecipes(@RequestParam List<Recipe> recipes) {
+//        String response = "<레시피 정보>\n";
+//
+//        int i = 1;
+//        for (Recipe recipe : recipes) {
+//            response += String.format("순서%d: 번호 : %s\n레시피명 : %s\n조리법 : %s\n",
+//                    i, recipe.getRcpSeq(), recipe.getRcpNm(), recipe.getRcpWay2());
+//           i++;
+//        }
+//        return response;
+//    }
+//
+//    @PostMapping("/api/RecipeAllTest")
+////    public String postCookBook(@RequestBody COOKRCP01 cookbook) {
+////    public String postCookBook(@RequestBody RecipeAPI recipeAPI) {
+//    public String postCookBook(@ModelAttribute RecipeAPI recipeAPI) {
+//
+////        RecipeAPI recipeAPI = cookbook.getRecipeAPI();
+//
+//        String response = String.format("<레시피북 정보>\n레시피 개수 : %s\n", recipeAPI.getTotal_count());
+//
+//        int i = 1;
+//        for (Recipe recipe : recipeAPI.getRecipes()) {
+//            response += String.format("순서%d: 번호 : %s\n레시피명 : %s\n조리법 : %s\n",
+//                    i, recipe.getRcpSeq(), recipe.getRcpNm(), recipe.getRcpWay2());
+//            i++;
+//        }
+//
+//        return response;
+//    }
 
 
 }

@@ -24,6 +24,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.jetbrains:annotations:24.0.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     // 스프링 데이터 JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -44,9 +45,6 @@ dependencies {
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    // Spring Security
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.7.5'
-
     // jsp
 //    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
 //    compileOnly 'javax.servlet:jstl:1.2'
@@ -57,7 +55,6 @@ dependencies {
 
     // AWS
 //    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
 
 }
 

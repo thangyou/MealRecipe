@@ -23,7 +23,7 @@ public class RecipeController {
     private final RecipeService recipeService;
 
     /* 모든 레시피 조회 */
-    @GetMapping("/recipes") 
+    @GetMapping("/") 
     public String getRecipes(Model model) {
         // ** 페이징 처리 필요
         List<RecipeListViewResponse> recipes  = recipeService.findAll().stream()
