@@ -1,16 +1,13 @@
-package doubleni.mealrecipe.model.dto;
+package doubleni.mealrecipe.model.DTO;
 
-import doubleni.mealrecipe.model.entity.UploadImage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class UpdateRecipeRequest {
+public class UpdateBoardReq {
     private String rcpSeq; // 일련 번호
     private String rcpNm; // 레시피명
     private String rcpWay2; // 조리 방법

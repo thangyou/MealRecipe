@@ -2,6 +2,7 @@ package doubleni.mealrecipe.service;
 
 import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.model.DTO.GetRecipeIdRes;
+import doubleni.mealrecipe.model.DTO.RecipeResponse;
 import doubleni.mealrecipe.model.Recipe;
 import doubleni.mealrecipe.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static doubleni.mealrecipe.config.exception.BaseResponseStatus.*;
 
@@ -23,13 +27,14 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
 
-    //json파일을 읽어보아요~
+    /* json 파일 읽기 */
     public void read() throws BaseException{
         JSONParser parser = new JSONParser();
 
         try{
             //json 파일 이름
-            String fileName = "recipe.json";
+//            String fileName = "recipe.json";
+            String fileName = "recipes.json";
 
             String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\json\\"+fileName;
             JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(projectPath));
@@ -47,7 +52,6 @@ public class RecipeService {
 
                     //레시피 제목
                     String rcp_nm = (String) result.get("RCP_NM");
-                    System.out.println(rcp_nm);
                     recipe.setRcpNm(rcp_nm);
 
                     // 일련 번호
@@ -86,15 +90,46 @@ public class RecipeService {
                     String info_na=(String) result.get("INFO_NA");
                     recipe.setInfoNa(info_na);
 
+                    // 해시태그
+                    String hash_tag=(String) result.get("HASH_TAG");
+                    recipe.setInfoNa(hash_tag);
+
+                    // 이미지 경로(소)
+                    String att_file_no_main=(String) result.get("ATT_FILE_NO_MAIN");
+                    recipe.setAttFileNoMain(att_file_no_main);
+
+                    // 이미지 경로(대)
+                    String att_file_no_mk=(String) result.get("ATT_FILE_NO_MK");
+                    recipe.setAttFileNoMain(att_file_no_mk);
+
+                    // 재료 정보
+                    List<String> rcp_parts_dtls = (List<String>) result.get("RCP_PARTS_DTLS");
+                    recipe.setRcpPartsDtls(rcp_parts_dtls);
+
+                    // 레시피 설명
+                    String manual01=(String) result.get("MANUAL_01");
+                    recipe.setAttFileNoMain(manual01);
+
+                    // 레시피 이미지
+                    String manual_img01=(String) result.get("MANUAL_IMG01");
+                    recipe.setAttFileNoMain(manual_img01);
+
+                    // 저감 조리법
+                    String rcp_na_tip=(String) result.get("RCP_NA_TIP");
+                    recipe.setAttFileNoMain(rcp_na_tip);
+
+                    System.out.println("rcpSeq = " + rcp_seq);
+                    System.out.println("rcpNm = " + rcp_nm);
+                    System.out.println("rcpWay2 = " + rcp_way2);
+                    System.out.println("rcpPat2 = " + rcp_pat2);
+                    System.out.println("manual01 = " + manual01);
+                    System.out.println("manualImg01 = " + manual_img01);
+                    System.out.println("RCP_NA_TIP = " + rcp_na_tip);
+                    System.out.println("RCP_PARTS_DTLS = " + rcp_parts_dtls.toString());
+
+
                     recipeRepository.save(recipe);
 
-
-//                    String hash_tag; // 해시태그
-//                    String att_file_no_main; // 이미지 경로(소)
-//                    String att_file_no_mk; // 이미지 경로(대)
-//                    String rcp_parts_dtls; // 재료 정보
-//                    String manual01; // 레시피 설명
-//                    String manual_img01; // 레시피 이미지
 //                    String manual02;
 //                    String manual_img02;
 //                    String manual03;
@@ -133,8 +168,6 @@ public class RecipeService {
 //                    String manual_img19;
 //                    String manual20;
 //                    String manual_img20;
-//                    String rcp_na_tip;
-
 
 
                 }
@@ -146,14 +179,12 @@ public class RecipeService {
 
     }
 
-
-    //레시피 id로 레시피 조회
+    /* 레시피 id로 레시피 조회 */
     public GetRecipeIdRes getRecipeIdRes(Long rcpId) throws BaseException {
         try{
             Optional<Recipe> recipeOptional = recipeRepository.findByRcpId(rcpId);
             if (recipeOptional.isPresent()){
                 Recipe recipe = recipeOptional.get();
-
 
                 GetRecipeIdRes getRecipeIdRes = new GetRecipeIdRes();
                 getRecipeIdRes.setRcpId(recipe.getRcpId());
@@ -170,57 +201,100 @@ public class RecipeService {
                 getRecipeIdRes.setHashTag(recipe.getHashTag());
                 getRecipeIdRes.setAttFileNoMain(recipe.getAttFileNoMain());
                 getRecipeIdRes.setAttFileNoMk(recipe.getAttFileNoMk());
-                getRecipeIdRes.setRcpPartsDtls(recipe.getRcpPartsDtls());
+
+                /* 재료 */
+                getRecipeIdRes.setRcpPartsDtls(new ArrayList<>(recipe.getRcpPartsDtls()));
+
                 getRecipeIdRes.setManual01(recipe.getManual01());
                 getRecipeIdRes.setManualImg01(recipe.getManualImg01());
-                getRecipeIdRes.setManual02(recipe.getManual02());
-                getRecipeIdRes.setManualImg02(recipe.getManualImg02());
-                getRecipeIdRes.setManual03(recipe.getManual03());
-                getRecipeIdRes.setManualImg03(recipe.getManualImg03());
-                getRecipeIdRes.setManual04(recipe.getManual04());
-                getRecipeIdRes.setManualImg04(recipe.getManualImg04());
-                getRecipeIdRes.setManual05(recipe.getManual05());
-                getRecipeIdRes.setManualImg05(recipe.getManualImg05());
-                getRecipeIdRes.setManual06(recipe.getManual06());
-                getRecipeIdRes.setManualImg06(recipe.getManualImg06());
-                getRecipeIdRes.setManual07(recipe.getManual07());
-                getRecipeIdRes.setManualImg07(recipe.getManualImg07());
-                getRecipeIdRes.setManual08(recipe.getManual08());
-                getRecipeIdRes.setManualImg08(recipe.getManualImg08());
-                getRecipeIdRes.setManual09(recipe.getManual09());
-                getRecipeIdRes.setManualImg09(recipe.getManualImg09());
-                getRecipeIdRes.setManual10(recipe.getManual10());
-                getRecipeIdRes.setManualImg10(recipe.getManualImg10());
-                getRecipeIdRes.setManual11(recipe.getManual11());
-                getRecipeIdRes.setManualImg11(recipe.getManualImg11());
-                getRecipeIdRes.setManual12(recipe.getManual12());
-                getRecipeIdRes.setManualImg12(recipe.getManualImg12());
-                getRecipeIdRes.setManual13(recipe.getManual13());
-                getRecipeIdRes.setManualImg13(recipe.getManualImg13());
-                getRecipeIdRes.setManual14(recipe.getManual14());
-                getRecipeIdRes.setManualImg14(recipe.getManualImg14());
-                getRecipeIdRes.setManual15(recipe.getManual15());
-                getRecipeIdRes.setManualImg15(recipe.getManualImg15());
-                getRecipeIdRes.setManual16(recipe.getManual16());
-                getRecipeIdRes.setManualImg16(recipe.getManualImg16());
-                getRecipeIdRes.setManual17(recipe.getManual17());
-                getRecipeIdRes.setManualImg17(recipe.getManualImg17());
-                getRecipeIdRes.setManual18(recipe.getManual18());
-                getRecipeIdRes.setManualImg18(recipe.getManualImg18());
-                getRecipeIdRes.setManual19(recipe.getManual19());
-                getRecipeIdRes.setManualImg19(recipe.getManualImg19());
-                getRecipeIdRes.setManual20(recipe.getManual20());
-                getRecipeIdRes.setManualImg20(recipe.getManualImg20());
+//                getRecipeIdRes.setManual02(recipe.getManual02());
+//                getRecipeIdRes.setManualImg02(recipe.getManualImg02());
+//                getRecipeIdRes.setManual03(recipe.getManual03());
+//                getRecipeIdRes.setManualImg03(recipe.getManualImg03());
+//                getRecipeIdRes.setManual04(recipe.getManual04());
+//                getRecipeIdRes.setManualImg04(recipe.getManualImg04());
+//                getRecipeIdRes.setManual05(recipe.getManual05());
+//                getRecipeIdRes.setManualImg05(recipe.getManualImg05());
+//                getRecipeIdRes.setManual06(recipe.getManual06());
+//                getRecipeIdRes.setManualImg06(recipe.getManualImg06());
+//                getRecipeIdRes.setManual07(recipe.getManual07());
+//                getRecipeIdRes.setManualImg07(recipe.getManualImg07());
+//                getRecipeIdRes.setManual08(recipe.getManual08());
+//                getRecipeIdRes.setManualImg08(recipe.getManualImg08());
+//                getRecipeIdRes.setManual09(recipe.getManual09());
+//                getRecipeIdRes.setManualImg09(recipe.getManualImg09());
+//                getRecipeIdRes.setManual10(recipe.getManual10());
+//                getRecipeIdRes.setManualImg10(recipe.getManualImg10());
+//                getRecipeIdRes.setManual11(recipe.getManual11());
+//                getRecipeIdRes.setManualImg11(recipe.getManualImg11());
+//                getRecipeIdRes.setManual12(recipe.getManual12());
+//                getRecipeIdRes.setManualImg12(recipe.getManualImg12());
+//                getRecipeIdRes.setManual13(recipe.getManual13());
+//                getRecipeIdRes.setManualImg13(recipe.getManualImg13());
+//                getRecipeIdRes.setManual14(recipe.getManual14());
+//                getRecipeIdRes.setManualImg14(recipe.getManualImg14());
+//                getRecipeIdRes.setManual15(recipe.getManual15());
+//                getRecipeIdRes.setManualImg15(recipe.getManualImg15());
+//                getRecipeIdRes.setManual16(recipe.getManual16());
+//                getRecipeIdRes.setManualImg16(recipe.getManualImg16());
+//                getRecipeIdRes.setManual17(recipe.getManual17());
+//                getRecipeIdRes.setManualImg17(recipe.getManualImg17());
+//                getRecipeIdRes.setManual18(recipe.getManual18());
+//                getRecipeIdRes.setManualImg18(recipe.getManualImg18());
+//                getRecipeIdRes.setManual19(recipe.getManual19());
+//                getRecipeIdRes.setManualImg19(recipe.getManualImg19());
+//                getRecipeIdRes.setManual20(recipe.getManual20());
+//                getRecipeIdRes.setManualImg20(recipe.getManualImg20());
                 getRecipeIdRes.setRcpNaTip(recipe.getRcpNaTip());
 
                 return getRecipeIdRes;
-
             }
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
         return null;
     }
+
+    // ====================================================================
+
+    /* keyword로 해당하는 레시피 조회 */
+    public List<RecipeResponse> RecipeByKeyword(String keyword) {
+        List<RecipeResponse> recipeResponses = recipeRepository.searchByKeyword(keyword)
+                .stream()
+                .map(RecipeResponse::new)
+                .collect(Collectors.toList());
+
+        if (recipeResponses.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return recipeResponses;
+    }
+
+    /* 전체 레시피 목록 */
+    public List<RecipeResponse> getAllRecipes() {
+        List<RecipeResponse> recipeResponses =
+                recipeRepository.findAll()
+                        .stream()
+                        .map(RecipeResponse::new)
+                        .toList();
+
+        if (recipeResponses.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return  recipeResponses;
+    }
+
+
+    // ====================================================================
+
+    /* 키워드로 레시피 검색 */
+
+
+
+    // ====================================================================
+
+
+
 
 
 }

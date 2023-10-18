@@ -1,17 +1,17 @@
-package doubleni.mealrecipe.model.dto;
+package doubleni.mealrecipe.model.DTO;
 
-import doubleni.mealrecipe.model.entity.UploadImage;
+import doubleni.mealrecipe.model.Board;
+import doubleni.mealrecipe.model.Recipe;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class AddRecipeRequest {
+public class AddBoardReq {
 
     private String rcpSeq; // 일련 번호
     private String rcpNm; // 레시피명
@@ -31,14 +31,14 @@ public class AddRecipeRequest {
     private String manualImg01; // 레시피 이미지
 
 
-    public Recipe toEntity() { // 생성자를 사용해 객체 생성
-        return Recipe.builder()
-                .rcpSeq(rcpSeq)
-                .rcpNm(rcpNm)
-                .rcpWay2(rcpWay2)
-                .rcpPat2(rcpPat2)
-                .manual01(manual01)
-                .manualImg01(manualImg01)
+    public Board toEntity() { // 생성자를 사용해 객체 생성
+        return Board.builder()
+//                .rcpSeq(rcpSeq)
+//                .rcpNm(rcpNm)
+//                .rcpWay2(rcpWay2)
+//                .rcpPat2(rcpPat2)
+//                .manual01(manual01)
+//                .manualImg01(manualImg01)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
