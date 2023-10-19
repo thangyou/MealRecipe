@@ -1,17 +1,20 @@
 package doubleni.mealrecipe.model.DTO;
 
 import doubleni.mealrecipe.model.Recipe;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class RecipeResponse {
+@NoArgsConstructor
+@AllArgsConstructor
+public class GetRecipeRes {
+    private Long rcpId;
+
     private String rcpSeq; // 일련 번호
     private String rcpNm; // 레시피명
     private String rcpWay2; // 조리 방법
@@ -68,20 +71,23 @@ public class RecipeResponse {
     private String manualImg20;
     private String rcpNaTip;
 
-    public RecipeResponse(Recipe recipe) {
-        this.rcpSeq = recipe.getRcpSeq();
-        this.rcpNm = recipe.getRcpNm();
-        this.rcpWay2 = recipe.getRcpWay2();
-        this.rcpPat2 = recipe.getRcpPat2();
-        this.infoWgt = recipe.getInfoWgt();
-        this.hashTag = recipe.getHashTag();
-        this.attFileNoMain = recipe.getAttFileNoMain();
-        this.attFileNoMk = recipe.getAttFileNoMk();
-        this.rcpPartsDtls = recipe.getRcpPartsDtls();
-        this.manual01 = recipe.getManual01();
-        this.manualImg01 = recipe.getManualImg01();
-        this.rcpNaTip = recipe.getRcpNaTip();
+    public GetRecipeRes(Recipe r) {
+        this.rcpSeq = r.getRcpSeq();
+        this.rcpNm = r.getRcpNm();
+        this.rcpWay2 = r.getRcpWay2();
+        this.rcpPat2 = r.getRcpPat2();
+        this.infoWgt = r.getInfoWgt();
+        this.hashTag = r.getHashTag();
+        this.attFileNoMain = r.getAttFileNoMain();
+        this.attFileNoMk = r.getAttFileNoMk();
+        this.rcpPartsDtls = r.getRcpPartsDtls();
+        this.manual01 = r.getManual01();
+        this.manualImg01 = r.getManualImg01();
+        this.rcpNaTip = r.getRcpNaTip();
     }
+
+
+
 
 
 }

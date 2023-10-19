@@ -1,45 +1,33 @@
 package doubleni.mealrecipe.model.DTO;
 
 import doubleni.mealrecipe.model.Board;
-import doubleni.mealrecipe.model.Recipe;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import doubleni.mealrecipe.model.User;
+import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class AddBoardReq {
+@Data
+public class AddBoardReq { // Board 입력 받아 DB에 저장 DTO
 
-    private String rcpSeq; // 일련 번호
-    private String rcpNm; // 레시피명
-    private String rcpWay2; // 조리 방법
-    private String rcpPat2; // 요리 종류
-//    private String info_wgt; // 중량(1인분)
-//    private String info_eng; // 열량
-//    private String info_car; // 탄수화물
-//    private String info_pro; // 단백질
-//    private String info_fat; // 지방
-//    private String info_na; // 나트륨
-//    private String hash_tag; // 해시태그
-//    private String att_file_no_main; // 이미지 경로(소)
-//    private String att_file_no_mk; // 이미지 경로(대)
-//    private String rcp_parts_dtls; // 재료 정보
-    private String manual01; // 레시피 설명
-    private String manualImg01; // 레시피 이미지
+    private String title;
+    private String desc;
+//    private MultipartFile uploadImage;
 
-
-    public Board toEntity() { // 생성자를 사용해 객체 생성
+    @Builder
+//    public Board toEntity(User user) {
+    public Board toEntity() {
         return Board.builder()
-//                .rcpSeq(rcpSeq)
-//                .rcpNm(rcpNm)
-//                .rcpWay2(rcpWay2)
-//                .rcpPat2(rcpPat2)
-//                .manual01(manual01)
-//                .manualImg01(manualImg01)
-                .createdAt(LocalDateTime.now())
+//        return Board.builder(User user)
+//                .user(user)
+                .title(title)
+                .desc(desc)
+//                .likeCnt(0)
+//                .commentCnt(0)
+//                .createdAt(LocalDateTime.now())
                 .build();
     }
 

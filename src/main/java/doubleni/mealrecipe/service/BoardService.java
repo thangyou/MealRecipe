@@ -1,47 +1,82 @@
 package doubleni.mealrecipe.service;
 
+import doubleni.mealrecipe.model.Board;
+import doubleni.mealrecipe.model.DTO.AddBoardReq;
+import doubleni.mealrecipe.model.DTO.BoardReq;
+import doubleni.mealrecipe.model.DTO.GetBoardRes;
+import doubleni.mealrecipe.repository.BoardRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
 public class BoardService {
 
-    /* 전체 레시피 조회 */
-//    public List<Recipe> findAll() {
-//        return recipeRepository.findAll();
-//    }
-//
-//    /* id로 레시피 조회 */
-//    public Optional<Recipe> findById(long rcpId) { return recipeRepository.findById(rcpId); }
-//
-//    public Optional<Recipe> findByName(String rcpNm) {
-//        return recipeRepository.findByRcpNm(rcpNm);
-//    }
-//
-//    /* 레시피 추가 */
-//    public Board save(AddBoardReq request) {
-//        return boardRepository.save(request.toEntity());
-//        // addRecipeRequest 클래스에 저장된 값들을 Recipe 데이터베이스에 저장
-//    }
-//
-//    /* 레시피 삭제 */
-//    public void deleteRecipe(long rcpId) {
-//        recipeRepository.deleteById(rcpId);
-//    }
-//
-//    /* 레시피 수정 */
-//    @Transactional
-//    public Recipe update(long rcpId, UpdateRecipeRequest request) {
-//        Recipe recipe = recipeRepository.findById(rcpId)
-//                .orElseThrow(() -> new IllegalArgumentException("not found : " + rcpId));
-//
-//        recipe.update(request.getRcpSeq(), request.getRcpNm(), recipe.getRcpWay2(), recipe.getRcpPat2(),
-////                request.getInfoWgt(), request.getInfoEng(), request.getInfoCar(), request.getInfoPro(),
-////                request.getInfoFat(), request.getInfoNa(), request.getHashTag(), recipe.getAttFileNoMain(), recipe.getAttFileNoMk(),
-//                request.getManual01(), request.getManualImg01());
-//
-//        return recipe;
-//    }
-//
-//    /* 레시피 생성 */
-//    public void saveRecipe(Recipe recipe) {
-//        recipeRepository.save(recipe);
-//    }
+    private final BoardRepository boardRepository;
+
+    /* 게시글 추가 */
+    public void save(AddBoardReq addBoard) {
+        boardRepository.save(addBoard.toEntity());
+    }
+
+    /* 게시글 수정 */
+    @Transactional
+    public void updateBoard(long boardId, BoardReq update) {
+//        Board board = boardRepository.findById(boardId)
+//                .orElseThrow(EntityNotFoundException::new);
+//        board.updateBoard(req);
+        Optional<Board> findBoard = boardRepository.findById(boardId);
+        if (findBoard.isPresent()) {
+            findBoard.get().updateBoard(update);
+            ResponseEntity.ok("-> 게시글 수정 완료");
+        } else {
+            ResponseEntity.badRequest().body("not found : " + update.getBoardId());
+        }
+    }
+
+    /* 게시글 삭제 */
+    public void deleteBoard(long boardId) {
+        boardRepository.deleteById(boardId);
+    }
+
+    /* 게시글 목록 조회 */
+    @Transactional(readOnly = true)
+    public List<GetBoardRes> getBoards() {
+        List<GetBoardRes> boards =
+                boardRepository.findAll()
+                        .stream()
+                        .map(GetBoardRes::new)
+                        .collect(Collectors.toList());
+
+        if (boards.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return boards;
+    }
+
+    /* board id로 게시글 조회 */
+    public Board findById(long boardId) {
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("not found : " + boardId));
+    }
+
+    /* user id or nickname 으로 게시글 조회 */
+
+
+    /* keyword로 게시글 검색 */
+
+
+
+
+
 
 }
