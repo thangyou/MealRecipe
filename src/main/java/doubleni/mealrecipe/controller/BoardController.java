@@ -23,6 +23,13 @@ import java.util.List;
 @Controller
 @RequestMapping("/board")
 public class BoardController {
+    /**
+     * 조회 - get
+     * 검색 - search(Controller & Service) / find(Repository)
+     * 생성 - save
+     * 수정 - update
+     * 삭제 - delete
+     */
 
     private final BoardService boardService;
 
@@ -61,40 +68,44 @@ public class BoardController {
         return ResponseEntity.ok().build();
     }
 
+    /* 조회 */
     @GetMapping("/list")
     @ApiOperation(value="게시글 조회 API", notes="게시글 리스트 조회")
     public ResponseEntity<List<GetBoardRes>> getBoards() {
-        List<GetBoardRes> positions = new ArrayList<>();
         try {
-            positions = boardService.getBoards();
+            List<GetBoardRes> positions = boardService.getBoards();
+            return ResponseEntity.ok(positions);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok(positions);
     }
 
-    @GetMapping("/{boardId}")
-    @ApiOperation(value="게시글 조회 API", notes="게시글 조회")
-    public ResponseEntity<GetBoardRes> getBoard(@PathVariable long boardId) {
-        Board board = boardService.findById(boardId);
+    @GetMapping("/boardId={boardId}")
+    @ApiOperation(value="게시글 조회 API", notes="Board ID 게시글 조회")
+    public ResponseEntity<GetBoardRes> getBoardByBoardId(@PathVariable long boardId) {
+        Board board = boardService.findByBoardId(boardId);
         return ResponseEntity.ok().body(new GetBoardRes(board));
     }
 
+    @GetMapping("/userEmail={userEmail}")
+    @ApiOperation(value="게시글 조회 API", notes="User ID 게시글 조회")
+    public ResponseEntity<GetBoardRes> getBoardByUserId(@PathVariable String userEmail) {
+        Board board = boardService.findByUserEmail(userEmail);
+        return ResponseEntity.ok().body(new GetBoardRes(board));
+    }
 
-//     http://localhost:8080/board/search?keyword={keyword}
-//    @GetMapping("/search")
-//    @ApiOperation(value = "게시글 검색 API", notes = "키워드로 게시판 검색")
-//    public ResponseEntity<List<Board>> searchBoards(@RequestParam("keyword") String keyword) {
-//        List<Board> boardList = new ArrayList<>();
-//
-//        try {
-//            boardList = boardService.getBoardsSearchBy(keyword);
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//        return ResponseEntity.ok(boardList);
-//    }
+    /* 검색 */
+    @GetMapping("/search")
+    @ApiOperation(value = "게시글 검색 API", notes = "키워드로 게시판 검색")
+    public ResponseEntity<?> searchBoardByKeyword(@RequestParam("keyword") String keyword) {
+        try {
+            List<GetBoardRes> boardList  = boardService.searchBoardByKeyword(keyword);
+            return ResponseEntity.ok(boardList);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
 
 }

@@ -64,15 +64,35 @@ public class BoardService {
     }
 
     /* board id로 게시글 조회 */
-    public Board findById(long boardId) {
-        return boardRepository.findById(boardId)
+    public Board findByBoardId(long boardId) {
+        return boardRepository.findByBoardId(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("not found : " + boardId));
     }
 
-    /* user id or nickname 으로 게시글 조회 */
+    /* email or nickname 으로 게시글 조회 */
+    public Board findByUserEmail(String keyword) {
+        return boardRepository.findByEmailOrNickname(keyword)
+                .orElseThrow(() -> new IllegalArgumentException("not found : " + keyword));
+    }
 
 
     /* keyword로 게시글 검색 */
+    public List<GetBoardRes> searchBoardByKeyword(String keyword) {
+            List<GetBoardRes> boardList = boardRepository.findByTitleContaining(keyword)
+                    .stream()
+                    .map(GetBoardRes::new)
+                    .toList();
+
+            if (boardList.isEmpty()) {
+                boardList = boardRepository.findByDescContaining(keyword)
+                        .stream()
+                        .map(GetBoardRes::new)
+                        .toList();
+            } else {
+                throw new IllegalStateException();
+            }
+            return boardList;
+    }
 
 
 

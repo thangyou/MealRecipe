@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -248,7 +249,6 @@ public class RecipeService {
 
                 /* 재료 */
                 getRecipeIdRes.setRcpPartsDtls(new ArrayList<>(recipe.getRcpPartsDtls()));
-//                getRecipeIdRes.setRcpPartsDtls(rcpPartsDtls.getRecipe().getRcpPartsDtls());
 
                 getRecipeIdRes.setManual01(recipe.getManual01());
                 getRecipeIdRes.setManualImg01(recipe.getManualImg01());
@@ -309,6 +309,7 @@ public class RecipeService {
         GetRecipeRes response = new GetRecipeRes(recipe);
         return response.getRcpPartsDtls();
     }
+
 //    public  List<String> getDetailByName(String rcpNm) { // 한글 읽기 X
 //        Recipe recipe = recipeRepository.findByRcpNm(rcpNm)
 //                .orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다."));
@@ -318,7 +319,7 @@ public class RecipeService {
 
     /* 레시피 검색 By keyword */
     public List<GetRecipeRes> getRecipesSearchedBy(String keyword) {
-        List<GetRecipeRes> getRecipeResponse = recipeRepository.searchRecipesByKeyword(keyword)
+        List<GetRecipeRes> getRecipeResponse = recipeRepository.findRecipesWithPartOfkeyword(keyword)
                 .stream()
                 .map(GetRecipeRes::new)
                 .toList();
@@ -329,8 +330,8 @@ public class RecipeService {
         return getRecipeResponse;
     }
 
-//    public List<String> searchByIngredient(String keyword) {
-//        Recipe recipe = recipeRepository.searchByIngredient(keyword)
+//    public List<GetRecipeRes> findByRcpPartsDtls(String ingredient) {
+//        Recipe recipe = recipeRepository.findByRcpPartsDtlsContaining(ingredient)
 //                .orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다."));
 //        RecipeRes response = new RecipeRes(recipe);
 //        return response.getRcpPartsDtls();

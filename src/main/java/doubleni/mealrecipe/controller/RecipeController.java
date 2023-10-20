@@ -5,6 +5,7 @@ import doubleni.mealrecipe.config.exception.BaseResponse;
 import doubleni.mealrecipe.model.DTO.*;
 import doubleni.mealrecipe.service.RecipeService;
 import io.swagger.annotations.ApiOperation;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +63,23 @@ public class RecipeController {
     }
 
     /**
+     * 전체 레시피 목록 조회
+     * [GET] /recipe/List
+     *
+     * @return BaseResponse<List>
+     */
+    @GetMapping("/list")
+    @ApiOperation(value = "레시피 조회 API", notes = "레시피 리스트 조회")
+    public ResponseEntity<List<GetRecipeRes>> getRecipes() {
+        try {
+            List<GetRecipeRes> getRecipeRes = recipeService.getAllRecipes();
+            return ResponseEntity.ok(getRecipeRes);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    /**
      * 레시피 상세 정보 조회 api
      * [GET] /recipe/ingredient/{rcpNm}
      *
@@ -71,7 +89,11 @@ public class RecipeController {
     @ApiOperation(value = "재료 검색 API", notes = "rcpId로 재료 검색")
     public ResponseEntity<?> getDetailById(@PathVariable Long rcpId) {
         /* 레시피명 검색하여 해당 레시피의 재료 읽어오기 TEST */
-        return ResponseEntity.ok().body(recipeService.getDetailById(rcpId));
+        try {
+            return ResponseEntity.ok().body(recipeService.getDetailById(rcpId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 //    @GetMapping("/ingredient/{rcpNm}")
@@ -87,42 +109,25 @@ public class RecipeController {
      *
      * @return BaseResponse<List>
      */
-    @GetMapping("/search")
+    @GetMapping("/search-recipe")
     @ApiOperation(value="키워드 검색 API", notes="키워드로 레시피 검색")
     public ResponseEntity<List<GetRecipeRes>> searchByKeyword (@RequestParam("keyword") String keyword){
-        List<GetRecipeRes> getRecipeRespons = new ArrayList<>();
         try{
-            getRecipeRespons = recipeService.getRecipesSearchedBy(keyword);
-        }catch (Exception e){
+            List<GetRecipeRes> getRecipeResponse = recipeService.getRecipesSearchedBy(keyword);
+            return ResponseEntity.ok(getRecipeResponse);
+        } catch (Exception e){
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(getRecipeRespons);
     }
 
     /* 재료 키워드로 레시피 찾기 */
-//    @GetMapping("/search")
+//    @GetMapping("/search-contain-ingredient")
 //    @ApiOperation(value="키워드 검색 API", notes="재료 키워드로 레시피 검색")
-//    public ResponseEntity<?> searchByIngredient(@RequestParam("keyword") String keyword) {
-//        return ResponseEntity.ok().body(recipeService.searchByIngredient(keyword));
+//    public ResponseEntity<?> findByRcpPartsDtls(@RequestParam("ingredient") String ingredient) {
+//        return ResponseEntity.ok().body(recipeService.findByRcpPartsDtls(ingredient));
 //    }
 
-    /**
-     * 전체 레시피 목록 조회
-     * [GET] /recipe/List
-     *
-     * @return BaseResponse<List>
-     */
-    @GetMapping("/list")
-    @ApiOperation(value = "레시피 조회 API", notes = "레시피 리스트 조회")
-    public ResponseEntity<List<GetRecipeRes>> getRecipes() {
-        List<GetRecipeRes> getRecipeRes = new ArrayList<>();
-        try {
-            getRecipeRes = recipeService.getAllRecipes();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(getRecipeRes);
-    }
+
 
 
 
