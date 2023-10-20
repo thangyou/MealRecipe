@@ -1,7 +1,7 @@
 package doubleni.mealrecipe.model.DTO;
 
 import doubleni.mealrecipe.model.Board;
-//import doubleni.mealrecipe.model.UploadImage;
+//import doubleni.mealrecipe.model.Test.entity.UploadImage;
 import doubleni.mealrecipe.model.User;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +19,7 @@ public class BoardReq {
     private String email;
     private String nickname;
     private String title;
-    private String desc;
+    private String content;
     private Integer likeCnt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -32,7 +32,7 @@ public class BoardReq {
         return Board.builder()
 //                .user(user)
                 .title(this.title)
-                .desc(this.desc)
+                .content(this.content)
                 .build();
     }
 

@@ -1,8 +1,8 @@
 package doubleni.mealrecipe.service;
 
 import doubleni.mealrecipe.config.exception.BaseException;
+import doubleni.mealrecipe.model.DTO.GetRecipeOrderRes;
 import doubleni.mealrecipe.model.DTO.GetRecipeRes;
-//import doubleni.mealrecipe.model.RcpPartsDtls;
 import doubleni.mealrecipe.model.Recipe;
 import doubleni.mealrecipe.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static doubleni.mealrecipe.config.exception.BaseResponseStatus.*;
 
@@ -33,7 +33,7 @@ public class RecipeService {
 
         try{
             //json 파일 이름
-            String fileName = "recipes.json";
+            String fileName = "recipe.json";
 
             String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\json\\"+fileName;
             JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(projectPath));
@@ -71,23 +71,23 @@ public class RecipeService {
 
                     // 열량
                     String info_eng=(String) result.get("INFO_ENG");
-                    recipe.setInfoEng(info_eng);
+                    recipe.setInfoEng(Integer.parseInt(info_eng));
 
                     // 탄수화물
                     String info_car=(String) result.get("INFO_CAR");
-                    recipe.setInfoCar(info_car);
+                    recipe.setInfoCar(Integer.parseInt(info_car));
 
                     // 단백질
                     String info_pro=(String) result.get("INFO_PRO");
-                    recipe.setInfoPro(info_pro);
+                    recipe.setInfoPro(Integer.parseInt(info_pro));
 
                     // 지방
                     String info_fat=(String) result.get("INFO_FAT");
-                    recipe.setInfoFat(info_fat);
+                    recipe.setInfoFat(Integer.parseInt(info_fat));
 
                     // 나트륨
                     String info_na=(String) result.get("INFO_NA");
-                    recipe.setInfoNa(info_na);
+                    recipe.setInfoNa(Integer.parseInt(info_na));
 
                     // 해시태그
                     String hash_tag=(String) result.get("HASH_TAG");
@@ -102,8 +102,9 @@ public class RecipeService {
                     recipe.setAttFileNoMk(att_file_no_mk);
 
                     // 재료 정보
-                    List<String> rcp_parts_dtls = (List<String>) result.get("RCP_PARTS_DTLS");
-                    recipe.setRcpPartsDtls(rcp_parts_dtls);
+//                    List<String> rcp_parts_dtls = (List<String>) result.get("RCP_PARTS_DTLS");
+                    String ingredient = (String) result.get("RCP_PARTS_DTLS");
+                    recipe.setIngredient(ingredient);
 
                     // 레시피 설명, 레시피 이미지
                     String manual01=(String) result.get("MANUAL01");
@@ -220,16 +221,26 @@ public class RecipeService {
 
     }
 
+    /* 전체 레시피 조회 */
+    public List<GetRecipeRes> getAllRecipes() {
+        List<GetRecipeRes> getRecipeRes =
+                recipeRepository.findAll()
+                        .stream()
+                        .map(GetRecipeRes::new)
+                        .toList();
+
+        if (getRecipeRes.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return getRecipeRes;
+    }
+
     /* 레시피 id로 레시피 조회 */
-    public GetRecipeRes getRecipeIdRes(Long rcpId) throws BaseException {
+    public GetRecipeRes getRecipeById(Long rcpId) throws BaseException {
         try{
             Optional<Recipe> recipeOptional = recipeRepository.findByRcpId(rcpId);
             if (recipeOptional.isPresent()){
                 Recipe recipe = recipeOptional.get();
-
-//                RcpPartsDtls rcpPartsDtls = new RcpPartsDtls();
-//                rcpPartsDtls.setRcpId(recipe.getRcpId());
-//                rcpPartsDtls.setRcpPartsDtls((List<String>) recipe.getRcpPartsDtls());
 
                 GetRecipeRes getRecipeIdRes = new GetRecipeRes();
                 getRecipeIdRes.setRcpId(recipe.getRcpId());
@@ -248,7 +259,8 @@ public class RecipeService {
                 getRecipeIdRes.setAttFileNoMk(recipe.getAttFileNoMk());
 
                 /* 재료 */
-                getRecipeIdRes.setRcpPartsDtls(new ArrayList<>(recipe.getRcpPartsDtls()));
+//                getRecipeIdRes.setRcpPartsDtls(new ArrayList<>(recipe.getRcpPartsDtls()));
+                getRecipeIdRes.setIngredient(recipe.getIngredient());
 
                 getRecipeIdRes.setManual01(recipe.getManual01());
                 getRecipeIdRes.setManualImg01(recipe.getManualImg01());
@@ -300,57 +312,90 @@ public class RecipeService {
         return null;
     }
 
-    // TEST ====================================================================
-
-    /* 재료 검색 By Id, Name */
-    public  List<String> getDetailById(Long rcpId) { // success
-        Recipe recipe = recipeRepository.findByRcpId(rcpId)
-                .orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다."));
-        GetRecipeRes response = new GetRecipeRes(recipe);
-        return response.getRcpPartsDtls();
-    }
-
-//    public  List<String> getDetailByName(String rcpNm) { // 한글 읽기 X
-//        Recipe recipe = recipeRepository.findByRcpNm(rcpNm)
-//                .orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다."));
-//        RecipeRes response = new RecipeRes(recipe);
-//        return response.getRcpPartsDtls();
-//    }
-
-    /* 레시피 검색 By keyword */
-    public List<GetRecipeRes> getRecipesSearchedBy(String keyword) {
-        List<GetRecipeRes> getRecipeResponse = recipeRepository.findRecipesWithPartOfkeyword(keyword)
-                .stream()
-                .map(GetRecipeRes::new)
-                .toList();
-
-        if (getRecipeResponse.isEmpty()) {
-            throw new IllegalStateException();
-        }
-        return getRecipeResponse;
-    }
-
-//    public List<GetRecipeRes> findByRcpPartsDtls(String ingredient) {
-//        Recipe recipe = recipeRepository.findByRcpPartsDtlsContaining(ingredient)
-//                .orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다."));
-//        RecipeRes response = new RecipeRes(recipe);
-//        return response.getRcpPartsDtls();
-//    }
-
     // ====================================================================
 
-    /* 전체 레시피 조회 */
-    public List<GetRecipeRes> getAllRecipes() {
-        List<GetRecipeRes> getRecipeRes =
-                recipeRepository.findAll()
+    /* 정렬 */
+
+    public List<GetRecipeOrderRes> getRecipeByOrderByInfoProDesc() { // 고단백
+        List<GetRecipeOrderRes> getRecipeRes =
+                recipeRepository.findAllByOrderByInfoProDesc()
                         .stream()
-                        .map(GetRecipeRes::new)
+                        .map(GetRecipeOrderRes::new)
                         .toList();
 
         if (getRecipeRes.isEmpty()) {
             throw new IllegalStateException();
         }
         return getRecipeRes;
+    }
+
+    public List<GetRecipeOrderRes> getRecipeByOrderByInfoFatAsc() { // 저지방
+        List<GetRecipeOrderRes> getRecipeRes =
+                recipeRepository.findAllByOrderByInfoFatAsc()
+                        .stream()
+                        .map(GetRecipeOrderRes::new)
+                        .toList();
+
+        if (getRecipeRes.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return getRecipeRes;
+    }
+
+    // ====================================================================
+
+    /* 레시피(리스트) 출력 */
+    public List<GetRecipeRes> searchRecipeByName(String keyword) throws BaseException {
+        List<GetRecipeRes> getRecipeResList = recipeRepository.findByRcpNmContaining(keyword)
+                .stream()
+                .map(GetRecipeRes::new)
+                .collect(Collectors.toList());
+
+        if(getRecipeResList.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return getRecipeResList;
+    }
+
+    public List<GetRecipeRes> searchRecipeByIngredient(String ingredient) {
+        List<GetRecipeRes> getRecipeResList = recipeRepository.findByIngredientContaining(ingredient)
+                .stream()
+                .map(GetRecipeRes::new)
+                .toList();
+
+        if(getRecipeResList.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return getRecipeResList;
+    }
+
+    /* 재료 출력 */
+    public List<String> searchIngredientByRcpNm(String rcpNm) {
+        /**
+         * <문제점>
+         *     정확한 명칭 "부추 콩가루 찜" 검색 해야 재료 출력
+         * </문제점>
+         * <해결방안>
+         *      findByRcpNm().isEmpty()면, -> findByRcpNmContaining 사용?
+         * </해결방안>
+         */
+        Recipe recipe = recipeRepository.findByRcpNm(rcpNm)
+                .orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다."));
+        GetRecipeRes response = new GetRecipeRes(recipe);
+//        return Collections.singletonList(response.getRcpPartsDtls()); // 문자열 출력
+
+        // 문자열에서 "\n"과 ","을 기준으로 분할하여 리스트로 저장
+        String[] ingredients = response.getIngredient().split("[\\n,]");
+        List<String> ingredients_list = new ArrayList<>();
+
+        // 빈 문자열이나 공백 문자열을 제외하고 리스트에 추가
+        for (String ingredient : ingredients) {
+            ingredient = ingredient.trim();
+            if (!ingredient.isEmpty()) {
+                ingredients_list.add(ingredient);
+            }
+        }
+        return ingredients_list;
     }
 
 

@@ -22,30 +22,25 @@ public class Recipe {
     @Column(name = "rcp_id", nullable = false)
     private Long rcpId;
 
-    @Column(name = "rcp_seq", nullable = false)
     private String rcpSeq; // 일련 번호
-
-    @Column(name = "rcp_nm", nullable = false)
     private String rcpNm; // 레시피명
-
     private String rcpWay2; // 조리 방법
     private String rcpPat2; // 요리 종류
-
     private String infoWgt; // 중량(1인분)
-    private String infoEng; // 열량
-    private String infoCar; // 탄수화물
-    private String infoPro; // 단백질
-    private String infoFat; // 지방
-    private String infoNa; // 나트륨
-
+    private int infoEng; // 열량
+    private int infoCar; // 탄수화물
+    private int infoPro; // 단백질
+    private int infoFat; // 지방
+    private int infoNa; // 나트륨
     private String hashTag; // 해시태그
     private String attFileNoMain; // 이미지 경로(소)
     private String attFileNoMk; // 이미지 경로(대)
 
-    @ElementCollection
-    @Column(name = "rcp_parts_dtls")
-    private List<String> rcpPartsDtls; // 재료 정보
-//    private List<String> rcpPartsDtls = new ArrayList<>();
+    @Column(name = "ingredient")
+    private String ingredient; // 재료 정보
+
+//    @ElementCollection
+//    private List<String> rcpPartsDtl;
 
     private String manual01; // 레시피 설명
     private String manualImg01; // 레시피 이미지
@@ -87,37 +82,7 @@ public class Recipe {
     private String manualImg19;
     private String manual20;
     private String manualImg20;
-
-    @Column(name = "rcp_na_tip")
     private String rcpNaTip;
-
-//    @OneToOne(cascade = CascadeType.ALL, mappedBy = "recipe")
-//    @PrimaryKeyJoinColumn
-//    private RcpPartsDtls rcpPartsDtls;
-
-
-//    @Builder
-//    public Recipe(Long rcpId, String rcpSeq, String rcpNm, String rcpWay2, String rcpPat2,
-//                  String infoWgt, String infoEng, String infoCar, String infoPro, String infoFat, String infoNa,
-//                  List<String> rcpPartsDtls, String manual01, String manualImg01, String manual02, String manualImg02) {
-//        this.rcpId = rcpId;
-//        this.rcpSeq = rcpSeq;
-//        this.rcpNm = rcpNm;
-//        this.rcpWay2 = rcpWay2;
-//        this.rcpPat2 = rcpPat2;
-//        this.infoWgt = infoWgt;
-//        this.infoEng = infoEng;
-//        this.infoCar = infoCar;
-//        this.infoPro = infoPro;
-//        this.infoFat = infoFat;
-//        this.infoNa = infoNa;
-//        this.rcpPartsDtls = rcpPartsDtls;
-//        this.manual01 = manual01;
-//        this.manualImg01 = manualImg01;
-//        this.manual02 = manual02;
-//        this.manualImg02 = manualImg02;
-//}
-
 
 
 }

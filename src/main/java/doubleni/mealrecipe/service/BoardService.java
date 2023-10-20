@@ -3,11 +3,9 @@ package doubleni.mealrecipe.service;
 import doubleni.mealrecipe.model.Board;
 import doubleni.mealrecipe.model.DTO.AddBoardReq;
 import doubleni.mealrecipe.model.DTO.BoardReq;
-import doubleni.mealrecipe.model.DTO.GetBoardRes;
+import doubleni.mealrecipe.model.DTO.BoardRes;
 import doubleni.mealrecipe.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,8 +18,71 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class BoardService {
+    /**
+     * 조회 - get
+     * 검색 - search(Controller & Service) / find(Repository)
+     * 생성 - save
+     * 수정 - update
+     * 삭제 - delete
+     */
 
     private final BoardRepository boardRepository;
+
+    /* 모든 게시글(리스트) 조회 */
+    @Transactional(readOnly = true)
+    public List<BoardRes> getBoards() {
+        List<BoardRes> boards =
+                boardRepository.findAll()
+                        .stream()
+                        .map(BoardRes::new)
+                        .collect(Collectors.toList());
+
+        if (boards.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return boards;
+    }
+
+    /* board id로 게시글 조회 */
+    public Board getBoardById(long boardId) {
+        return boardRepository.findByBoardId(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("not found : " + boardId));
+    }
+
+    /* 게시글 검색 */
+//    public List<Board> searchBoardByNickname(String writer) {
+//        return boardRepository.findByNickname(writer);
+//    }
+
+    public List<BoardRes> searchBoardByTitle(String keyword) {
+        List<BoardRes> boardList = boardRepository.findByTitleContaining(keyword)
+                .stream()
+                .map(BoardRes::new)
+                .toList();
+
+        if (boardList.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return boardList;
+    }
+
+    public List<BoardRes> searchBoardByContent(String keyword) {
+        List<BoardRes> boardList = boardRepository.findByContentContaining(keyword)
+                .stream()
+                .map(BoardRes::new)
+                .toList();
+
+        if (boardList.isEmpty()) {
+            throw new IllegalStateException();
+        }
+
+        return boardList;
+    }
+
+
+
+    // ==================================================================================
+
 
     /* 게시글 추가 */
     public void save(AddBoardReq addBoard) {
@@ -48,51 +109,6 @@ public class BoardService {
         boardRepository.deleteById(boardId);
     }
 
-    /* 게시글 목록 조회 */
-    @Transactional(readOnly = true)
-    public List<GetBoardRes> getBoards() {
-        List<GetBoardRes> boards =
-                boardRepository.findAll()
-                        .stream()
-                        .map(GetBoardRes::new)
-                        .collect(Collectors.toList());
-
-        if (boards.isEmpty()) {
-            throw new IllegalStateException();
-        }
-        return boards;
-    }
-
-    /* board id로 게시글 조회 */
-    public Board findByBoardId(long boardId) {
-        return boardRepository.findByBoardId(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("not found : " + boardId));
-    }
-
-    /* email or nickname 으로 게시글 조회 */
-//    public Board findByUserEmail(String keyword) {
-//        return boardRepository.findByEmailOrNickname(keyword)
-//                .orElseThrow(() -> new IllegalArgumentException("not found : " + keyword));
-//    }
-
-
-    /* keyword로 게시글 검색 */
-    public List<GetBoardRes> searchBoardByKeyword(String keyword) {
-            List<GetBoardRes> boardList = boardRepository.findByTitleContaining(keyword)
-                    .stream()
-                    .map(GetBoardRes::new)
-                    .toList();
-
-            if (boardList.isEmpty()) {
-                boardList = boardRepository.findByDescContaining(keyword)
-                        .stream()
-                        .map(GetBoardRes::new)
-                        .toList();
-            } else {
-                throw new IllegalStateException();
-            }
-            return boardList;
-    }
 
 
 
