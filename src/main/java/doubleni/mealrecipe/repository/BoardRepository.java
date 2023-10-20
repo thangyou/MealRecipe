@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Optional<Board> findByBoardId(Long boardId);
-    Optional<Board> findByEmailOrNickname(String keyword);
+//    Optional<Board> findByEmailOrNickname(String keyword);
 
 
     List<Board> findByTitleContaining(@Param("keyword") String keyword);

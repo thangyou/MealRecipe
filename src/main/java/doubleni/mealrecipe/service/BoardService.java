@@ -70,10 +70,10 @@ public class BoardService {
     }
 
     /* email or nickname 으로 게시글 조회 */
-    public Board findByUserEmail(String keyword) {
-        return boardRepository.findByEmailOrNickname(keyword)
-                .orElseThrow(() -> new IllegalArgumentException("not found : " + keyword));
-    }
+//    public Board findByUserEmail(String keyword) {
+//        return boardRepository.findByEmailOrNickname(keyword)
+//                .orElseThrow(() -> new IllegalArgumentException("not found : " + keyword));
+//    }
 
 
     /* keyword로 게시글 검색 */

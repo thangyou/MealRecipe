@@ -16,7 +16,7 @@ import java.util.List;
 @Controller
 @RestController // HTTP Response Body에 객체 데이터를 JSON 형식으로 반환하는 컨트롤러
 @RequestMapping("/api")
-public class RecipeApiController {
+public class ApiController {
     /**
      * 조회 - get
      * 검색 - search(Controller & Service) / find(Repository)
@@ -62,6 +62,29 @@ public class RecipeApiController {
         }
     }
 
+    /* 조건 정렬 조회 */
+    @GetMapping("/list-order-by-protein")
+    @ApiOperation(value="레시피 조회 API", notes="고단백 레시피 정렬")
+    public ResponseEntity<List<GetApiRes>> getApiByOrderByInfoProDesc() {
+        try {
+            List<GetApiRes> getRecipeRes  = apiService.getApiByOrderByInfoProDesc();
+            return ResponseEntity.ok(getRecipeRes);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/list-order-by-fat")
+    @ApiOperation(value="레시피 조회 API", notes="저단백 레시피 정렬")
+    public ResponseEntity<List<GetApiRes>> getApiByOrderByInfoFatAsc() {
+        try {
+            List<GetApiRes> getRecipeRes  = apiService.getApiByOrderByInfoFatAsc();
+            return ResponseEntity.ok(getRecipeRes);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     // ===============================================================================================
 
     /* 검색 */
@@ -79,6 +102,7 @@ public class RecipeApiController {
     public ResponseEntity<?> searchApiByKeyword (@RequestParam("keyword") String keyword){
         try{
             List<GetApiRes> response = apiService.searchApiByName(keyword);
+//            List<GetApiRes> response = apiService.searchApiByKeyword(keyword);
             return ResponseEntity.ok().body(response);
         }catch (Exception e){
             return ResponseEntity.badRequest().build();

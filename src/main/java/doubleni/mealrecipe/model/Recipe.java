@@ -33,7 +33,7 @@ public class Recipe {
 
     private String infoWgt; // 중량(1인분)
     private String infoEng; // 열량
-     private String infoCar; // 탄수화물
+    private String infoCar; // 탄수화물
     private String infoPro; // 단백질
     private String infoFat; // 지방
     private String infoNa; // 나트륨

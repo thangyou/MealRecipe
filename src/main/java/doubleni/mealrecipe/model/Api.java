@@ -18,8 +18,11 @@ public class Api {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "rcp_nm", nullable = false)
+    private String rcpSeq; // 일련 번호
     private String rcpNm; // 레시피명
+
+    private int infoPro; // 단백질
+    private int infoFat; // 지방
 
     @Column(name = "ingredient", nullable = false)
     private String ingredient; // 재료 정보

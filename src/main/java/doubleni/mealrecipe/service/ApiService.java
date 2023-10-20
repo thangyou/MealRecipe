@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -45,12 +46,21 @@ public class ApiService {
 
                     String rcp_nm = (String) result.get("RCP_NM");
                     recipe.setRcpNm(rcp_nm);
+                    String rcp_seq = (String) result.get("RCP_SEQ");
+                    recipe.setRcpSeq(rcp_seq);
+                    String info_pro = (String) result.get("INFO_PRO");
+                    recipe.setInfoPro(Integer.parseInt(info_pro));
+                    String info_fat = (String) result.get("INFO_FAT");
+                    recipe.setInfoFat(Integer.parseInt(info_fat));
                     String ingredient=(String) result.get("RCP_PARTS_DTLS");
                     recipe.setIngredient(ingredient);
 
                     System.out.println("==== API TEST ====");
-                    System.out.println("Name : " + rcp_nm);
-                    System.out.println("Ingredient : " + ingredient);
+                    System.out.println("레시피 : " + rcp_nm);
+                    System.out.println("일련번호 : " + rcp_seq);
+                    System.out.println("단백질 : " + info_pro);
+                    System.out.println("지방 : " + info_pro);
+                    System.out.println("재료 : " + ingredient);
                     System.out.println("==================");
 
                     apiRepository.save(recipe);
@@ -83,6 +93,9 @@ public class ApiService {
                 GetApiRes getRecipeIdRes = new GetApiRes();
                 getRecipeIdRes.setId(recipe.getId());
                 getRecipeIdRes.setRcpNm(recipe.getRcpNm());
+                getRecipeIdRes.setRcpSeq(recipe.getRcpSeq());
+                getRecipeIdRes.setInfoPro(recipe.getInfoPro());
+                getRecipeIdRes.setInfoFat(recipe.getInfoFat());
                 getRecipeIdRes.setIngredient(recipe.getIngredient());
                 return getRecipeIdRes;
             }
@@ -92,11 +105,49 @@ public class ApiService {
         return null;
     }
 
+    /* 정렬 */
+    public List<GetApiRes> getApiByOrderByInfoProDesc() { // 고단백
+        List<GetApiRes> getRecipeRes =
+                apiRepository.findAllByOrderByInfoProDesc()
+                        .stream()
+                        .map(GetApiRes::new)
+                        .toList();
+
+        if (getRecipeRes.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return getRecipeRes;
+    }
+
+    public List<GetApiRes> getApiByOrderByInfoFatAsc() { // 저지방
+        List<GetApiRes> getRecipeRes =
+                apiRepository.findAllByOrderByInfoFatAsc()
+                        .stream()
+                        .map(GetApiRes::new)
+                        .toList();
+
+        if (getRecipeRes.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return getRecipeRes;
+    }
+
 
     // ===============================================================================================
 
     /* 레시피(리스트) 출력 */
-    // getRecipesByKeyword
+//    public List<GetApiRes> searchApiByKeyword(String keyword) {
+//        List<GetApiRes> apiResList = apiRepository.findByRcpNmContainingOrIngredientContaining(keyword)
+//                .stream()
+//                .map(GetApiRes::new)
+//                .toList();
+//
+//        if(apiResList.isEmpty()) {
+//            throw new IllegalStateException();
+//        }
+//        return apiResList;
+//    }
+
     public List<GetApiRes> searchApiByName(String keyword) throws BaseException {
         List<GetApiRes> apiResList = apiRepository.findByRcpNmContaining(keyword)
                 .stream()
@@ -123,18 +174,31 @@ public class ApiService {
 
     /* 재료 출력 */
     public List<String> searchIngredientByRcpNm(String rcpNm) {
-        /*
-        rcpNm으로 findByRcpNm을 수행하여, 해당하는 레시피가 존재하면 재료 출력
-        아니면, findByRcpNmContaining을 수행
+        /**
+         * <문제점>
+         *     정확한 명칭 "부추 콩가루 찜" 검색 해야 재료 출력
+         * </문제점>
+         * <해결방안>
+         *      findByRcpNm().isEmpty()면, -> findByRcpNmContaining 사용?
+         * </해결방안>
          */
-//        try {
-//            Api api = apiRepository.findByRcpNm(rcpNm)
-//                    .orElse(List<Api> apiRepository.findByRcpNmContaining(rcpNm))
-//        }
         Api recipe = apiRepository.findByRcpNm(rcpNm)
                 .orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다."));
         GetApiRes response = new GetApiRes(recipe);
-        return Collections.singletonList(response.getIngredient());
+//        return Collections.singletonList(response.getIngredient()); // 문자열 출력
+
+        // 문자열에서 "\n"과 ","을 기준으로 분할하여 리스트로 저장
+        String[] ingredients = response.getIngredient().split("[\\n,]");
+        List<String> ingredients_list = new ArrayList<>();
+
+        // 빈 문자열이나 공백 문자열을 제외하고 리스트에 추가
+        for (String ingredient : ingredients) {
+            ingredient = ingredient.trim();
+            if (!ingredient.isEmpty()) {
+                ingredients_list.add(ingredient);
+            }
+        }
+        return ingredients_list;
     }
 
 

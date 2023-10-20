@@ -88,12 +88,12 @@ public class BoardController {
         return ResponseEntity.ok().body(new GetBoardRes(board));
     }
 
-    @GetMapping("/userEmail={userEmail}")
-    @ApiOperation(value="게시글 조회 API", notes="User ID 게시글 조회")
-    public ResponseEntity<GetBoardRes> getBoardByUserId(@PathVariable String userEmail) {
-        Board board = boardService.findByUserEmail(userEmail);
-        return ResponseEntity.ok().body(new GetBoardRes(board));
-    }
+//    @GetMapping("/userEmail={userEmail}")
+//    @ApiOperation(value="게시글 조회 API", notes="User ID 게시글 조회")
+//    public ResponseEntity<GetBoardRes> getBoardByUserId(@PathVariable String userEmail) {
+//        Board board = boardService.findByUserEmail(userEmail);
+//        return ResponseEntity.ok().body(new GetBoardRes(board));
+//    }
 
     /* 검색 */
     @GetMapping("/search")
