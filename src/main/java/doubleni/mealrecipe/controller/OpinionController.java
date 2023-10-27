@@ -9,14 +9,15 @@ import doubleni.mealrecipe.service.OpinionService;
 import doubleni.mealrecipe.utils.JwtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static doubleni.mealrecipe.config.exception.BaseResponseStatus.INVALID_USER_JWT;
-import static doubleni.mealrecipe.config.exception.BaseResponseStatus.USERS_EMPTY_USER_ID;
+import static doubleni.mealrecipe.config.exception.BaseResponseStatus.*;
 
 @RequiredArgsConstructor
 @Controller
@@ -35,6 +36,10 @@ public class OpinionController {
      */
     @PostMapping("/save/{id}")
     @ApiOperation(value = "음식 취향, 알레르기 저장", notes = "음식 취향과 알레르기를 선택했을 때 각각 string을 list로 받아옴")
+    @ApiResponses(value={@ApiResponse(code =2003,message = "권한이 없는 유저의 접근입니다."),
+            @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),
+            @ApiResponse(code=4004,message = "파일 저장 실패하였습니다.")
+    })
     public BaseResponse<String> saveOpinion(@RequestBody OpinionReq opinionReq, @PathVariable Long id) {
         try {
             Long idx = jwtService.getUserIdx();
@@ -95,6 +100,10 @@ public class OpinionController {
      */
     @GetMapping("/allergy/{id}")
     @ApiOperation(value="사용자에 해당되는 알레르기의 재료 정보 전달")
+    @ApiResponses(value={@ApiResponse(code =2003,message = "권한이 없는 유저의 접근입니다."),
+            @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),
+            @ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다.")
+    })
     public BaseResponse<List<String>> allergyIngredient(@PathVariable Long id){
         try{
             Long idx = jwtService.getUserIdx();
