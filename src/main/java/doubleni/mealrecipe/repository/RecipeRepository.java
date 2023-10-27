@@ -1,6 +1,6 @@
 package doubleni.mealrecipe.repository;
 
-import doubleni.mealrecipe.model.DTO.GetRecipeIdRes;
+import doubleni.mealrecipe.model.DTO.GetRecipeRes;
 import doubleni.mealrecipe.model.Recipe;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
@@ -19,7 +19,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     Optional<Recipe> findByRcpId(Long rcpId);
 
 
-    GetRecipeIdRes findRecipeByRcpId(Long rcpId);
+    GetRecipeRes findRecipeByRcpId(Long rcpId);
 
     // Order By
     // findFirstByRcpNmOrderByInfoProDescInfoFatAsc(String rcpNm)

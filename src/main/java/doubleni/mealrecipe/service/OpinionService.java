@@ -1,12 +1,10 @@
 package doubleni.mealrecipe.service;
 
 import doubleni.mealrecipe.config.exception.BaseException;
-import doubleni.mealrecipe.model.DTO.GetRecipeIdRes;
-import doubleni.mealrecipe.model.Recipe;
+import doubleni.mealrecipe.model.DTO.GetRecipeRes;
 import doubleni.mealrecipe.model.opinion.*;
 import doubleni.mealrecipe.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,8 +59,8 @@ public class OpinionService {
     }
 
     //좋아하는 음식 조회
-    public List<GetRecipeIdRes> gotofoodList() throws BaseException {
-        List<GetRecipeIdRes> getRecipeIdRes = new ArrayList<GetRecipeIdRes>();
+    public List<GetRecipeRes> gotofoodList() throws BaseException {
+        List<GetRecipeRes> getRecipeIdRes = new ArrayList<GetRecipeRes>();
 
         List<Food> foodList = foodRepository.findAll();
 
