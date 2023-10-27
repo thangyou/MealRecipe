@@ -2,7 +2,6 @@ package doubleni.mealrecipe.controller;
 
 import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.config.exception.BaseResponse;
-import doubleni.mealrecipe.model.DTO.GetRecipeIdRes;
 import doubleni.mealrecipe.model.DTO.GetReviewRes;
 import doubleni.mealrecipe.service.ReviewService;
 import io.swagger.annotations.ApiOperation;

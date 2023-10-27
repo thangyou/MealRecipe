@@ -1,9 +1,7 @@
 package doubleni.mealrecipe.service;
 
 import doubleni.mealrecipe.config.exception.BaseException;
-import doubleni.mealrecipe.model.DTO.GetRecipeIdRes;
 import doubleni.mealrecipe.model.DTO.GetReviewRes;
-import doubleni.mealrecipe.model.Recipe;
 import doubleni.mealrecipe.model.Review;
 import doubleni.mealrecipe.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
