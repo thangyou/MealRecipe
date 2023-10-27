@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
+import java.awt.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,8 +38,25 @@ public class User {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp updateAt;
 
-//    @ManyToMany(mappedBy = "menu", cascade = CascadeType.ALL)
-//    private List<Menu> menues = new ArrayList<>();
+    /*
+    @ManyToMany(mappedBy = "menu", cascade = CascadeType.ALL)
+    private List<Recipe> recipes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Board> boards;     // 작성글
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Like> likes;       // 유저가 누른 좋아요
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Comment> comments; // 댓글
+
+    public void likeChange(Integer receivedLikeCnt) {
+        this.receivedLikeCnt = receivedLikeCnt;
+        if (this.receivedLikeCnt >= 10 && this.userRole.equals(UserRole.SILVER)) {
+            this.userRole = UserRole.GOLD;
+        }
+    }
+    */
 
 }

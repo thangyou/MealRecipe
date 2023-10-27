@@ -1,18 +1,20 @@
 package doubleni.mealrecipe.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 @Setter
-@Entity
+@ToString
 @Table(name = "recipe")
+@Entity
 public class Recipe {
     // 식약처 공공 데이터 레시피
     @Id
@@ -20,33 +22,26 @@ public class Recipe {
     @Column(name = "rcp_id", nullable = false)
     private Long rcpId;
 
-    @Column(name = "rcp_seq", nullable = false)
     private String rcpSeq; // 일련 번호
-
-    @Column(name = "rcp_nm", nullable = false)
     private String rcpNm; // 레시피명
-
-    @Column(nullable = true)
     private String rcpWay2; // 조리 방법
     private String rcpPat2; // 요리 종류
-
     private String infoWgt; // 중량(1인분)
-    private String infoEng; // 열량
-    private String infoCar; // 탄수화물
-    private String infoPro; // 단백질
-    private String infoFat; // 지방
-    private String infoNa; // 나트륨
-//    private double info_wgt; // 중량(1인분)
-//    private double info_eng; // 열량
-//    private double info_car; // 탄수화물
-//    private double info_pro; // 단백질
-//    private double info_fat; // 지방
-//    private double info_na; // 나트륨
-
+    private int infoEng; // 열량
+    private int infoCar; // 탄수화물
+    private int infoPro; // 단백질
+    private int infoFat; // 지방
+    private int infoNa; // 나트륨
     private String hashTag; // 해시태그
     private String attFileNoMain; // 이미지 경로(소)
     private String attFileNoMk; // 이미지 경로(대)
-    private String rcpPartsDtls; // 재료 정보
+
+    @Column(name = "ingredient")
+    private String ingredient; // 재료 정보
+
+//    @ElementCollection
+//    private List<String> rcpPartsDtl;
+
     private String manual01; // 레시피 설명
     private String manualImg01; // 레시피 이미지
     private String manual02;
@@ -88,5 +83,6 @@ public class Recipe {
     private String manual20;
     private String manualImg20;
     private String rcpNaTip;
+
 
 }
