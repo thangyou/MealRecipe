@@ -71,6 +71,7 @@ public enum BaseResponseStatus {
     SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다."),
     JOIN_ERROR(false,4002,"회원가입에 실패하였습니다."),
     JSON_ERROR(false,4003,"json 파일 저장 실패하였습니다."),
+    SAVE_ERROR(false,4004,"파일 저장 실패하였습니다."),
 
     //[PATCH] /users/{userIdx}
     MODIFY_FAIL_USERNAME(false,4014,"유저네임 수정 실패"),
