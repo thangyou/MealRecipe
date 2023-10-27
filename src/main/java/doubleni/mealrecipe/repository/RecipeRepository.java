@@ -18,17 +18,13 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     Optional<Recipe> findByRcpId(Long rcpId);
 
     // Order By
-    // findFirstByNameOrderByIdDescEmailAsc(String name)
+    // findFirstByRcpNmOrderByInfoProDescInfoFatAsc(String rcpNm)
     List<Recipe> findAllByOrderByInfoProDesc(); // 내림차순
     List<Recipe> findAllByOrderByInfoFatAsc(); // 오름차순
-
 
     // 키워드로 레시피 찾기 - LIKE %:keyword%"
     List<Recipe> findByRcpNmContaining(@Param("keyword") String keyword);
 //    List<Recipe> findRecipesWithPartOfkeyword(@Param("keyword") String keyword);
-
-    // 재료 키워드로 재료가 속한 레시피 찾기
-//    List<Recipe> findByRcpPartsDtlsContaining(@Param("ingredient") String ingredient);
     List<Recipe> findByIngredientContaining(@Param("ingredient") String ingredient);
 
 }

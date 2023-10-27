@@ -19,7 +19,7 @@ public class BoardReq {
     private String email;
     private String nickname;
     private String title;
-    private String desc;
+    private String content;
     private Integer likeCnt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -32,7 +32,7 @@ public class BoardReq {
         return Board.builder()
 //                .user(user)
                 .title(this.title)
-                .desc(this.desc)
+                .content(this.content)
                 .build();
     }
 
