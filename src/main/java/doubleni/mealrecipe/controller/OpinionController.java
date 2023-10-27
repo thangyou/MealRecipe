@@ -6,15 +6,16 @@ import doubleni.mealrecipe.model.DTO.GetRecipeIdRes;
 import doubleni.mealrecipe.model.opinion.Allergy;
 import doubleni.mealrecipe.model.opinion.OpinionReq;
 import doubleni.mealrecipe.service.OpinionService;
+import doubleni.mealrecipe.utils.JwtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static doubleni.mealrecipe.config.exception.BaseResponseStatus.*;
 
 @RequiredArgsConstructor
 @Controller
@@ -23,6 +24,7 @@ import java.util.List;
 public class OpinionController {
 
     private final OpinionService opinionService;
+    private final JwtService jwtService;
 
     /**
      * 취향, 알레르기 저장 api
@@ -31,14 +33,21 @@ public class OpinionController {
      * @return BaseResponse<String>
      */
     @PostMapping("/save/{id}")
-    @ApiOperation(value = "음식 취향, 알레르기 저장",notes = "음식 취향과 알레르기를 선택했을 때 각각 string을 list로 받아옴")
-    public ResponseEntity<String> saveOpinion(@RequestBody OpinionReq opinionReq, @PathVariable Long id){
-        try{
-            opinionService.saveOpinion(opinionReq,id);
-            return ResponseEntity.ok("음식 취향, 알레르기 저장했습니다!");
-        } catch (BaseException e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    @ApiOperation(value = "음식 취향, 알레르기 저장", notes = "음식 취향과 알레르기를 선택했을 때 각각 string을 list로 받아옴")
+    public BaseResponse<String> saveOpinion(@RequestBody OpinionReq opinionReq, @PathVariable Long id) {
+        try {
+            Long idx = jwtService.getUserIdx();
 
+            if (idx != id) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            } else if (id == 0) {
+                return new BaseResponse<>(USERS_EMPTY_USER_ID);
+            }
+
+            opinionService.saveOpinion(opinionReq, id);
+            return new BaseResponse<>("음식 취향, 알레르기 저장했습니다!");
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
         }
     }
 
@@ -87,6 +96,14 @@ public class OpinionController {
     @ApiOperation(value="사용자에 해당되는 알레르기의 재료 정보 전달")
     public BaseResponse<List<String>> allergyIngredient(@PathVariable Long id){
         try{
+            Long idx = jwtService.getUserIdx();
+
+            if (idx != id) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            } else if (id == 0) {
+                return new BaseResponse<>(USERS_EMPTY_USER_ID);
+            }
+
             List<String> stringList = opinionService.allergyIngredient(id);
             return new BaseResponse<>(stringList);
         } catch (BaseException exception){
