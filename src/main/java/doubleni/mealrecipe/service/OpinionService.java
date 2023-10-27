@@ -2,6 +2,7 @@ package doubleni.mealrecipe.service;
 
 import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.model.DTO.GetRecipeIdRes;
+import doubleni.mealrecipe.model.Recipe;
 import doubleni.mealrecipe.model.opinion.*;
 import doubleni.mealrecipe.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,7 @@ public class OpinionService {
 
                 GoToFood goToFood = new GoToFood();
                 goToFood.setFoodId(foodRepository.findByRecipeId(recipeId).getFoodId());
-                goToFood.setId(id);
+                goToFood.setUserId(id);
 
                 goToFoodRepository.save(goToFood);
             }
@@ -49,7 +50,7 @@ public class OpinionService {
                 Long allergyId = allergyRepository.findByAllergyName(allergyList.get(i)).getAllergyId();
 
                 AllergySet allergySet = new AllergySet();
-                allergySet.setId(id);
+                allergySet.setUserId(id);
                 allergySet.setAllergyId(allergyId);
 
                 allergySetRepository.save(allergySet);
@@ -87,6 +88,28 @@ public class OpinionService {
             }
             return null;
         } catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //사용자 알러지 정보 전달
+    public List<String> allergyIngredient (Long id) throws BaseException {
+        List<String> userAllergyList = new ArrayList<>();
+
+        List<AllergySet> allergySetList = allergySetRepository.findAllByUserId(id);
+
+        try {
+            for (AllergySet allergySet : allergySetList) {
+                Long allergyId = allergySet.getAllergyId();
+                Allergy allergy = allergyRepository.findAllByAllergyId(allergyId);
+
+                if (allergy != null) { // allergy가 null이 아닌 경우에만 처리
+                    userAllergyList.add(allergy.getAllergyName());
+                }
+            }
+
+            return userAllergyList;
+        }catch (Exception e){
             throw new BaseException(DATABASE_ERROR);
         }
     }

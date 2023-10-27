@@ -20,6 +20,6 @@ public class AllergySet {
 
     private Long allergyId;
 
-    private Long id;
+    private Long userId;
 
 }

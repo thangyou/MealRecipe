@@ -7,5 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AllergyRepository extends JpaRepository<Allergy, Long> {
     Allergy findByAllergyName(String allergyName);
+
+    Allergy findAllByAllergyId(Long allergyId);
 }
 

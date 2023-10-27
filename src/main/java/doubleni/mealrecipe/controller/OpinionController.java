@@ -45,13 +45,13 @@ public class OpinionController {
 
     /**
      * 선별해둔 좋아하는 음식 리스트 전달 api
-     * [GET] /opinion/food/{id}
+     * [GET] /opinion/food
      *
      * @return BaseResponse<List<GetRecipeIdRes>>
      */
     @GetMapping("/food")
     @ApiOperation(value = "선별해둔 음식 취향 리스트 전달",notes = "좋아하는 음식을 선택할 수 있도록 미리 선별해둔 레시피 전달")
-    public BaseResponse<List<GetRecipeIdRes>> foodList(@PathVariable Long id){
+    public BaseResponse<List<GetRecipeIdRes>> foodList(){
         try{
             List<GetRecipeIdRes> getRecipeIdRes = opinionService.gotofoodList();
             return new BaseResponse<>(getRecipeIdRes);
@@ -62,13 +62,13 @@ public class OpinionController {
 
     /**
      * 알레르기 리스트 전달 api
-     * [GET] /opinion/allergy/{id}
+     * [GET] /opinion/allergy
      *
      * @return BaseResponse<List<Allergy>>
      */
     @GetMapping("/allergy")
     @ApiOperation(value = "알레르기 리스트 전달",notes = "모든 알레르기 리스트를 전달")
-    public BaseResponse<List<Allergy>> allergyList(@PathVariable Long id){
+    public BaseResponse<List<Allergy>> allergyList(){
         try{
             List<Allergy> allergies = opinionService.allergyList();
             return new BaseResponse<>(allergies);
@@ -76,6 +76,24 @@ public class OpinionController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+    /**
+     * 사용자 알레르기 리스트 전달 api
+     * [GET] /opinion/allergy/{id}
+     *
+     * @return BaseResponse<List<String>>
+     */
+    @GetMapping("/allergy/{id}")
+    @ApiOperation(value="사용자에 해당되는 알레르기의 재료 정보 전달")
+    public BaseResponse<List<String>> allergyIngredient(@PathVariable Long id){
+        try{
+            List<String> stringList = opinionService.allergyIngredient(id);
+            return new BaseResponse<>(stringList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 
 

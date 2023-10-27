@@ -19,7 +19,7 @@ public class GoToFood {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long GoToFoodId;
 
-    private Long id;
+    private Long userId;
 
     private Long foodId;
 }
