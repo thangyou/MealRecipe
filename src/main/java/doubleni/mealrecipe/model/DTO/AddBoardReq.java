@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +16,9 @@ public class AddBoardReq { // Board 입력 받아 DB에 저장 DTO
 
     private String title;
     private String content;
+
 //    private MultipartFile uploadImage;
+    private List<String> imageURL;
 
     @Builder
 //    public Board toEntity(User user) {
@@ -27,7 +30,6 @@ public class AddBoardReq { // Board 입력 받아 DB에 저장 DTO
                 .content(content)
 //                .likeCnt(0)
 //                .commentCnt(0)
-//                .createdAt(LocalDateTime.now())
                 .build();
     }
 

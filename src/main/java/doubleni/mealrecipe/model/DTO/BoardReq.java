@@ -1,7 +1,7 @@
 package doubleni.mealrecipe.model.DTO;
 
 import doubleni.mealrecipe.model.Board;
-//import doubleni.mealrecipe.model.Test.entity.UploadImage;
+//import doubleni.mealrecipe.model.UploadImage;
 import doubleni.mealrecipe.model.User;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;

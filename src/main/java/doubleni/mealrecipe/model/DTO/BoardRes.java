@@ -1,9 +1,12 @@
 package doubleni.mealrecipe.model.DTO;
 
 import doubleni.mealrecipe.model.Board;
+import doubleni.mealrecipe.model.BoardImage;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -19,6 +22,8 @@ public class BoardRes {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    private List<String> imageURL;
+
     public BoardRes(Board board) {
         this.boardId = board.getBoardId();
 //        this.email = board.getUser().getEmail();
@@ -27,6 +32,10 @@ public class BoardRes {
         this.content = board.getContent();
         this.createdAt = board.getCreatedAt();
         this.updatedAt = board.getUpdatedAt();
+
+        this.imageURL = board.getBoardImages().stream()
+                .map(BoardImage::getUrl)
+                .collect(Collectors.toList());
     }
 
 

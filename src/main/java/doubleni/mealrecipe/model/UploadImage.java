@@ -1,4 +1,4 @@
-package doubleni.mealrecipe.model.Test.entity;
+package doubleni.mealrecipe.model;
 
 import doubleni.mealrecipe.model.Board;
 import lombok.AllArgsConstructor;
@@ -23,6 +23,6 @@ public class UploadImage {
     private String originalFilename;    // 원본 파일명
     private String savedFilename;        // 서버에 저장된 파일명
 
-    @OneToOne(mappedBy = "uploadImage", fetch = FetchType.LAZY)
-    private Board board;
+//    @OneToOne(mappedBy = "uploadImage", fetch = FetchType.LAZY)
+//    private Board board;
 }

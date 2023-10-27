@@ -1,6 +1,5 @@
-package doubleni.mealrecipe.model.Test.entity;
+package doubleni.mealrecipe.model;
 
-import doubleni.mealrecipe.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +24,7 @@ public class Comment {
     private User user;      // 작성자
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private TestBoard board;    // 댓글이 달린 게시판
+    private Board board;    // 댓글이 달린 게시판
 
     public void update(String newBody) {
         this.body = newBody;

@@ -1,7 +1,6 @@
 package doubleni.mealrecipe.model;
 
 import doubleni.mealrecipe.model.DTO.BoardReq;
-import doubleni.mealrecipe.model.Test.entity.UploadImage;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -9,6 +8,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -23,10 +24,7 @@ public class Board {
     private Long boardId;
     private String title; // 제목
     private String content; // 본문
-    private int hits; // 조회수
-
-//    @Enumerated(EnumType.STRING)
-//    private String category; // 카테고리
+//    private int hits; // 조회수
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user; // 작성자
@@ -36,19 +34,23 @@ public class Board {
      *  COMMENT - 댓글
      *  LIKE - 좋아요
      */
-//    @OneToMany(mappedBy = "board", orphanRemoval = true)
-//    private List<Like> likes;       // 좋아요
+    @OneToMany(mappedBy = "board", orphanRemoval = true)
+    private List<Like> likes;       // 좋아요
 //    private Integer likeCnt;        // 좋아요 수
 //
-//    @OneToMany(mappedBy = "board", orphanRemoval = true)
-//    private List<Comment> comments; // 댓글
+    @OneToMany(mappedBy = "board", orphanRemoval = true)
+    private List<Comment> comments; // 댓글
 //    private Integer commentCnt;     // 댓글 수
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OrderBy("id asc")
+    private List<BoardImage> boardImages;
 
     /**
      * BOARD @OneToOne 1:1
      */
-    @OneToOne(fetch = FetchType.LAZY)
-    private UploadImage uploadImage;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    private UploadImage uploadImage;
 
     @CreatedDate // 엔티티가 생성될 때 생성 시간 저장
     @Column(name = "created_at")
@@ -66,9 +68,10 @@ public class Board {
     // **********************************************************
 
     @Builder
-    public Board(String title, String content) {
+    public Board(String title, String content, User user) {
         this.title = title;
         this.content = content;
+        this.user = user;
     }
 
     public void updateBoard(BoardReq req) {
@@ -76,19 +79,18 @@ public class Board {
         this.content = req.getContent();
     }
 
-    /*
-    public void likeChange(Integer likeCnt) {
-        this.likeCnt = likeCnt;
-    }
 
-    public void commentChange(Integer commentCnt) {
-        this.commentCnt = commentCnt;
-    }
-    */
-
-    public void setUploadImage(UploadImage uploadImage) {
-        this.uploadImage = uploadImage;
-    }
+//    public void likeChange(Integer likeCnt) {
+//        this.likeCnt = likeCnt;
+//    }
+//
+//    public void commentChange(Integer commentCnt) {
+//        this.commentCnt = commentCnt;
+//    }
+//
+//    public void setUploadImage(UploadImage uploadImage) {
+//        this.uploadImage = uploadImage;
+//    }
 
 
 }

@@ -1,17 +1,25 @@
 package doubleni.mealrecipe.controller;
 
+import doubleni.mealrecipe.config.exception.BaseResponse;
 import doubleni.mealrecipe.model.Board;
-import doubleni.mealrecipe.model.DTO.AddBoardReq;
-import doubleni.mealrecipe.model.DTO.BoardReq;
-import doubleni.mealrecipe.model.DTO.BoardRes;
+import doubleni.mealrecipe.model.DTO.*;
+import doubleni.mealrecipe.model.User;
+import doubleni.mealrecipe.repository.BoardRepository;
 import doubleni.mealrecipe.service.BoardService;
+import doubleni.mealrecipe.service.UserService;
+import doubleni.mealrecipe.utils.JwtService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +35,22 @@ public class BoardController {
      */
 
     private final BoardService boardService;
+    private final JwtService jwtService;
+
+    /* Page 이용 */
+    @GetMapping("/all-page")
+    @ApiOperation(value = "게시글 조회 API", notes = "모든 게시글(리스트) 조회")
+    public Page<Board> getAllBoards() {
+        PageRequest pageRequest = PageRequest.of(0,4);
+        return boardService.findAll(pageRequest);
+    }
+
+    @GetMapping("/list-page")
+    public Page<Board> getAllBoardsWithPageByQueryMethod(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return boardService.findByTitle(pageRequest);
+    }
+
 
     /**
      * 모든 게시글(리스트) 조회 api
@@ -34,17 +58,16 @@ public class BoardController {
      *
      * @return BaseResponse<List>
      */
-    /* 조회 */
-    @GetMapping("/list")
-    @ApiOperation(value="게시글 조회 API", notes="모든 게시글(리스트) 조회")
-    public ResponseEntity<List<BoardRes>> getBoards() {
-        try {
-            List<BoardRes> positions = boardService.getBoards();
-            return ResponseEntity.ok(positions);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
+//    @GetMapping("/list")
+//    @ApiOperation(value="게시글 조회 API", notes="모든 게시글(리스트) 조회")
+//    public ResponseEntity<List<BoardRes>> getBoards() {
+//        try {
+//            List<BoardRes> boards = boardService.getBoards();
+//            return ResponseEntity.ok(boards);
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
 
     /**
      * boardId로 게시글 조회 api
@@ -100,7 +123,7 @@ public class BoardController {
 //            return ResponseEntity.badRequest().build();
 //        }
 //    }
-    @GetMapping("/search-board-of-title") // failed
+    @GetMapping("/search-board-of-title")
     @ApiOperation(value = "게시글 검색 API", notes = "제목 검색")
     public ResponseEntity<?> searchBoardByTitle(@RequestParam("keyword") String keyword) {
         try {
@@ -111,7 +134,7 @@ public class BoardController {
         }
     }
 
-    @GetMapping("/search-board-of-content") // failed
+    @GetMapping("/search-board-of-content")
     @ApiOperation(value = "게시글 검색 API", notes = "본문 검색")
     public ResponseEntity<?> searchBoardByContent(@RequestParam("keyword") String keyword) {
         try {
@@ -133,9 +156,10 @@ public class BoardController {
      */
     @PostMapping("/add")
     @ApiOperation(value = "게시글 등록 API", notes = "게시글 등록")
-    public ResponseEntity<String> save(@RequestBody AddBoardReq req) {
+    public ResponseEntity<String> save(@RequestBody AddBoardReq req, BoardImageReq imageReq, @PathVariable Long id) {
         try {
-            boardService.save(req);
+
+            boardService.save(req, imageReq);
             return ResponseEntity.ok("게시글 저장 완료 !");
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
