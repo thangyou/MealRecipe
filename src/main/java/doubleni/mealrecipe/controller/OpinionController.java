@@ -2,7 +2,7 @@ package doubleni.mealrecipe.controller;
 
 import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.config.exception.BaseResponse;
-import doubleni.mealrecipe.model.DTO.GetRecipeIdRes;
+import doubleni.mealrecipe.model.DTO.GetRecipeRes;
 import doubleni.mealrecipe.model.opinion.Allergy;
 import doubleni.mealrecipe.model.opinion.OpinionReq;
 import doubleni.mealrecipe.service.OpinionService;
@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static doubleni.mealrecipe.config.exception.BaseResponseStatus.*;
+import static doubleni.mealrecipe.config.exception.BaseResponseStatus.INVALID_USER_JWT;
+import static doubleni.mealrecipe.config.exception.BaseResponseStatus.USERS_EMPTY_USER_ID;
 
 @RequiredArgsConstructor
 @Controller
@@ -60,9 +61,9 @@ public class OpinionController {
      */
     @GetMapping("/food")
     @ApiOperation(value = "선별해둔 음식 취향 리스트 전달",notes = "좋아하는 음식을 선택할 수 있도록 미리 선별해둔 레시피 전달")
-    public BaseResponse<List<GetRecipeIdRes>> foodList(){
+    public BaseResponse<List<GetRecipeRes>> foodList(){
         try{
-            List<GetRecipeIdRes> getRecipeIdRes = opinionService.gotofoodList();
+            List<GetRecipeRes> getRecipeIdRes = opinionService.gotofoodList();
             return new BaseResponse<>(getRecipeIdRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
