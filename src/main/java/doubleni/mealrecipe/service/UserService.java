@@ -1,13 +1,12 @@
 package doubleni.mealrecipe.service;
 
-import doubleni.mealrecipe.config.exception.BaseResponse;
-import doubleni.mealrecipe.model.UserImage;
-import doubleni.mealrecipe.repository.UserImageRepositorty;
-import doubleni.mealrecipe.utils.JwtService;
 import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.model.DTO.*;
 import doubleni.mealrecipe.model.User;
+import doubleni.mealrecipe.model.UserImage;
+import doubleni.mealrecipe.repository.UserImageRepositorty;
 import doubleni.mealrecipe.repository.UserRepository;
+import doubleni.mealrecipe.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -159,7 +158,7 @@ public class UserService {
                     File saveFile = new File(projectPath +originalFileName);
 
                     // 이미지 URL 정보를 리스트에 추가
-                    String imageUrl = "http://15.164.139.103:8080/mypage/images/" + originalFileName;
+                    String imageUrl = "http://localhost:8080/mypage/images/" + originalFileName;
 
                     try{
                         Optional<UserImage> existingImage =userImageRepositorty.findByUser(user);
