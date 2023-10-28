@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name = "USERS")
+@Table(name = "users")
 @AllArgsConstructor
 public class User {
     @Id
@@ -37,6 +37,9 @@ public class User {
 
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp updateAt;
+
+    @OneToOne(mappedBy = "user",cascade=CascadeType.ALL)
+    private UserImage userImage;
 
     /*
     @ManyToMany(mappedBy = "menu", cascade = CascadeType.ALL)
