@@ -5,9 +5,11 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -22,8 +24,13 @@ public class Board {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id", nullable = false)
     private Long boardId;
-    private String title; // 제목
-    private String content; // 본문
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String content;
+
 //    private int hits; // 조회수
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,15 +49,9 @@ public class Board {
 //    private List<Comment> comments; // 댓글
 ////    private Integer commentCnt;     // 댓글 수
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @OrderBy("id asc")
-    private List<BoardImage> boardImages;
+    @Column
+    private Long fileId;
 
-    /**
-     * BOARD @OneToOne 1:1
-     */
-//    @OneToOne(fetch = FetchType.LAZY)
-//    private UploadImage uploadImage;
 
     @CreatedDate // 엔티티가 생성될 때 생성 시간 저장
     @Column(name = "created_at")
@@ -67,17 +68,22 @@ public class Board {
 //    private String enddate;
     // **********************************************************
 
+
+
     @Builder
-    public Board(String title, String content, User user) {
+    public Board(Long boardId, String title, String content, User user, Long fileId) {
+        this.boardId = boardId;
         this.title = title;
         this.content = content;
         this.user = user;
+        this.fileId = fileId;
     }
 
     public void updateBoard(BoardReq req) {
         this.title = req.getTitle();
         this.content = req.getContent();
     }
+
 
 
 //    public void likeChange(Integer likeCnt) {
@@ -88,9 +94,6 @@ public class Board {
 //        this.commentCnt = commentCnt;
 //    }
 //
-//    public void setUploadImage(UploadImage uploadImage) {
-//        this.uploadImage = uploadImage;
-//    }
 
 
 }

@@ -6,6 +6,7 @@ import doubleni.mealrecipe.model.User;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -16,24 +17,35 @@ import java.time.LocalDateTime;
 public class BoardReq {
     // 게시판 추가, 수정 요청 DTO
     private Long boardId;
-    private String email;
     private String nickname;
     private String title;
     private String content;
     private Integer likeCnt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-//    private MultipartFile newImage;
-//    private UploadImage uploadImage;
+    private Long fileId;
+
+
 
     @Builder
-//    public Board toEntity() {
-    public Board toEntity(User user) {
+    public Board toEntity(User user)  {
         return Board.builder()
                 .user(user)
-                .title(this.title)
-                .content(this.content)
+                .boardId(boardId)
+                .title(title)
+                .content(content)
+                .fileId(fileId)
                 .build();
     }
 
+    @Builder
+    public BoardReq(Long boardId, String nickname, String title, String content, Long fileId, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.boardId = boardId;
+        this.nickname = getNickname();
+        this.title = title;
+        this.content = content;
+        this.fileId = fileId;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 }
