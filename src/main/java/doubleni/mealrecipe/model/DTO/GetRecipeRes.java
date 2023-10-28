@@ -29,9 +29,7 @@ public class GetRecipeRes {
     private String hashTag; // 해시태그
     private String attFileNoMain; // 이미지 경로(소)
     private String attFileNoMk; // 이미지 경로(대)
-
-    private String ingredient; // 재료 정보
-//    private String rcpPartsDtls; // 재료 정보
+    private String rcpPartsDtls; // 재료 정보
 
     private String manual01; // 레시피 설명
     private String manualImg01; // 레시피 이미지
@@ -85,7 +83,7 @@ public class GetRecipeRes {
         this.hashTag = r.getHashTag();
         this.attFileNoMain = r.getAttFileNoMain();
         this.attFileNoMk = r.getAttFileNoMk();
-        this.ingredient = r.getIngredient();
+        this.rcpPartsDtls = r.getRcpPartsDtls();
         this.manual01 = r.getManual01();
         this.manualImg01 = r.getManualImg01();
         this.manual02 = r.getManual02();

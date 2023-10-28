@@ -26,8 +26,8 @@ public class BoardRes {
 
     public BoardRes(Board board) {
         this.boardId = board.getBoardId();
-//        this.email = board.getUser().getEmail();
-//        this.nickname = board.getUser().getNickname();
+        this.email = board.getUser().getEmail();
+        this.nickname = board.getUser().getNickname();
         this.title = board.getTitle();
         this.content = board.getContent();
         this.createdAt = board.getCreatedAt();

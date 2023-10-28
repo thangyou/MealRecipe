@@ -1,5 +1,6 @@
 package doubleni.mealrecipe.controller;
 
+import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.config.exception.BaseResponse;
 import doubleni.mealrecipe.model.Board;
 import doubleni.mealrecipe.model.DTO.*;
@@ -8,6 +9,7 @@ import doubleni.mealrecipe.repository.BoardRepository;
 import doubleni.mealrecipe.service.BoardService;
 import doubleni.mealrecipe.service.UserService;
 import doubleni.mealrecipe.utils.JwtService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,9 +23,13 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 
+import static doubleni.mealrecipe.config.exception.BaseResponseStatus.INVALID_USER_JWT;
+import static doubleni.mealrecipe.config.exception.BaseResponseStatus.USERS_EMPTY_USER_ID;
+
 @RestController
 @RequiredArgsConstructor
 @Controller
+@Api(tags = "Board", description = "사용자 레시피 게시판")
 @RequestMapping("/board")
 public class BoardController {
     /**
@@ -37,6 +43,9 @@ public class BoardController {
     private final BoardService boardService;
     private final JwtService jwtService;
 
+    /* TEST */
+
+
     /* Page 이용 */
     @GetMapping("/all-page")
     @ApiOperation(value = "게시글 조회 API", notes = "모든 게시글(리스트) 조회")
@@ -46,7 +55,9 @@ public class BoardController {
     }
 
     @GetMapping("/list-page")
-    public Page<Board> getAllBoardsWithPageByQueryMethod(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+    @ApiOperation(value = "게시글 조회 API", notes = "")
+    public Page<Board> getAllBoardsWithPageByQueryMethod(@RequestParam("page") Integer page,
+                                                         @RequestParam("size") Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         return boardService.findByTitle(pageRequest);
     }
@@ -113,16 +124,16 @@ public class BoardController {
 
     // http://localhost:8080/board/search-board-of-?keyword={keyword}
     // 검색 조건 : 작성자, 제목, 본문
-//    @GetMapping("/search/writer={writer}")
-//    @ApiOperation(value="게시글 검색 API", notes="작성자 검색")
-//    public ResponseEntity<?> getBoardByUserId(@PathVariable String writer) {
-//        try {
-//            List<Board> board_list = boardService.searchBoardByEmailOrNickname(writer);
-//            return ResponseEntity.ok().body(board_list);
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
+    @GetMapping("/search-board-of-writer")
+    @ApiOperation(value="게시글 검색 API", notes="작성자 검색")
+    public ResponseEntity<?> getBoardByUserId(@RequestParam("writer") String writer) {
+        try {
+            List<BoardRes> board_list = boardService.searchBoardByUserNickname(writer);
+            return ResponseEntity.ok().body(board_list);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
     @GetMapping("/search-board-of-title")
     @ApiOperation(value = "게시글 검색 API", notes = "제목 검색")
     public ResponseEntity<?> searchBoardByTitle(@RequestParam("keyword") String keyword) {
@@ -156,14 +167,19 @@ public class BoardController {
      */
     @PostMapping("/add")
     @ApiOperation(value = "게시글 등록 API", notes = "게시글 등록")
-    public ResponseEntity<String> save(@RequestBody AddBoardReq req, BoardImageReq imageReq, @PathVariable Long id) {
-        try {
-
-            boardService.save(req, imageReq);
-            return ResponseEntity.ok("게시글 저장 완료 !");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public BaseResponse<String> save(@RequestBody BoardReq req, @RequestParam Long id) {
+            try {
+                Long idx = jwtService.getUserIdx();
+                if (idx != id) {
+                    return new BaseResponse<>(INVALID_USER_JWT);
+                } else if (id == 0) {
+                    return new BaseResponse<>(USERS_EMPTY_USER_ID);
+                }
+            boardService.save(req, id);
+            return new BaseResponse<>("게시글 저장 완료 !");
+        } catch (BaseException exception) {
+                return new BaseResponse<>(exception.getStatus());
+            }
     }
 
     /**
@@ -175,14 +191,20 @@ public class BoardController {
     // http://localhost:8080/board/update?boardId={boardId}
     @PatchMapping("/update")
     @ApiOperation(value = "게시글 수정 API", notes = "게시글 수정")
-    public ResponseEntity<Board> updateBoard(@RequestParam("boardId") Long boardId, @RequestBody BoardReq req) {
+    public BaseResponse<?> updateBoard(@RequestParam("boardId") Long boardId, @RequestBody BoardReq req,
+                                           @RequestParam Long id) {
         try {
+                Long idx = jwtService.getUserIdx();
+                if (idx != id) {
+                    return new BaseResponse<>(INVALID_USER_JWT);
+                } else if (id == 0) {
+                    return new BaseResponse<>(USERS_EMPTY_USER_ID);
+                }
                 boardService.updateBoard(boardId, req);
-                System.out.println(boardId + "번 게시글 수정 완료");
-                return ResponseEntity.ok().build();
-            } catch (Exception e) {
-                return ResponseEntity.badRequest().build();
-            }
+                return new BaseResponse<>(boardId + "번 게시글 수정 완료 !");
+            } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
     }
 
     /**
@@ -194,12 +216,18 @@ public class BoardController {
     // http://localhost:8080/board/delete?boardId={boardId}
     @DeleteMapping("/delete")
     @ApiOperation(value = "게시글 삭제 API", notes = "게시글 삭제")
-    public ResponseEntity<?> deleteBoard(@RequestParam("boardId") Long boardId) {
+    public BaseResponse<?> deleteBoard(@RequestParam("boardId") Long boardId, @RequestParam Long id) {
         try {
+            Long idx = jwtService.getUserIdx();
+            if (idx != id) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            } else if (id == 0) {
+                return new BaseResponse<>(USERS_EMPTY_USER_ID);
+            }
             boardService.deleteBoard(boardId);
-            return ResponseEntity.ok(boardId + "번 게시글 삭제 완료");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return new BaseResponse<>(boardId + "번 게시글 삭제 완료 !");
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
         }
     }
 

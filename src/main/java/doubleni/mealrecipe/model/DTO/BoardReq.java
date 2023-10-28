@@ -27,10 +27,10 @@ public class BoardReq {
 //    private UploadImage uploadImage;
 
     @Builder
-    public Board toEntity() {
-//    public Board toEntity(User user) {
+//    public Board toEntity() {
+    public Board toEntity(User user) {
         return Board.builder()
-//                .user(user)
+                .user(user)
                 .title(this.title)
                 .content(this.content)
                 .build();

@@ -34,13 +34,13 @@ public class Board {
      *  COMMENT - 댓글
      *  LIKE - 좋아요
      */
-    @OneToMany(mappedBy = "board", orphanRemoval = true)
-    private List<Like> likes;       // 좋아요
-//    private Integer likeCnt;        // 좋아요 수
-//
-    @OneToMany(mappedBy = "board", orphanRemoval = true)
-    private List<Comment> comments; // 댓글
-//    private Integer commentCnt;     // 댓글 수
+//    @OneToMany(mappedBy = "board", orphanRemoval = true)
+//    private List<Like> likes;       // 좋아요
+////    private Integer likeCnt;        // 좋아요 수
+////
+//    @OneToMany(mappedBy = "board", orphanRemoval = true)
+//    private List<Comment> comments; // 댓글
+////    private Integer commentCnt;     // 댓글 수
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @OrderBy("id asc")

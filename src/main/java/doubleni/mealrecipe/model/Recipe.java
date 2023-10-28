@@ -13,13 +13,13 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@Table(name = "recipe")
+@Table(name = "recipes")
 @Entity
 public class Recipe {
     // 식약처 공공 데이터 레시피
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "rcp_id", nullable = false)
+    @Column(name = "RCP_ID", nullable = false)
     private Long rcpId;
 
     private String rcpSeq; // 일련 번호
@@ -35,12 +35,10 @@ public class Recipe {
     private String hashTag; // 해시태그
     private String attFileNoMain; // 이미지 경로(소)
     private String attFileNoMk; // 이미지 경로(대)
-
-    @Column(name = "ingredient")
-    private String ingredient; // 재료 정보
+    private String rcpPartsDtls; // 재료 정보
 
 //    @ElementCollection
-//    private List<String> rcpPartsDtl;
+//    private List<String> rcpPartsDtls;
 
     private String manual01; // 레시피 설명
     private String manualImg01; // 레시피 이미지
