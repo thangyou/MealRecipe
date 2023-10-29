@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import doubleni.mealrecipe.model.DTO.FlaskDTO;
 import doubleni.mealrecipe.model.DTO.GetRecipeRes;
-import doubleni.mealrecipe.model.DTO.GetReviewRes;
 import doubleni.mealrecipe.service.RecipeService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -22,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Api(tags = "Recommend", description = "사용자 맞춤 레시피")
 public class RecommendController {
 
     private final RecipeService recipeService;
