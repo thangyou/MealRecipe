@@ -436,7 +436,7 @@ public class RecipeService {
 
                 /* 재료 */
 //                getRecipeIdRes.setRcpPartsDtls(new ArrayList<>(recipe.getRcpPartsDtls()));
-                getRecipeIdRes.setIngredient(recipe.getIngredient());
+                getRecipeIdRes.setRcpPartsDtls(recipe.getRcpPartsDtls());
 
                 getRecipeIdRes.setManual01(recipe.getManual01());
                 getRecipeIdRes.setManualImg01(recipe.getManualImg01());
