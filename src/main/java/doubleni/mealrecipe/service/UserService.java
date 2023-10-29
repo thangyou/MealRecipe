@@ -245,8 +245,16 @@ public class UserService {
 
     //소셜로그인 추가 정보
     public LoginRes saveUserSNSInfo(PostExtraReq postExtraReq,Long id) throws BaseException{
+        Optional<User> userOptional=userRepository.findById(id);
+
+        if(userOptional.isPresent()){
+            User user =userOptional.get();
+            if(user.getNickname() != null){
+                throw new BaseException(USERS_ALREADY_REGISTER);
+            }
+        }
+
         try{
-            Optional<User> userOptional=userRepository.findById(id);
 
             if (userOptional.isPresent()){
                 User user = userOptional.get();
