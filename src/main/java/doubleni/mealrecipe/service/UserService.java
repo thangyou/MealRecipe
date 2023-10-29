@@ -244,9 +244,8 @@ public class UserService {
     }
 
     //소셜로그인 추가 정보
-    public LoginRes saveUserSNSInfo(PostExtraReq postExtraReq) throws BaseException{
+    public LoginRes saveUserSNSInfo(PostExtraReq postExtraReq,Long id) throws BaseException{
         try{
-            Long id = postExtraReq.getId();
             Optional<User> userOptional=userRepository.findById(id);
 
             if (userOptional.isPresent()){
