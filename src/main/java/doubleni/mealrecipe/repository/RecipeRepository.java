@@ -1,5 +1,6 @@
 package doubleni.mealrecipe.repository;
 
+import doubleni.mealrecipe.model.DTO.GetRecipeRes;
 import doubleni.mealrecipe.model.Recipe;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
@@ -17,6 +18,9 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     // 레시피 id 찾기
     Optional<Recipe> findByRcpId(Long rcpId);
 
+
+    GetRecipeRes findRecipeByRcpId(Long rcpId);
+
     // Order By
     // findFirstByRcpNmOrderByInfoProDescInfoFatAsc(String rcpNm)
     List<Recipe> findAllByOrderByInfoProDesc(); // 내림차순
@@ -25,7 +29,8 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     // 키워드로 레시피 찾기 - LIKE %:keyword%"
     List<Recipe> findByRcpNmContaining(@Param("keyword") String keyword);
 //    List<Recipe> findRecipesWithPartOfkeyword(@Param("keyword") String keyword);
-    List<Recipe> findByIngredientContaining(@Param("ingredient") String ingredient);
+    List<Recipe> findByRcpPartsDtlsContaining(@Param("ingredient") String ingredient);
+
 
 }
 
