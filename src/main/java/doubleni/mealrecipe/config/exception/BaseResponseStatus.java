@@ -47,6 +47,10 @@ public enum BaseResponseStatus {
     POST_REVIEWS_INVALID_CONTENT(false,2030, "최대 입력 글자 수는 1000자입니다."),
     DELETE_FAIL_REVIEW(false, 2031, "리뷰를 삭제하지 못했습니다."),
     REVIEWS_EMPTY_REVIEW_ID(false,2032,"존재하지 않거나 삭제된 리뷰입니다."),
+    POST_REVIEWS_NO_CONTEXT(false,2033,"리뷰 내용을 입력해주세요."),
+    POST_REVIEWS_NO_RATINGS(false,2034,"리뷰 평점을 입력해주세요."),
+    POST_REVIEWS_FAILS(false,2035,"리뷰 작성 실패하였습니다."),
+
 
 
     // category
@@ -54,6 +58,7 @@ public enum BaseResponseStatus {
 
     // recipe
     RECIPE_NOT_EXISTS(false, 2050, "존재하지 않는 레시피입니다."),
+    RECIPE_ID_NOEXISTS(false,2051,"레시피 아이디를 입력해주세요"),
 
     // board
     POST_BOARD_EMPTY_TITLE(false,2060, "제목을 입력해주세요."),

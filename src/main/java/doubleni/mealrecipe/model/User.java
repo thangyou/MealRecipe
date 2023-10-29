@@ -41,6 +41,9 @@ public class User {
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Board> boards;     // 작성글
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<Review>();
+
     /*
     @ManyToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     private List<Recipe> recipes = new ArrayList<>();

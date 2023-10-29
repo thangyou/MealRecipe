@@ -71,7 +71,7 @@ public class RecommendController {
 
 
     @PostMapping("/recommend-recipeList")
-    @ApiOperation(value="키워드 기반 사용자 맞춤 레시피 추천", notes="\"새우 오징어 밀가루\"이렇게 식자재를 입력해서 보내면 가장 많이 포함된 음식 재료명을 추출함")
+    @ApiOperation(value="키워드 기반 사용자 맞춤 레시피 추천 - 좋아하는 식자재만", notes="\"{  \"user_profile\" : \"새우 오징어 밀가루\" \" \n 이렇게 식자재를 입력해서 보내면 가장 많이 포함된 음식 재료명을 추출함")
     @ApiResponses(value={@ApiResponse(code=4000,message = "데이터베이스 연결에 실패하였습니다.")})
     public List<GetRecipeRes> recommendRecipesList(@RequestBody String user_profile) {
         // Flask API 엔드포인트 URL
@@ -135,11 +135,11 @@ public class RecommendController {
 
 
     @PostMapping("/recommend-recipe")
-    @ApiOperation(value="키워드 기반 사용자 맞춤 레시피 추천 - 알러지 빼고", notes="\"새우 오징어 밀가루\"이렇게 식자재를 입력해서 보내면 가장 많이 포함된 음식 재료명을 추출함")
+    @ApiOperation(value="키워드 기반 사용자 맞춤 레시피 추천 - 좋아하는 식재료 + 알러지 ", notes="데이터가 작아서 출력이 이상함")
     @ApiResponses(value={@ApiResponse(code=4000,message = "데이터베이스 연결에 실패하였습니다.")})
     public List<GetRecipeRes> recommendRecipes(@RequestBody FlaskDTO user_profile) {
         // Flask API 엔드포인트 URL
-        String apiUrl = "http://127.0.0.1:5000/recommend-recipes-not-allergy";
+        String apiUrl = "http://15.164.139.103:5000/recommend-recipes-not-allergy";
 
         // HTTP 헤더 설정
         HttpHeaders headers = new HttpHeaders();
