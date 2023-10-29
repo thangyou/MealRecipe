@@ -6,6 +6,8 @@ import doubleni.mealrecipe.model.DTO.*;
 import doubleni.mealrecipe.service.RecipeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import org.springframework.web.bind.annotation.*;
+import static doubleni.mealrecipe.config.exception.BaseResponseStatus.*;
 
 import java.util.List;
 
@@ -59,15 +62,16 @@ public class RecipeController {
      * @return BaseResponse<List>
      */
     @GetMapping("/list")
-    @ApiOperation(value = "레시피 조회 API", notes = "레시피 리스트 조회")
-    public ResponseEntity<List<GetRecipeRes>> getAllRecipes() {
-        try {
-            List<GetRecipeRes> getRecipeRes = recipeService.getAllRecipes();
-            return ResponseEntity.ok(getRecipeRes);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+    @ApiOperation(value = "레시피 조회 API", notes = "모든 레시피(리스트) 조회")
+    @ApiResponses(value={@ApiResponse(code =3000,message = "값을 불러오는데 실패하였습니다.")})
+    public BaseResponse<List<GetRecipeRes>> getAllRecipes() throws BaseException {
+        List<GetRecipeRes> getRecipeRes = recipeService.getAllRecipes();
+        if (getRecipeRes.isEmpty()) {
+            return new BaseResponse<>(RESPONSE_ERROR);
         }
+        return new BaseResponse<>(getRecipeRes);
     }
+
 
     /**
      * rcpId로 레시피 조회 api
@@ -77,12 +81,21 @@ public class RecipeController {
      */
     @GetMapping("/rcpId={rcpId}")
     @ApiOperation(value="레시피 조회 API", notes="id로 레시피 조회")
-    public BaseResponse<GetRecipeRes> getRecipeById (@PathVariable Long rcpId){
+    @ApiResponses(value={@ApiResponse(code =2000,message = "입력값을 확인해주세요."),
+            @ApiResponse(code =2050,message = "존재하지 않는 레시피입니다."),
+            @ApiResponse(code =3000,message = "값을 불러오는데 실패하였습니다.")})
+    public BaseResponse<GetRecipeRes> getRecipeById (@PathVariable Long rcpId) {
+        if (rcpId == null) {
+            return new BaseResponse<>(REQUEST_ERROR);
+        }
         try{
             GetRecipeRes getRecipeIdRes = recipeService.getRecipeById(rcpId);
+            if (getRecipeIdRes == null) {
+                return new BaseResponse<>(RECIPE_NOT_EXISTS);
+            }
             return new BaseResponse<>(getRecipeIdRes);
         }catch (BaseException exception){
-            return new BaseResponse<>(exception.getStatus());
+            return new BaseResponse<>(RESPONSE_ERROR);
         }
     }
 
@@ -93,13 +106,14 @@ public class RecipeController {
      * @return BaseResponse<GetRecipeIdRes>
      */
     @GetMapping("/list-order-by-protein")
-    @ApiOperation(value="레시피 조회 API", notes="고단백 레시피 정렬")
-    public ResponseEntity<List<GetRecipeOrderRes>> getRecipeByOrderByInfoProDesc() {
+    @ApiOperation(value="레시피 조건 정렬 API", notes="고단백 레시피 정렬")
+    @ApiResponses(value={@ApiResponse(code =3000,message = "값을 불러오는데 실패하였습니다.")})
+    public BaseResponse<List<GetRecipeOrderRes>> getRecipeByOrderByInfoProDesc() {
         try {
             List<GetRecipeOrderRes> getRecipeRes  = recipeService.getRecipeByOrderByInfoProDesc();
-            return ResponseEntity.ok(getRecipeRes);
+            return new BaseResponse<>(getRecipeRes);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return new BaseResponse<>(RESPONSE_ERROR);
         }
     }
 
@@ -110,13 +124,14 @@ public class RecipeController {
      * @return BaseResponse<GetRecipeIdRes>
      */
     @GetMapping("/list-order-by-fat")
-    @ApiOperation(value="레시피 조회 API", notes="저지방 레시피 정렬")
-    public ResponseEntity<List<GetRecipeOrderRes>> getRecipeByOrderByInfoFatAsc() {
+    @ApiOperation(value="레시피 조건 정렬 API", notes="저지방 레시피 정렬")
+    @ApiResponses(value={@ApiResponse(code =3000,message = "값을 불러오는데 실패하였습니다.")})
+    public BaseResponse<List<GetRecipeOrderRes>> getRecipeByOrderByInfoFatAsc() {
         try {
             List<GetRecipeOrderRes> getRecipeRes  = recipeService.getRecipeByOrderByInfoFatAsc();
-            return ResponseEntity.ok(getRecipeRes);
+            return new BaseResponse<>(getRecipeRes);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return new BaseResponse<>(RESPONSE_ERROR);
         }
     }
 
@@ -131,21 +146,17 @@ public class RecipeController {
     // 키워드로 검색 - 키워드가 레시피명에 속한 레시피 리스트 출력
     @GetMapping("/search-recipe-of")
     @ApiOperation(value="레시피 검색 API", notes="키워드로 레시피 검색")
-//    public BaseResponse<?> getRecipesByKeyword (@RequestParam("keyword") String keyword){
-//        try{
-//            List<GetApiRes> response = apiService.getRecipesByName(keyword);
-//            return new BaseResponse<>(response);
-//        }catch (BaseException exception){
-//            return new BaseResponse<>(exception.getStatus());
-//        }
-//    }
-    public ResponseEntity<?> searchRecipeByKeyword (@RequestParam("keyword") String keyword){
+    @ApiResponses(value={@ApiResponse(code =2000,message = "입력값을 확인해주세요."),
+            @ApiResponse(code =2050,message = "존재하지 않는 레시피입니다.")})
+    public BaseResponse<?> searchRecipeByKeyword (@RequestParam("keyword") String keyword){
         try{
             List<GetRecipeRes> response = recipeService.searchRecipeByName(keyword);
-//            List<GetApiRes> response = recipeService.searchRecipeByKeyword(keyword);
-            return ResponseEntity.ok().body(response);
-        }catch (Exception e){
-            return ResponseEntity.badRequest().build();
+            if (response.isEmpty()) {
+                return new BaseResponse<>(RECIPE_NOT_EXISTS);
+            }
+            return new BaseResponse<>(response);
+        }catch (BaseException exception){
+            return new BaseResponse<>(REQUEST_ERROR);
         }
     }
 
@@ -158,12 +169,19 @@ public class RecipeController {
     // 재료로 검색 - 재료가 속한 레시피 리스트 출력
     @GetMapping("/search-recipe-of-ingredient")
     @ApiOperation(value = "레시피 검색 API", notes = "재료로 레시피 검색")
-    public ResponseEntity<?> searchRecipeByRcpPartsDtls(@RequestParam("ingredient") String ingredient) {
-        try {
-            return ResponseEntity.ok().body(recipeService.searchRecipeByRcpPartsDtls(ingredient));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+    @ApiResponses(value={@ApiResponse(code =2000,message = "입력값을 확인해주세요."),
+            @ApiResponse(code =2050,message = "존재하지 않는 레시피입니다.")})
+    public BaseResponse<?> searchRecipeByRcpPartsDtls (@RequestParam("keyword") String ingredient) throws BaseException {
+        if (ingredient.isEmpty()) {
+            return new BaseResponse<>(REQUEST_ERROR);
         }
+
+        List<GetRecipeRes> response = recipeService.searchRecipeByRcpPartsDtls(ingredient);
+        if (response.isEmpty()) {
+           return new BaseResponse<>(RECIPE_NOT_EXISTS);
+        }
+        return new BaseResponse<>(response);
+
     }
 
     /**
@@ -175,13 +193,17 @@ public class RecipeController {
     // 레시피명 검색 - 레시피의 재료 출력
     @GetMapping("/search-ingredient-of-recipe")
     @ApiOperation(value = "재료 검색 API", notes = "레시피의 재료 검색")
-    public ResponseEntity<?> searchRcpPartsDtlsByRcpNm(@RequestParam("keyword") String keyword) {
-        return ResponseEntity.ok().body(recipeService.searchRcpPartsDtlsByRcpNm(keyword));
+    @ApiResponses(value={@ApiResponse(code =2000,message = "입력값을 확인해주세요."),
+            @ApiResponse(code =2050,message = "존재하지 않는 레시피입니다.")})
+    public BaseResponse<?> searchRcpPartsDtlsByRcpNm (@RequestParam("keyword") String keyword) throws BaseException {
+        if (keyword.isEmpty()) {
+            return new BaseResponse<>(REQUEST_ERROR);
+        }
+                List<String> response = recipeService.searchRcpPartsDtlsByRcpNm(keyword);
+        if (response.isEmpty()) {
+            return new BaseResponse<>(RECIPE_NOT_EXISTS);
+        }
+        return new BaseResponse<>(response);
     }
-
-
-
-
-
 
 }
