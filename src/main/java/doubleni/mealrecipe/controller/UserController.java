@@ -122,7 +122,7 @@ public class UserController {
     @ApiResponses(value={@ApiResponse(code =2023,message = "닉네임을 입력해주세요."),@ApiResponse(code=2025,message = "닉네임은 2 ~ 20자 사이로 입력해주세요."),
             @ApiResponse(code=2018,message = "휴대폰 번호를 입력해주세요."), @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),
             @ApiResponse(code=4014,message = "유저 정보를 수정하는데 실패했습니다."),
-            @ApiResponse(code=4000,message = "데이터베이스 연결에 실패하였습니다.")
+            @ApiResponse(code=4000,message = "데이터베이스 연결에 실패하였습니다."),@ApiResponse(code=2012,message = "이미 저장한 소셜로그인 유저입니다.")
     })
     public BaseResponse<LoginRes> saveUserAfterInfo (@RequestBody PostExtraReq postExtraReq){
         if (postExtraReq.getNickname()==null){

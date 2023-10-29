@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@Table(name = "recipe")
+@Table(name = "recipes")
 @Entity
 public class Recipe {
     // 식약처 공공 데이터 레시피
