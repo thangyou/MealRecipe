@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.Null;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,6 +30,7 @@ import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static doubleni.mealrecipe.config.exception.BaseResponseStatus.INVALID_USER_JWT;
 import static doubleni.mealrecipe.config.exception.BaseResponseStatus.USERS_EMPTY_USER_ID;
@@ -52,78 +54,7 @@ public class BoardController {
     private final FileService fileService;
 
     /* TEST */
-    @PostMapping("/file-upload")
-    public BaseResponse<?> write(@RequestParam("file") MultipartFile files,
-                                 BoardReq boardDto,
-                                 @RequestParam Long id) {
-        try {
-            Long idx = jwtService.getUserIdx();
-            if (idx != id) {
-                return new BaseResponse<>(INVALID_USER_JWT);
-            } else if (id == 0) {
-                return new BaseResponse<>(USERS_EMPTY_USER_ID);
-            }
 
-            String origFilename = files.getOriginalFilename();
-            String filename = new MD5Generator(origFilename).toString();
-            /* 실행되는 위치의 'files' 폴더에 파일이 저장됩니다. */
-            String savePath = System.getProperty("user.dir") + "\\files";
-            /* 파일이 저장되는 폴더가 없으면 폴더를 생성합니다. */
-            if (!new File(savePath).exists()) {
-                try{
-                    new File(savePath).mkdir();
-                }
-                catch(Exception e){
-                    e.getStackTrace();
-                }
-            }
-            String filePath = savePath + "\\" + filename;
-            files.transferTo(new File(filePath));
-
-            FileReq fileDto = new FileReq();
-            fileDto.setOrigFilename(origFilename);
-            fileDto.setFilename(filename);
-            fileDto.setFilePath(filePath);
-
-            Long fileId = fileService.saveFile(fileDto);
-            boardDto.setFileId(fileId);
-            boardService.savePost(boardDto, id);
-            return new BaseResponse<>("게시글 저장 완료 !");
-        } catch(BaseException exception) {
-            return new BaseResponse<>(exception.getStatus());
-        } catch (IOException | NoSuchAlgorithmException exception) {
-            return new BaseResponse<>(exception.getMessage());
-        }
-    }
-
-    @GetMapping("/file-download")
-    public ResponseEntity<?> fileDownload(@RequestParam("fileId") Long fileId) throws IOException {
-        FileReq fileDto = fileService.getFile(fileId);
-        Path path = Paths.get(fileDto.getFilePath());
-        Resource resource = new InputStreamResource(Files.newInputStream(path));
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDto.getOrigFilename() + "\"")
-                .body(resource);
-    }
-
-    @DeleteMapping("/delete")
-    @ApiOperation(value = "게시글 삭제 API", notes = "게시글 삭제")
-    public BaseResponse<?> deleteBoard(@RequestParam("boardId") Long boardId, @RequestParam Long id) {
-        try {
-            Long idx = jwtService.getUserIdx();
-            if (idx != id) {
-                return new BaseResponse<>(INVALID_USER_JWT);
-            } else if (id == 0) {
-                return new BaseResponse<>(USERS_EMPTY_USER_ID);
-            }
-            boardService.deleteBoard(boardId);
-            return new BaseResponse<>(boardId + "번 게시글 삭제 완료 !");
-        } catch (BaseException exception) {
-            return new BaseResponse<>(exception.getStatus());
-        }
-    }
 
     // ==============================================================================
 
@@ -246,7 +177,7 @@ public class BoardController {
      *
      * @return BaseResponse<String>
      */
-//    @PostMapping("/add")
+    @PostMapping("/add")
 //    @ApiOperation(value = "게시글 등록 API", notes = "게시글 등록")
 //    public BaseResponse<String> save(@RequestBody BoardReq req, @RequestParam Long id) {
 //        try {
@@ -262,6 +193,57 @@ public class BoardController {
 //            return new BaseResponse<>(exception.getStatus());
 //        }
 //    }
+    public BaseResponse<?> save(@RequestParam(value = "files", required = false) MultipartFile files,
+                                 BoardReq boardDto, @RequestParam Long id) {
+        try {
+            Long idx = jwtService.getUserIdx();
+            if (idx != id) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            } else if (id == 0) {
+                return new BaseResponse<>(USERS_EMPTY_USER_ID);
+            }
+
+            String origFilename = files.getOriginalFilename();
+            String filename = new MD5Generator(origFilename).toString();
+            String savePath = System.getProperty("user.dir") + "\\files";
+            if (!new File(savePath).exists()) {
+                try {
+                    new File(savePath).mkdir();
+                } catch(Exception e){
+                    e.getStackTrace();
+                }
+            }
+            String filePath = savePath + "\\" + filename;
+            files.transferTo(new File(filePath));
+
+            FileReq fileDto = new FileReq();
+            fileDto.setOrigFilename(origFilename);
+            fileDto.setFilename(filename);
+            fileDto.setFilePath(filePath);
+
+            Long fileId = fileService.saveFile(fileDto);
+            boardDto.setFileId(fileId);
+            boardService.save(boardDto, id);
+            return new BaseResponse<>("게시글 저장 완료 !");
+        } catch(BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        } catch (IOException | NoSuchAlgorithmException exception) {
+            return new BaseResponse<>(exception.getMessage());
+        }
+    }
+
+    /** 파일 다운로드 **/
+    @GetMapping("/file-download")
+    public ResponseEntity<?> fileDownload(@RequestParam("fileId") Long fileId) throws IOException {
+        FileReq fileDto = fileService.getFile(fileId);
+        Path path = Paths.get(fileDto.getFilePath());
+        Resource resource = new InputStreamResource(Files.newInputStream(path));
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDto.getOrigFilename() + "\"")
+                .body(resource);
+    }
 
     /**
      * 게시글 수정 api
@@ -273,15 +255,29 @@ public class BoardController {
     @PatchMapping("/update")
     @ApiOperation(value = "게시글 수정 API", notes = "게시글 수정")
     public BaseResponse<?> updateBoard(@RequestParam("boardId") Long boardId,
-                                        @RequestBody BoardReq req, @RequestParam Long id) {
-        try {
+                                       BoardReq req, @RequestParam Long id,
+                                       @RequestParam(value = "files") MultipartFile files) {
+        try
+        {
                 Long idx = jwtService.getUserIdx();
                 if (idx != id) {
                     return new BaseResponse<>(INVALID_USER_JWT);
                 } else if (id == 0) {
                     return new BaseResponse<>(USERS_EMPTY_USER_ID);
                 }
+                System.out.println("게시글 수정 API : " + boardId);
                 boardService.updateBoard(boardId, req);
+                System.out.println("updateBoard() 완료");
+                Board board = boardService.getBoardById(boardId);
+
+                if (!files.isEmpty()) {
+                    System.out.println(">> 새로운 파일 저장");
+                    Long fileId = board.getFileId();
+                    System.out.println(fileId + "번 파일 수정하기");
+                    fileService.updateFile(fileId, files);
+                }
+                System.out.println("updateFile() 완료");
+
                 return new BaseResponse<>(boardId + "번 게시글 수정 완료 !");
             } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
@@ -295,22 +291,22 @@ public class BoardController {
      * @return BaseResponse<String>
      */
     // http://localhost:8080/board/delete?boardId={boardId}
-//    @DeleteMapping("/delete")
-//    @ApiOperation(value = "게시글 삭제 API", notes = "게시글 삭제")
-//    public BaseResponse<?> deleteBoard(@RequestParam("boardId") Long boardId, @RequestParam Long id) {
-//        try {
-//            Long idx = jwtService.getUserIdx();
-//            if (idx != id) {
-//                return new BaseResponse<>(INVALID_USER_JWT);
-//            } else if (id == 0) {
-//                return new BaseResponse<>(USERS_EMPTY_USER_ID);
-//            }
-//            boardService.deleteBoard(boardId);
-//            return new BaseResponse<>(boardId + "번 게시글 삭제 완료 !");
-//        } catch (BaseException exception) {
-//            return new BaseResponse<>(exception.getStatus());
-//        }
-//    }
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "게시글 삭제 API", notes = "게시글 삭제")
+    public BaseResponse<?> deleteBoard(@RequestParam("boardId") Long boardId, @RequestParam Long id) {
+        try {
+            Long idx = jwtService.getUserIdx();
+            if (idx != id) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            } else if (id == 0) {
+                return new BaseResponse<>(USERS_EMPTY_USER_ID);
+            }
+            boardService.deleteBoard(boardId);
+            return new BaseResponse<>(boardId + "번 게시글 삭제 완료 !");
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 
 

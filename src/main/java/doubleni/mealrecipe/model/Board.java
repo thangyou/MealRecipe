@@ -1,6 +1,8 @@
 package doubleni.mealrecipe.model;
 
 import doubleni.mealrecipe.model.DTO.BoardReq;
+import doubleni.mealrecipe.model.DTO.BoardRes;
+import doubleni.mealrecipe.model.DTO.FileReq;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -36,6 +38,9 @@ public class Board {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user; // 작성자
 
+    @Column(name = "file_id", nullable = false)
+    private Long fileId;
+
     /**
      *  BOARD @OneToMany 1:N
      *  COMMENT - 댓글
@@ -48,10 +53,6 @@ public class Board {
 //    @OneToMany(mappedBy = "board", orphanRemoval = true)
 //    private List<Comment> comments; // 댓글
 ////    private Integer commentCnt;     // 댓글 수
-
-    @Column
-    private Long fileId;
-
 
     @CreatedDate // 엔티티가 생성될 때 생성 시간 저장
     @Column(name = "created_at")
@@ -69,7 +70,6 @@ public class Board {
     // **********************************************************
 
 
-
     @Builder
     public Board(Long boardId, String title, String content, User user, Long fileId) {
         this.boardId = boardId;
@@ -83,8 +83,6 @@ public class Board {
         this.title = req.getTitle();
         this.content = req.getContent();
     }
-
-
 
 //    public void likeChange(Integer likeCnt) {
 //        this.likeCnt = likeCnt;

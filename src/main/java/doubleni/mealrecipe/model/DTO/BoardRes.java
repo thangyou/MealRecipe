@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 public class BoardRes {
     // 게시판 목록 조회 응답 DTO
     private Long boardId;
-    private String email;
     private String nickname;
     private String title;
     private String content;
@@ -22,7 +21,6 @@ public class BoardRes {
 
     public BoardRes(Board board) {
         this.boardId = board.getBoardId();
-        this.email = board.getUser().getEmail();
         this.nickname = board.getUser().getNickname();
         this.title = board.getTitle();
         this.content = board.getContent();

@@ -1,31 +1,35 @@
 package doubleni.mealrecipe.model.DTO;
 
-import doubleni.mealrecipe.model.File;
+import doubleni.mealrecipe.model.Board;
+import doubleni.mealrecipe.model.Files;
 import lombok.*;
+
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 public class FileReq {
-    private Long id;
+    private Long fileId;
     private String origFilename;
     private String filename;
     private String filePath;
 
-    public File toEntity() {
-        File build = File.builder()
-                .id(id)
+    public Files toEntity() {
+        return Files.builder()
+                .fileId(fileId)
                 .origFilename(origFilename)
                 .filename(filename)
                 .filePath(filePath)
                 .build();
-        return build;
     }
 
     @Builder
-    public FileReq(Long id, String origFilename, String filename, String filePath) {
-        this.id = id;
+    public FileReq(Long fileId, String origFilename, String filename, String filePath) {
+        this.fileId = fileId;
         this.origFilename = origFilename;
         this.filename = filename;
         this.filePath = filePath;

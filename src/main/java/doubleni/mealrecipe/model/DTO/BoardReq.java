@@ -2,6 +2,7 @@ package doubleni.mealrecipe.model.DTO;
 
 import doubleni.mealrecipe.model.Board;
 //import doubleni.mealrecipe.model.UploadImage;
+import doubleni.mealrecipe.model.Files;
 import doubleni.mealrecipe.model.User;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,8 +26,6 @@ public class BoardReq {
     private LocalDateTime updatedAt;
     private Long fileId;
 
-
-
     @Builder
     public Board toEntity(User user)  {
         return Board.builder()
@@ -39,13 +38,11 @@ public class BoardReq {
     }
 
     @Builder
-    public BoardReq(Long boardId, String nickname, String title, String content, Long fileId, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public BoardReq(Long boardId, String nickname, String title, String content, Long fileId) {
         this.boardId = boardId;
-        this.nickname = getNickname();
+        this.nickname = nickname;
         this.title = title;
         this.content = content;
         this.fileId = fileId;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 }

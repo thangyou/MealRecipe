@@ -1,7 +1,11 @@
 package doubleni.mealrecipe.repository;
 
-import doubleni.mealrecipe.model.File;
+import doubleni.mealrecipe.model.Files;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FileRepository extends JpaRepository<File, Long> {
+import java.util.Optional;
+
+public interface FileRepository extends JpaRepository<Files, Long> {
+    Optional<Files> findByFileId(Long fileId);
+
 }
