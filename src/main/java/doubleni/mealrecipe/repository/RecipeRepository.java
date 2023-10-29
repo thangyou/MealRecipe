@@ -31,6 +31,5 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 //    List<Recipe> findRecipesWithPartOfkeyword(@Param("keyword") String keyword);
     List<Recipe> findByRcpPartsDtlsContaining(@Param("ingredient") String ingredient);
 
-
 }
 

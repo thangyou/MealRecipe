@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class PostExtraReq {
-    private Long id;
+
     private String nickname;
     private String imageUrl; //프로필 이미지
     private String phone; //사용자 전화번호
