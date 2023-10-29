@@ -120,7 +120,7 @@ public class UserController {
     @PostMapping(value = "/users/sns")
     @ApiOperation(value="소셜로그인 추가", notes="닉네임, 전화번호, 프로필이미지 추가 \n headers = {\"X-ACCESS-TOKEN\": jwt}; 설정해주기(jwt는 로그인하면 반환되는 jwt이다.")
     @ApiResponses(value={@ApiResponse(code =2023,message = "닉네임을 입력해주세요."),@ApiResponse(code=2025,message = "닉네임은 2 ~ 20자 사이로 입력해주세요."),
-            @ApiResponse(code=2018,message = "휴대폰 번호를 입력해주세요."), @ApiResponse(code=2003,message = "권한이 없는 유저의 접근입니다."),
+            @ApiResponse(code=2018,message = "휴대폰 번호를 입력해주세요."), @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),
             @ApiResponse(code=4014,message = "유저 정보를 수정하는데 실패했습니다."),
             @ApiResponse(code=4000,message = "데이터베이스 연결에 실패하였습니다.")
     })
@@ -140,13 +140,12 @@ public class UserController {
 
         try{
             Long id_jwt = jwtService.getUserIdx();
-            Long id = postExtraReq.getId();
 
-            if(id_jwt != id){
-                return new BaseResponse<>(INVALID_USER_JWT);
+            if(id_jwt != 0){
+                return new BaseResponse<>(USERS_EMPTY_USER_ID);
             }
 
-            LoginRes loginRes = userService.saveUserSNSInfo(postExtraReq);
+            LoginRes loginRes = userService.saveUserSNSInfo(postExtraReq,id_jwt);
             return new BaseResponse<>(loginRes);
         }catch(BaseException exception){
             return new BaseResponse<>(exception.getStatus());
