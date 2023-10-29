@@ -82,7 +82,7 @@ public class BoardController {
      * @return BaseResponse<List>
      */
     @GetMapping("/list")
-    @ApiOperation(value="게시글 조회 API", notes="모든 게시글(리스트) 조회")
+    @ApiOperation(value="모든 게시글 조회", notes="모든 게시글(리스트) 조회")
     public ResponseEntity<List<BoardRes>> getBoards() {
         try {
             List<BoardRes> boards = boardService.getBoards();
@@ -99,7 +99,7 @@ public class BoardController {
      * @return BaseResponse<Board> or <BoardRes>
      */
     @GetMapping("/boardId={boardId}")
-    @ApiOperation(value="게시글 조회 API", notes="boardId 게시글 조회")
+    @ApiOperation(value="게시글 조회", notes="boardId 게시글 조회")
     public ResponseEntity<?> getBoardByBoardId(@PathVariable long boardId) {
         try {
             Board board = boardService.getBoardById(boardId);
@@ -137,7 +137,7 @@ public class BoardController {
     // http://localhost:8080/board/search-board-of-?keyword={keyword}
     // 검색 조건 : 작성자, 제목, 본문
     @GetMapping("/search-board-of-writer")
-    @ApiOperation(value="게시글 검색 API", notes="작성자 검색")
+    @ApiOperation(value="작성자 검색", notes="작성자 검색")
     public ResponseEntity<?> getBoardByUserId(@RequestParam("writer") String writer) {
         try {
             List<BoardRes> board_list = boardService.searchBoardByUserNickname(writer);
@@ -147,7 +147,7 @@ public class BoardController {
         }
     }
     @GetMapping("/search-board-of-title")
-    @ApiOperation(value = "게시글 검색 API", notes = "제목 검색")
+    @ApiOperation(value = "제목 검색", notes = "제목 검색")
     public ResponseEntity<?> searchBoardByTitle(@RequestParam("keyword") String keyword) {
         try {
             List<BoardRes> boardList  = boardService.searchBoardByTitle(keyword);
@@ -158,7 +158,7 @@ public class BoardController {
     }
 
     @GetMapping("/search-board-of-content")
-    @ApiOperation(value = "게시글 검색 API", notes = "본문 검색")
+    @ApiOperation(value = "본문 검색", notes = "본문 검색")
     public ResponseEntity<?> searchBoardByContent(@RequestParam("keyword") String keyword) {
         try {
             List<BoardRes> boardList  = boardService.searchBoardByContent(keyword);
@@ -178,7 +178,7 @@ public class BoardController {
      * @return BaseResponse<String>
      */
     @PostMapping("/add")
-//    @ApiOperation(value = "게시글 등록 API", notes = "게시글 등록")
+    @ApiOperation(value = "게시글 등록", notes = "게시글 등록")
 //    public BaseResponse<String> save(@RequestBody BoardReq req, @RequestParam Long id) {
 //        try {
 //            Long idx = jwtService.getUserIdx();
@@ -234,6 +234,7 @@ public class BoardController {
 
     /** 파일 다운로드 **/
     @GetMapping("/file-download")
+    @ApiOperation(value = "파일 다운로드", notes = "파일 다운로드")
     public ResponseEntity<?> fileDownload(@RequestParam("fileId") Long fileId) throws IOException {
         FileReq fileDto = fileService.getFile(fileId);
         Path path = Paths.get(fileDto.getFilePath());
@@ -253,7 +254,7 @@ public class BoardController {
      */
     // http://localhost:8080/board/update?boardId={boardId}
     @PatchMapping("/update")
-    @ApiOperation(value = "게시글 수정 API", notes = "게시글 수정")
+    @ApiOperation(value = "게시글 수정", notes = "게시글 수정")
     public BaseResponse<?> updateBoard(@RequestParam("boardId") Long boardId,
                                        BoardReq req, @RequestParam Long id,
                                        @RequestParam(value = "files") MultipartFile files) {
@@ -292,7 +293,7 @@ public class BoardController {
      */
     // http://localhost:8080/board/delete?boardId={boardId}
     @DeleteMapping("/delete")
-    @ApiOperation(value = "게시글 삭제 API", notes = "게시글 삭제")
+    @ApiOperation(value = "게시글 삭제", notes = "게시글 삭제")
     public BaseResponse<?> deleteBoard(@RequestParam("boardId") Long boardId, @RequestParam Long id) {
         try {
             Long idx = jwtService.getUserIdx();

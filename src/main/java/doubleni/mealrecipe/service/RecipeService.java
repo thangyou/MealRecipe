@@ -226,7 +226,7 @@ public class RecipeService {
     }
 
     /* 전체 레시피 조회 */
-    public List<GetRecipeRes> getAllRecipes() {
+    public List<GetRecipeRes> getAllRecipes() throws BaseException {
         List<GetRecipeRes> getRecipeRes =
                 recipeRepository.findAll()
                         .stream()
@@ -234,7 +234,8 @@ public class RecipeService {
                         .toList();
 
         if (getRecipeRes.isEmpty()) {
-            throw new IllegalStateException();
+            throw new BaseException(DATABASE_ERROR);
+//            throw new IllegalStateException();
         }
         return getRecipeRes;
     }
@@ -320,7 +321,7 @@ public class RecipeService {
 
     /* 정렬 */
 
-    public List<GetRecipeOrderRes> getRecipeByOrderByInfoProDesc() { // 고단백
+    public List<GetRecipeOrderRes> getRecipeByOrderByInfoProDesc() throws BaseException { // 고단백
         List<GetRecipeOrderRes> getRecipeRes =
                 recipeRepository.findAllByOrderByInfoProDesc()
                         .stream()
@@ -328,12 +329,13 @@ public class RecipeService {
                         .toList();
 
         if (getRecipeRes.isEmpty()) {
-            throw new IllegalStateException();
+            throw new BaseException(DATABASE_ERROR);
+//            throw new IllegalStateException();
         }
         return getRecipeRes;
     }
 
-    public List<GetRecipeOrderRes> getRecipeByOrderByInfoFatAsc() { // 저지방
+    public List<GetRecipeOrderRes> getRecipeByOrderByInfoFatAsc() throws BaseException { // 저지방
         List<GetRecipeOrderRes> getRecipeRes =
                 recipeRepository.findAllByOrderByInfoFatAsc()
                         .stream()
@@ -341,7 +343,8 @@ public class RecipeService {
                         .toList();
 
         if (getRecipeRes.isEmpty()) {
-            throw new IllegalStateException();
+            throw new BaseException(DATABASE_ERROR);
+//            throw new IllegalStateException();
         }
         return getRecipeRes;
     }
@@ -356,25 +359,27 @@ public class RecipeService {
                 .collect(Collectors.toList());
 
         if(getRecipeResList.isEmpty()) {
-            throw new IllegalStateException();
+            throw new BaseException(DATABASE_ERROR);
+//            throw new IllegalStateException();
         }
         return getRecipeResList;
     }
 
-    public List<GetRecipeRes> searchRecipeByRcpPartsDtls(String ingredient) {
+    public List<GetRecipeRes> searchRecipeByRcpPartsDtls(String ingredient) throws BaseException {
         List<GetRecipeRes> getRecipeResList = recipeRepository.findByRcpPartsDtlsContaining(ingredient)
                 .stream()
                 .map(GetRecipeRes::new)
                 .toList();
 
         if(getRecipeResList.isEmpty()) {
-            throw new IllegalStateException();
+            throw new BaseException(DATABASE_ERROR);
+//            throw new IllegalStateException();
         }
         return getRecipeResList;
     }
 
     /* 재료 출력 */
-    public List<String> searchRcpPartsDtlsByRcpNm(String rcpNm) {
+    public List<String> searchRcpPartsDtlsByRcpNm(String rcpNm) throws BaseException {
         /**
          * <문제점>
          *     정확한 명칭 "부추 콩가루 찜" 검색 해야 재료 출력
@@ -384,7 +389,7 @@ public class RecipeService {
          * </해결방안>
          */
         Recipe recipe = recipeRepository.findByRcpNm(rcpNm)
-                .orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다."));
+                .orElseThrow(() -> new BaseException(DATABASE_ERROR));
         GetRecipeRes response = new GetRecipeRes(recipe);
 //        return Collections.singletonList(response.getRcpPartsDtls()); // 문자열 출력
 
