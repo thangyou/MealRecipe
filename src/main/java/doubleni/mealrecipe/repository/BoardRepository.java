@@ -2,7 +2,6 @@ package doubleni.mealrecipe.repository;
 
 import doubleni.mealrecipe.model.Board;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
@@ -19,9 +18,10 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 //    List<Board> findByNickname(String writer);
 
     // 검색
-//    List<Board> findByNicknameContaining(@Param("keyword") String keyword);
+    List<Board> findByUserNicknameContaining(@Param("keyword") String keyword);
     List<Board> findByTitleContaining(@Param("keyword") String keyword);
     List<Board> findByContentContaining(@Param("keyword") String keyword);
+    void deleteByBoardId(Long BoardId);
 
 
 

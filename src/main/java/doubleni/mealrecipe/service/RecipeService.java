@@ -42,6 +42,7 @@ public class RecipeService {
             JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(projectPath));
 
             JSONArray recipeList = (JSONArray)jsonObject.get("row");
+            System.out.println("recipeList.size() : " + recipeList.size());
             for (int i=0; i<recipeList.size(); i++){
                 //recipe 객체 생성
                 Recipe recipe = new Recipe();
@@ -106,8 +107,8 @@ public class RecipeService {
 
                     // 재료 정보
 //                    List<String> rcp_parts_dtls = (List<String>) result.get("RCP_PARTS_DTLS");
-                    String ingredient = (String) result.get("RCP_PARTS_DTLS");
-                    recipe.setIngredient(ingredient);
+                    String rcpPartsDtls = (String) result.get("RCP_PARTS_DTLS");
+                    recipe.setRcpPartsDtls(rcpPartsDtls);
 
                     // 레시피 설명, 레시피 이미지
                     String manual01=(String) result.get("MANUAL01");
@@ -263,7 +264,7 @@ public class RecipeService {
 
                 /* 재료 */
 //                getRecipeIdRes.setRcpPartsDtls(new ArrayList<>(recipe.getRcpPartsDtls()));
-                getRecipeIdRes.setIngredient(recipe.getIngredient());
+                getRecipeIdRes.setRcpPartsDtls(recipe.getRcpPartsDtls());
 
                 getRecipeIdRes.setManual01(recipe.getManual01());
                 getRecipeIdRes.setManualImg01(recipe.getManualImg01());
@@ -360,8 +361,8 @@ public class RecipeService {
         return getRecipeResList;
     }
 
-    public List<GetRecipeRes> searchRecipeByIngredient(String ingredient) {
-        List<GetRecipeRes> getRecipeResList = recipeRepository.findByIngredientContaining(ingredient)
+    public List<GetRecipeRes> searchRecipeByRcpPartsDtls(String ingredient) {
+        List<GetRecipeRes> getRecipeResList = recipeRepository.findByRcpPartsDtlsContaining(ingredient)
                 .stream()
                 .map(GetRecipeRes::new)
                 .toList();
@@ -373,7 +374,7 @@ public class RecipeService {
     }
 
     /* 재료 출력 */
-    public List<String> searchIngredientByRcpNm(String rcpNm) {
+    public List<String> searchRcpPartsDtlsByRcpNm(String rcpNm) {
         /**
          * <문제점>
          *     정확한 명칭 "부추 콩가루 찜" 검색 해야 재료 출력
@@ -388,7 +389,7 @@ public class RecipeService {
 //        return Collections.singletonList(response.getRcpPartsDtls()); // 문자열 출력
 
         // 문자열에서 "\n"과 ","을 기준으로 분할하여 리스트로 저장
-        String[] ingredients = response.getIngredient().split("[\\n,]");
+        String[] ingredients = response.getRcpPartsDtls().split("[\\n,]");
         List<String> ingredients_list = new ArrayList<>();
 
         // 빈 문자열이나 공백 문자열을 제외하고 리스트에 추가

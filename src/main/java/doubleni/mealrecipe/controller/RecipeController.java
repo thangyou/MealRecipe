@@ -4,6 +4,7 @@ import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.config.exception.BaseResponse;
 import doubleni.mealrecipe.model.DTO.*;
 import doubleni.mealrecipe.service.RecipeService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
+@Api(tags = "Recipe", description = "식약처 공공 API")
 @RestController // HTTP Response Body에 객체 데이터를 JSON 형식으로 반환하는 컨트롤러
 @RequestMapping("/recipe")
 public class RecipeController {
@@ -156,9 +158,9 @@ public class RecipeController {
     // 재료로 검색 - 재료가 속한 레시피 리스트 출력
     @GetMapping("/search-recipe-of-ingredient")
     @ApiOperation(value = "레시피 검색 API", notes = "재료로 레시피 검색")
-    public ResponseEntity<?> searchRecipeByIngredient(@RequestParam("ingredient") String ingredient) {
+    public ResponseEntity<?> searchRecipeByRcpPartsDtls(@RequestParam("ingredient") String ingredient) {
         try {
-            return ResponseEntity.ok().body(recipeService.searchRecipeByIngredient(ingredient));
+            return ResponseEntity.ok().body(recipeService.searchRecipeByRcpPartsDtls(ingredient));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -173,8 +175,8 @@ public class RecipeController {
     // 레시피명 검색 - 레시피의 재료 출력
     @GetMapping("/search-ingredient-of-recipe")
     @ApiOperation(value = "재료 검색 API", notes = "레시피의 재료 검색")
-    public ResponseEntity<?> searchIngredientById(@RequestParam("keyword") String keyword) {
-        return ResponseEntity.ok().body(recipeService.searchIngredientByRcpNm(keyword));
+    public ResponseEntity<?> searchRcpPartsDtlsByRcpNm(@RequestParam("keyword") String keyword) {
+        return ResponseEntity.ok().body(recipeService.searchRcpPartsDtlsByRcpNm(keyword));
     }
 
 
