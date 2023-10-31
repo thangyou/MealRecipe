@@ -5,10 +5,12 @@ import doubleni.mealrecipe.config.exception.BaseResponse;
 import doubleni.mealrecipe.model.DTO.*;
 import doubleni.mealrecipe.service.UserService;
 import doubleni.mealrecipe.utils.JwtService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,10 +24,10 @@ import java.io.IOException;
 
 import static doubleni.mealrecipe.config.exception.BaseResponseStatus.*;
 import static doubleni.mealrecipe.utils.ValidationRegex.isRegexPhone;
-import org.apache.commons.io.FilenameUtils;
 
 @RestController
 @RequiredArgsConstructor
+@Api(tags = "User", description = "사용자")
 public class UserController {
 
     private final UserService userService;
@@ -118,7 +120,7 @@ public class UserController {
     @PostMapping(value = "/users/sns")
     @ApiOperation(value="소셜로그인 추가", notes="닉네임, 전화번호, 프로필이미지 추가 \n headers = {\"X-ACCESS-TOKEN\": jwt}; 설정해주기(jwt는 로그인하면 반환되는 jwt이다.")
     @ApiResponses(value={@ApiResponse(code =2023,message = "닉네임을 입력해주세요."),@ApiResponse(code=2025,message = "닉네임은 2 ~ 20자 사이로 입력해주세요."),
-            @ApiResponse(code=2018,message = "휴대폰 번호를 입력해주세요."), @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),
+            @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),
             @ApiResponse(code=4014,message = "유저 정보를 수정하는데 실패했습니다."),
             @ApiResponse(code=4000,message = "데이터베이스 연결에 실패하였습니다."),@ApiResponse(code=2012,message = "이미 저장한 소셜로그인 유저입니다.")
     })
@@ -129,12 +131,7 @@ public class UserController {
         if (postExtraReq.getNickname().length()<2 || postExtraReq.getNickname().length()>20){
             return new BaseResponse<>(POST_USERS_INVALID_NICKNAME);
         }
-        if (postExtraReq.getPhone() ==null){
-            return new BaseResponse<>(POST_USERS_EMPTY_TELNUM);
-        }
-        if(!isRegexPhone(postExtraReq.getPhone())){
-            return new BaseResponse<>(POST_USERS_INVALID_TELNUM);
-        }
+
 
         try{
             Long id_jwt = jwtService.getUserIdx();

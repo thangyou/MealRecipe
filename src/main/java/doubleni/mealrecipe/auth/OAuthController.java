@@ -4,6 +4,7 @@ import doubleni.mealrecipe.auth.model.PostKakaoReq;
 import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.config.exception.BaseResponse;
 import doubleni.mealrecipe.model.DTO.PostUserRes;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/oauth")
+@Api(tags = "Oauth", description = "소셜로그인")
 public class OAuthController {
     private final OAuthService OAuthService;
 

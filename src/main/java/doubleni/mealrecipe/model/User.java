@@ -40,7 +40,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Board> boards;     // 작성글
-    
+
     /*
     @ManyToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     private List<Recipe> recipes = new ArrayList<>();
