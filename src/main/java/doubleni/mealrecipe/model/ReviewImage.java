@@ -30,7 +30,7 @@ public class ReviewImage {
     private String imgPath;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id")
+    @JoinColumn(name = "reviewId")
     @JsonIgnore
     private Review review;
 }
