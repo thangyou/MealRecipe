@@ -1,7 +1,7 @@
 package doubleni.mealrecipe.service;
 
 import doubleni.mealrecipe.config.exception.BaseException;
-import doubleni.mealrecipe.model.DTO.GetRecipeOrderRes;
+//import doubleni.mealrecipe.model.DTO.GetRecipeOrderRes;
 import doubleni.mealrecipe.model.DTO.GetRecipeRes;
 import doubleni.mealrecipe.model.DTO.GetReviewRes;
 import doubleni.mealrecipe.model.Recipe;
@@ -75,23 +75,23 @@ public class RecipeService {
 
                     // 열량
                     String info_eng=(String) result.get("INFO_ENG");
-                    recipe.setInfoEng(Integer.parseInt(info_eng));
+                    recipe.setInfoEng(info_eng);
 
                     // 탄수화물
                     String info_car=(String) result.get("INFO_CAR");
-                    recipe.setInfoCar(Integer.parseInt(info_car));
+                    recipe.setInfoCar(info_car);
 
                     // 단백질
                     String info_pro=(String) result.get("INFO_PRO");
-                    recipe.setInfoPro(Integer.parseInt(info_pro));
+                    recipe.setInfoPro(info_pro);
 
                     // 지방
                     String info_fat=(String) result.get("INFO_FAT");
-                    recipe.setInfoFat(Integer.parseInt(info_fat));
+                    recipe.setInfoFat(info_fat);
 
                     // 나트륨
                     String info_na=(String) result.get("INFO_NA");
-                    recipe.setInfoNa(Integer.parseInt(info_na));
+                    recipe.setInfoNa(info_na);
 
                     // 해시태그
                     String hash_tag=(String) result.get("HASH_TAG");
@@ -321,33 +321,33 @@ public class RecipeService {
 
     /* 정렬 */
 
-    public List<GetRecipeOrderRes> getRecipeByOrderByInfoProDesc() throws BaseException { // 고단백
-        List<GetRecipeOrderRes> getRecipeRes =
-                recipeRepository.findAllByOrderByInfoProDesc()
-                        .stream()
-                        .map(GetRecipeOrderRes::new)
-                        .toList();
-
-        if (getRecipeRes.isEmpty()) {
-            throw new BaseException(DATABASE_ERROR);
-//            throw new IllegalStateException();
-        }
-        return getRecipeRes;
-    }
-
-    public List<GetRecipeOrderRes> getRecipeByOrderByInfoFatAsc() throws BaseException { // 저지방
-        List<GetRecipeOrderRes> getRecipeRes =
-                recipeRepository.findAllByOrderByInfoFatAsc()
-                        .stream()
-                        .map(GetRecipeOrderRes::new)
-                        .toList();
-
-        if (getRecipeRes.isEmpty()) {
-            throw new BaseException(DATABASE_ERROR);
-//            throw new IllegalStateException();
-        }
-        return getRecipeRes;
-    }
+//    public List<GetRecipeOrderRes> getRecipeByOrderByInfoProDesc() throws BaseException { // 고단백
+//        List<GetRecipeOrderRes> getRecipeRes =
+//                recipeRepository.findAllByOrderByInfoProDesc()
+//                        .stream()
+//                        .map(GetRecipeOrderRes::new)
+//                        .toList();
+//
+//        if (getRecipeRes.isEmpty()) {
+//            throw new BaseException(DATABASE_ERROR);
+////            throw new IllegalStateException();
+//        }
+//        return getRecipeRes;
+//    }
+//
+//    public List<GetRecipeOrderRes> getRecipeByOrderByInfoFatAsc() throws BaseException { // 저지방
+//        List<GetRecipeOrderRes> getRecipeRes =
+//                recipeRepository.findAllByOrderByInfoFatAsc()
+//                        .stream()
+//                        .map(GetRecipeOrderRes::new)
+//                        .toList();
+//
+//        if (getRecipeRes.isEmpty()) {
+//            throw new BaseException(DATABASE_ERROR);
+////            throw new IllegalStateException();
+//        }
+//        return getRecipeRes;
+//    }
 
     // ====================================================================
 

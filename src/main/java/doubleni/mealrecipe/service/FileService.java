@@ -1,11 +1,8 @@
 package doubleni.mealrecipe.service;
 
 import doubleni.mealrecipe.config.MD5Generator;
-import doubleni.mealrecipe.config.exception.BaseException;
-import doubleni.mealrecipe.model.BaseEntity;
-import doubleni.mealrecipe.model.Board;
 import doubleni.mealrecipe.model.DTO.FileReq;
-import doubleni.mealrecipe.model.Files;
+import doubleni.mealrecipe.model.ImageFile;
 import doubleni.mealrecipe.repository.FileRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,7 +30,7 @@ public class FileService {
 
     @Transactional
     public void updateFile(Long fileId, MultipartFile files) {
-        Optional<Files> findFile = fileRepository.findByFileId(fileId);
+        Optional<ImageFile> findFile = fileRepository.findByFileId(fileId);
 
         if (findFile.isPresent()) {
 
@@ -86,13 +83,13 @@ public class FileService {
 
     @Transactional
     public FileReq getFile(Long fileId) {
-        Files files = fileRepository.findByFileId(fileId).get();
+        ImageFile imageFile = fileRepository.findByFileId(fileId).get();
 
         return FileReq.builder()
                 .fileId(fileId)
-                .origFilename(files.getOrigFilename())
-                .filename(files.getFilename())
-                .filePath(files.getFilePath())
+                .origFilename(imageFile.getOrigFilename())
+                .filename(imageFile.getFilename())
+                .filePath(imageFile.getFilePath())
                 .build();
     }
 

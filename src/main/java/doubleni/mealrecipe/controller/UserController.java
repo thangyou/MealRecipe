@@ -162,7 +162,7 @@ public class UserController {
             @ApiResponse(code=2003,message = "권한이 없는 유저의 접근입니다."),@ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요.")
     })
     public BaseResponse<MypageDTO> mypagefix(@RequestParam(required = false) String password, @RequestParam(required = false) String phone,
-                                           @RequestParam(required = false) String status, @RequestParam(required = false) String nickname, @RequestPart(value = "images" ,required = false) MultipartFile imageFile)  {
+                                             @RequestParam(required = false) String status, @RequestParam(required = false) String nickname, @RequestPart(value = "images" ,required = false) MultipartFile imageFile)  {
 
         try{
             MypageDTO mypageDTO = userService.mypagefixInfo(password,nickname,phone,status, imageFile);
