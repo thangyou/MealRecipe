@@ -100,7 +100,8 @@ public enum BaseResponseStatus {
     // files
     ADD_FAIL_FILES(false, 4030, "파일 등록 실패"),
     UPDATE_FAIL_FILES(false, 4031, "파일 수정 실패"),
-    DELETE_FAIL_FILES(false, 4032, "파일 삭제 실패");
+    DELETE_FAIL_FILES(false, 4032, "파일 삭제 실패"),
+    SHOW_FAIL_FILES(false, 4032, "파일 조회 실패");
 
     private final boolean isSuccess;
     private final int code;

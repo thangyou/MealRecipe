@@ -20,11 +20,18 @@ public class GetRecipeRes {
     private String rcpWay2; // 조리 방법
     private String rcpPat2; // 요리 종류
     private String infoWgt; // 중량(1인분)
-    private int infoEng; // 열량
-    private int infoCar; // 탄수화물
-    private int infoPro; // 단백질
-    private int infoFat; // 지방
-    private int infoNa; // 나트륨
+
+    private String infoEng; // 열량
+    private String infoCar; // 탄수화물
+    private String infoPro; // 단백질
+    private String infoFat; // 지방
+    private String infoNa; // 나트륨
+
+//    private int infoEng; // 열량
+//    private int infoCar; // 탄수화물
+//    private int infoPro; // 단백질
+//    private int infoFat; // 지방
+//    private int infoNa; // 나트륨
 
     private String hashTag; // 해시태그
     private String attFileNoMain; // 이미지 경로(소)

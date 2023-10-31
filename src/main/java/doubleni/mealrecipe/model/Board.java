@@ -84,6 +84,13 @@ public class Board {
         this.content = req.getContent();
     }
 
+//    @OneToOne(mappedBy = "files")
+//    private ImageFile file;
+//
+//    public ImageFile getFile(ImageFile file) {
+//        return this.file = file;
+//    }
+
 //    public void likeChange(Integer likeCnt) {
 //        this.likeCnt = likeCnt;
 //    }

@@ -105,17 +105,17 @@ public class RecipeController {
      *
      * @return BaseResponse<GetRecipeIdRes>
      */
-    @GetMapping("/list-order-by-protein")
-    @ApiOperation(value="레시피 조건 정렬 API", notes="고단백 레시피 정렬")
-    @ApiResponses(value={@ApiResponse(code =3000,message = "값을 불러오는데 실패하였습니다.")})
-    public BaseResponse<List<GetRecipeOrderRes>> getRecipeByOrderByInfoProDesc() {
-        try {
-            List<GetRecipeOrderRes> getRecipeRes  = recipeService.getRecipeByOrderByInfoProDesc();
-            return new BaseResponse<>(getRecipeRes);
-        } catch (Exception e) {
-            return new BaseResponse<>(RESPONSE_ERROR);
-        }
-    }
+//    @GetMapping("/list-order-by-protein")
+//    @ApiOperation(value="레시피 조건 정렬 API", notes="고단백 레시피 정렬")
+//    @ApiResponses(value={@ApiResponse(code =3000,message = "값을 불러오는데 실패하였습니다.")})
+//    public BaseResponse<List<GetRecipeOrderRes>> getRecipeByOrderByInfoProDesc() {
+//        try {
+//            List<GetRecipeOrderRes> getRecipeRes  = recipeService.getRecipeByOrderByInfoProDesc();
+//            return new BaseResponse<>(getRecipeRes);
+//        } catch (Exception e) {
+//            return new BaseResponse<>(RESPONSE_ERROR);
+//        }
+//    }
 
     /**
      * 저지방 조건 정렬 조회 api
@@ -123,17 +123,17 @@ public class RecipeController {
      *
      * @return BaseResponse<GetRecipeIdRes>
      */
-    @GetMapping("/list-order-by-fat")
-    @ApiOperation(value="레시피 조건 정렬 API", notes="저지방 레시피 정렬")
-    @ApiResponses(value={@ApiResponse(code =3000,message = "값을 불러오는데 실패하였습니다.")})
-    public BaseResponse<List<GetRecipeOrderRes>> getRecipeByOrderByInfoFatAsc() {
-        try {
-            List<GetRecipeOrderRes> getRecipeRes  = recipeService.getRecipeByOrderByInfoFatAsc();
-            return new BaseResponse<>(getRecipeRes);
-        } catch (Exception e) {
-            return new BaseResponse<>(RESPONSE_ERROR);
-        }
-    }
+//    @GetMapping("/list-order-by-fat")
+//    @ApiOperation(value="레시피 조건 정렬 API", notes="저지방 레시피 정렬")
+//    @ApiResponses(value={@ApiResponse(code =3000,message = "값을 불러오는데 실패하였습니다.")})
+//    public BaseResponse<List<GetRecipeOrderRes>> getRecipeByOrderByInfoFatAsc() {
+//        try {
+//            List<GetRecipeOrderRes> getRecipeRes  = recipeService.getRecipeByOrderByInfoFatAsc();
+//            return new BaseResponse<>(getRecipeRes);
+//        } catch (Exception e) {
+//            return new BaseResponse<>(RESPONSE_ERROR);
+//        }
+//    }
 
     // ===============================================================================================
 
@@ -148,7 +148,7 @@ public class RecipeController {
     @ApiOperation(value="레시피 검색 API", notes="키워드로 레시피 검색")
     @ApiResponses(value={@ApiResponse(code =2000,message = "입력값을 확인해주세요."),
             @ApiResponse(code =2050,message = "존재하지 않는 레시피입니다.")})
-    public BaseResponse<?> searchRecipeByKeyword (@RequestParam("keyword") String keyword){
+    public BaseResponse<List<GetRecipeRes>> searchRecipeByKeyword (@RequestParam("keyword") String keyword){
         try{
             List<GetRecipeRes> response = recipeService.searchRecipeByName(keyword);
             if (response.isEmpty()) {
@@ -171,7 +171,7 @@ public class RecipeController {
     @ApiOperation(value = "레시피 검색 API", notes = "재료로 레시피 검색")
     @ApiResponses(value={@ApiResponse(code =2000,message = "입력값을 확인해주세요."),
             @ApiResponse(code =2050,message = "존재하지 않는 레시피입니다.")})
-    public BaseResponse<?> searchRecipeByRcpPartsDtls (@RequestParam("keyword") String ingredient) throws BaseException {
+    public BaseResponse<List<GetRecipeRes>> searchRecipeByRcpPartsDtls (@RequestParam("keyword") String ingredient) throws BaseException {
         if (ingredient.isEmpty()) {
             return new BaseResponse<>(REQUEST_ERROR);
         }
@@ -195,7 +195,7 @@ public class RecipeController {
     @ApiOperation(value = "재료 검색 API", notes = "레시피의 재료 검색")
     @ApiResponses(value={@ApiResponse(code =2000,message = "입력값을 확인해주세요."),
             @ApiResponse(code =2050,message = "존재하지 않는 레시피입니다.")})
-    public BaseResponse<?> searchRcpPartsDtlsByRcpNm (@RequestParam("keyword") String keyword) throws BaseException {
+    public BaseResponse<List<String>> searchRcpPartsDtlsByRcpNm (@RequestParam("keyword") String keyword) throws BaseException {
         if (keyword.isEmpty()) {
             return new BaseResponse<>(REQUEST_ERROR);
         }

@@ -2,12 +2,9 @@ package doubleni.mealrecipe.model.DTO;
 
 import doubleni.mealrecipe.model.Board;
 //import doubleni.mealrecipe.model.UploadImage;
-import doubleni.mealrecipe.model.Files;
 import doubleni.mealrecipe.model.User;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
