@@ -365,8 +365,8 @@ public class RecipeService {
         return getRecipeResList;
     }
 
-    public List<GetRecipeRes> searchRecipeByRcpPartsDtls(String ingredient) throws BaseException {
-        List<GetRecipeRes> getRecipeResList = recipeRepository.findByRcpPartsDtlsContaining(ingredient)
+    public List<GetRecipeRes> searchRecipeByRcpPartsDtls(String keyword) throws BaseException {
+        List<GetRecipeRes> getRecipeResList = recipeRepository.findByRcpPartsDtlsContaining(keyword)
                 .stream()
                 .map(GetRecipeRes::new)
                 .toList();

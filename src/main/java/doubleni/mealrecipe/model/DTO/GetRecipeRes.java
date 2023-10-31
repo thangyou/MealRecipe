@@ -87,6 +87,11 @@ public class GetRecipeRes {
         this.rcpWay2 = r.getRcpWay2();
         this.rcpPat2 = r.getRcpPat2();
         this.infoWgt = r.getInfoWgt();
+        this.infoCar = r.getInfoCar();
+        this.infoEng = r.getInfoEng();
+        this.infoPro = r.getInfoPro();
+        this.infoFat = r.getInfoFat();
+        this.infoNa = r.getInfoNa();
         this.hashTag = r.getHashTag();
         this.attFileNoMain = r.getAttFileNoMain();
         this.attFileNoMk = r.getAttFileNoMk();
