@@ -19,7 +19,7 @@ public class Recipe {
     // 식약처 공공 데이터 레시피
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RCP_ID", nullable = false)
+    @Column(name = "rcp_id")
     private Long rcpId;
 
     private String rcpSeq; // 일련 번호
@@ -27,11 +27,19 @@ public class Recipe {
     private String rcpWay2; // 조리 방법
     private String rcpPat2; // 요리 종류
     private String infoWgt; // 중량(1인분)
-    private int infoEng; // 열량
-    private int infoCar; // 탄수화물
-    private int infoPro; // 단백질
-    private int infoFat; // 지방
-    private int infoNa; // 나트륨
+
+    private String infoEng; // 열량
+    private String infoCar; // 탄수화물
+    private String infoPro; // 단백질
+    private String infoFat; // 지방
+    private String infoNa; // 나트륨
+
+//    private int infoEng; // 열량
+//    private int infoCar; // 탄수화물
+//    private int infoPro; // 단백질
+//    private int infoFat; // 지방
+//    private int infoNa; // 나트륨
+
     private String hashTag; // 해시태그
     private String attFileNoMain; // 이미지 경로(소)
     private String attFileNoMk; // 이미지 경로(대)
@@ -81,6 +89,23 @@ public class Recipe {
     private String manual20;
     private String manualImg20;
     private String rcpNaTip;
+
+//    // 일대다 관계 설정: 한 개의 Recipe가 여러 개의 Review를 가질 수 있음
+//    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+//    private List<Review> reviews;  // Recipe에 대한 리뷰 목록
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user; // 작성자
+
+    // 다대일 관계 설정: 한 개의 Recipe는 여러 개의 Like를 가질 수 있음
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    private List<RecipeLike> likes; // 레시피에 달린 좋아요 목록
+    private Integer likeCnt; // 레시피 좋아요 수
+
+    public void likeChange(Integer likeCnt) {
+        this.likeCnt = likeCnt;
+    }
+
 
 
 }

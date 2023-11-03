@@ -1,12 +1,7 @@
 package doubleni.mealrecipe.model.DTO;
 
-import doubleni.mealrecipe.model.Board;
-import doubleni.mealrecipe.model.Files;
+import doubleni.mealrecipe.model.ImageFile;
 import lombok.*;
-
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 
 @Getter
 @Setter
@@ -18,8 +13,8 @@ public class FileReq {
     private String filename;
     private String filePath;
 
-    public Files toEntity() {
-        return Files.builder()
+    public ImageFile toEntity() {
+        return ImageFile.builder()
                 .fileId(fileId)
                 .origFilename(origFilename)
                 .filename(filename)

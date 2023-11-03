@@ -5,14 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRes {
-    private Long id;
-    private String email;
-    private String nickname;
-    private String jwt;
-    private String resultMessage;
+public class FlaskDTO {
+    private List<String> user_likes;
+    private List<String> user_allergies;
 }

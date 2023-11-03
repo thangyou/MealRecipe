@@ -26,6 +26,7 @@ public enum BaseResponseStatus {
     // users
     USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),
     USERS_NOT_EXISTS(false, 2011, "존재하지 않는 유저입니다."),
+    USERS_ALREADY_REGISTER(false,2012,"이미 저장한 소셜로그인 유저입니다."),
 
     // [POST] /users
     POST_USERS_EMPTY_EMAIL(false, 2015, "이메일을 입력해주세요."),
@@ -46,11 +47,24 @@ public enum BaseResponseStatus {
     POST_REVIEWS_INVALID_CONTENT(false,2030, "최대 입력 글자 수는 1000자입니다."),
     DELETE_FAIL_REVIEW(false, 2031, "리뷰를 삭제하지 못했습니다."),
     REVIEWS_EMPTY_REVIEW_ID(false,2032,"존재하지 않거나 삭제된 리뷰입니다."),
+    POST_REVIEWS_NO_CONTEXT(false,2033,"리뷰 내용을 입력해주세요."),
+    POST_REVIEWS_NO_RATINGS(false,2034,"리뷰 평점을 입력해주세요."),
+    POST_REVIEWS_FAILS(false,2035,"리뷰 작성 실패하였습니다."),
+
 
 
     // category
     CATEGORIES_EMPTY_CATEGORY(false, 2040, "존재하지 않는 카테고리입니다."),
 
+    // recipe
+    RECIPE_NOT_EXISTS(false, 2050, "존재하지 않는 레시피입니다."),
+    RECIPE_ID_NOEXISTS(false,2051,"레시피 아이디를 입력해주세요"),
+
+    // board
+    POST_BOARD_EMPTY_TITLE(false,2060, "제목을 입력해주세요."),
+    POST_BOARD_EMPTY_CONTENT(false,2061, "내용을 입력해주세요."),
+    POST_BOARD_EMPTY_FILES(false, 2062, "이미지를 업로드하세요."),
+    BOARD_NOT_EXISTS(false,2063,"존재 하지 않거나 삭제된 게시글 입니다."),
 
     /**
      * 3000 : Response 오류
@@ -62,6 +76,8 @@ public enum BaseResponseStatus {
     DUPLICATED_EMAIL(false, 3013, "중복된 이메일입니다."),
     FAILED_TO_LOGIN(false,3014,"없는 아이디거나 비밀번호가 틀렸습니다."),
 
+
+    // board
 
 
     /**
@@ -79,9 +95,18 @@ public enum BaseResponseStatus {
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다."),
-    KAKAO_CONNECTION_ERROR(false, 4013, "카카오톡 연결에 실패하였습니다.");
+    KAKAO_CONNECTION_ERROR(false, 4013, "카카오톡 연결에 실패하였습니다."),
 
+    // board
+    ADD_FAIL_BOARD(false, 4020, "게시판 등록 실패"),
+    UPDATE_FAIL_BOARD(false, 4021, "게시판 수정 실패"),
+    DELETE_FAIL_BOARD(false, 4022, "게시판 삭제 실패"),
 
+    // files
+    ADD_FAIL_FILES(false, 4030, "파일 등록 실패"),
+    UPDATE_FAIL_FILES(false, 4031, "파일 수정 실패"),
+    DELETE_FAIL_FILES(false, 4032, "파일 삭제 실패"),
+    SHOW_FAIL_FILES(false, 4032, "파일 조회 실패");
 
     private final boolean isSuccess;
     private final int code;

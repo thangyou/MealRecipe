@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "files")
-public class Files {
+public class ImageFile {
     // 업로드한 파일의 정보
     @Id
     @GeneratedValue
@@ -29,7 +29,7 @@ public class Files {
     private String filePath; // Server에 저장되는 경로
 
     @Builder
-    public Files(Long fileId, String origFilename, String filename, String filePath) {
+    public ImageFile(Long fileId, String origFilename, String filename, String filePath) {
         this.fileId = fileId;
         this.origFilename = origFilename;
         this.filename = filename;
@@ -42,4 +42,9 @@ public class Files {
         this.filename = req.getFilename();
         this.filePath = req.getFilePath();
     }
+
+//    @OneToOne(mappedBy = "board")
+//    @JoinColumn(name = "file_id")
+//    private Board board;
+
 }

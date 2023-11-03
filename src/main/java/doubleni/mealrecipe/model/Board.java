@@ -1,22 +1,19 @@
 package doubleni.mealrecipe.model;
 
 import doubleni.mealrecipe.model.DTO.BoardReq;
-import doubleni.mealrecipe.model.DTO.BoardRes;
-import doubleni.mealrecipe.model.DTO.FileReq;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @ToString
 @Table(name = "board")
 @Entity
@@ -46,10 +43,10 @@ public class Board {
      *  COMMENT - 댓글
      *  LIKE - 좋아요
      */
-//    @OneToMany(mappedBy = "board", orphanRemoval = true)
-//    private List<Like> likes;       // 좋아요
-////    private Integer likeCnt;        // 좋아요 수
-////
+    @OneToMany(mappedBy = "board", orphanRemoval = true)
+    private List<BoardLike> boardLikes;       // 좋아요
+    private Integer likeCnt;        // 좋아요 수
+
 //    @OneToMany(mappedBy = "board", orphanRemoval = true)
 //    private List<Comment> comments; // 댓글
 ////    private Integer commentCnt;     // 댓글 수
@@ -84,14 +81,21 @@ public class Board {
         this.content = req.getContent();
     }
 
-//    public void likeChange(Integer likeCnt) {
-//        this.likeCnt = likeCnt;
-//    }
+//    @OneToOne(mappedBy = "files")
+//    private ImageFile file;
 //
+//    public ImageFile getFile(ImageFile file) {
+//        return this.file = file;
+//    }
+
+    public void likeChange(Integer likeCnt) {
+        this.likeCnt = likeCnt;
+    }
+
 //    public void commentChange(Integer commentCnt) {
 //        this.commentCnt = commentCnt;
 //    }
-//
+
 
 
 }

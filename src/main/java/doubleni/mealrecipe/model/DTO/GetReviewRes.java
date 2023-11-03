@@ -15,15 +15,21 @@ import java.sql.Timestamp;
 public class GetReviewRes {
     private Long reviewId;
 
-    private String userId;
-
-    private Long recipeId;
-
     private String reviewContext;
 
-    private String reviewImage;
+    private String reviewImageUrl;
 
     private Timestamp reviewCreated;
 
+    private Timestamp reviewModified;
+
     private double reviewRating;
+
+    private Long userId;
+
+    private String nickName;
+
+    private Long recipeId;
+
+    private String recipeName;
 }
