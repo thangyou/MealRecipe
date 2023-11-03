@@ -23,13 +23,11 @@ import static doubleni.mealrecipe.config.exception.BaseResponseStatus.USERS_EMPT
 @RestController
 @RequiredArgsConstructor
 @Controller
-@Api(tags = "Likes", description = "사용자 레시피 찜")
+@Api(tags = "Likes", description = "사용자 레시피 좋아요(저장)")
 @RequestMapping("/likes")
 public class LikeController {
 
     private final LikeService likeService;
-    private final BoardService boardService;
-    private final RecipeService recipeService;
     private final JwtService jwtService;
 
     @GetMapping("/users-board")
@@ -140,7 +138,7 @@ public class LikeController {
                 return new BaseResponse<>(USERS_EMPTY_USER_ID);
             }
             likeService.deleteRecipeLike(id, rcpId);
-            return new BaseResponse<>(rcpId + "번 게시글 좋아요 취소!");
+            return new BaseResponse<>(rcpId + "번 레시피 좋아요 취소!");
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
