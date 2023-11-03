@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
-import java.awt.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -39,26 +37,29 @@ public class User {
     private Timestamp updateAt;
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Recipe> recipes;     // 왜 필요할까?
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<RecipeLike> recipelikes;       // 유저가 누른 레시피 좋아요 목록
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Board> boards;     // 작성글
 
-    /*
-    @ManyToMany(mappedBy = "menu", cascade = CascadeType.ALL)
-    private List<Recipe> recipes = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<BoardLike> boardLikes; // 유저가 누른 게시판 좋아요 목록
 
-
-
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private List<Like> likes;       // 유저가 누른 좋아요
-
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private List<Comment> comments; // 댓글
+    private Integer receivedLikeCnt; // 유저가 받은 좋아요 개수 (본인 제외)
 
     public void likeChange(Integer receivedLikeCnt) {
         this.receivedLikeCnt = receivedLikeCnt;
-        if (this.receivedLikeCnt >= 10 && this.userRole.equals(UserRole.SILVER)) {
-            this.userRole = UserRole.GOLD;
-        }
     }
+
+    /*
+    @ManyToMany(mappedBy = "recipes", cascade = CascadeType.ALL)
+    private List<Recipe> recipes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Comment> comments; // 댓글
     */
 
 }
