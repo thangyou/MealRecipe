@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface RecommendRepository extends JpaRepository<Recipe, Long> {
 
     Optional<Recipe> findByRcpNmContaining (String RcpNm);
+
+    Optional<Recipe> findByRcpSeq (String RcpSeq);
 }

@@ -501,5 +501,94 @@ public class RecipeService {
 
 
 
+    public GetRecipeRes searchGetRecipeResByRcpId (String recipeId) throws BaseException {
+
+        try{
+
+            Optional<Recipe> recipeOptional = recommendRepository.findByRcpSeq(recipeId);
+
+
+            if(recipeOptional.isPresent()){
+
+                Recipe recipe = recipeOptional.get();
+
+                GetRecipeRes getRecipeIdRes = new GetRecipeRes();
+                getRecipeIdRes.setRcpId(recipe.getRcpId());
+                getRecipeIdRes.setRcpSeq(recipe.getRcpSeq());
+                getRecipeIdRes.setRcpNm(recipe.getRcpNm());
+                getRecipeIdRes.setRcpWay2(recipe.getRcpWay2());
+                getRecipeIdRes.setRcpPat2(recipe.getRcpPat2());
+                getRecipeIdRes.setInfoWgt(recipe.getInfoWgt());
+                getRecipeIdRes.setInfoEng(recipe.getInfoEng());
+                getRecipeIdRes.setInfoCar(recipe.getInfoCar());
+                getRecipeIdRes.setInfoPro(recipe.getInfoPro());
+                getRecipeIdRes.setInfoFat(recipe.getInfoFat());
+                getRecipeIdRes.setInfoNa(recipe.getInfoNa());
+                getRecipeIdRes.setHashTag(recipe.getHashTag());
+                getRecipeIdRes.setAttFileNoMain(recipe.getAttFileNoMain());
+                getRecipeIdRes.setAttFileNoMk(recipe.getAttFileNoMk());
+
+                /* 재료 */
+//                getRecipeIdRes.setRcpPartsDtls(new ArrayList<>(recipe.getRcpPartsDtls()));
+                getRecipeIdRes.setRcpPartsDtls(recipe.getRcpPartsDtls());
+
+                getRecipeIdRes.setManual01(recipe.getManual01());
+                getRecipeIdRes.setManualImg01(recipe.getManualImg01());
+                getRecipeIdRes.setManual02(recipe.getManual02());
+                getRecipeIdRes.setManualImg02(recipe.getManualImg02());
+                getRecipeIdRes.setManual03(recipe.getManual03());
+                getRecipeIdRes.setManualImg03(recipe.getManualImg03());
+                getRecipeIdRes.setManual04(recipe.getManual04());
+                getRecipeIdRes.setManualImg04(recipe.getManualImg04());
+                getRecipeIdRes.setManual05(recipe.getManual05());
+                getRecipeIdRes.setManualImg05(recipe.getManualImg05());
+                getRecipeIdRes.setManual06(recipe.getManual06());
+                getRecipeIdRes.setManualImg06(recipe.getManualImg06());
+                getRecipeIdRes.setManual07(recipe.getManual07());
+                getRecipeIdRes.setManualImg07(recipe.getManualImg07());
+                getRecipeIdRes.setManual08(recipe.getManual08());
+                getRecipeIdRes.setManualImg08(recipe.getManualImg08());
+                getRecipeIdRes.setManual09(recipe.getManual09());
+                getRecipeIdRes.setManualImg09(recipe.getManualImg09());
+                getRecipeIdRes.setManual10(recipe.getManual10());
+                getRecipeIdRes.setManualImg10(recipe.getManualImg10());
+                getRecipeIdRes.setManual11(recipe.getManual11());
+                getRecipeIdRes.setManualImg11(recipe.getManualImg11());
+                getRecipeIdRes.setManual12(recipe.getManual12());
+                getRecipeIdRes.setManualImg12(recipe.getManualImg12());
+                getRecipeIdRes.setManual13(recipe.getManual13());
+                getRecipeIdRes.setManualImg13(recipe.getManualImg13());
+                getRecipeIdRes.setManual14(recipe.getManual14());
+                getRecipeIdRes.setManualImg14(recipe.getManualImg14());
+                getRecipeIdRes.setManual15(recipe.getManual15());
+                getRecipeIdRes.setManualImg15(recipe.getManualImg15());
+                getRecipeIdRes.setManual16(recipe.getManual16());
+                getRecipeIdRes.setManualImg16(recipe.getManualImg16());
+                getRecipeIdRes.setManual17(recipe.getManual17());
+                getRecipeIdRes.setManualImg17(recipe.getManualImg17());
+                getRecipeIdRes.setManual18(recipe.getManual18());
+                getRecipeIdRes.setManualImg18(recipe.getManualImg18());
+                getRecipeIdRes.setManual19(recipe.getManual19());
+                getRecipeIdRes.setManualImg19(recipe.getManualImg19());
+                getRecipeIdRes.setManual20(recipe.getManual20());
+                getRecipeIdRes.setManualImg20(recipe.getManualImg20());
+                getRecipeIdRes.setRcpNaTip(recipe.getRcpNaTip());
+
+                return getRecipeIdRes;
+
+            }
+            else {
+                GetRecipeRes getRecipeIdRes = new GetRecipeRes();
+                getRecipeIdRes.setRcpSeq(recipeId.toString());
+
+                return getRecipeIdRes;
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
+
 }
 
