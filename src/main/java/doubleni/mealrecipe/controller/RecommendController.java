@@ -76,72 +76,72 @@ public class RecommendController {
 //    }
 
 
-    @PostMapping("/recommend-recipeList")
-    @ApiOperation(value="키워드 기반 사용자 맞춤 레시피 추천 - 좋아하는 식자재만", notes="\"{  \"user_profile\" : \"새우 오징어 밀가루\" \" \n 이렇게 식자재를 입력해서 보내면 가장 많이 포함된 음식 재료명을 추출함")
-    @ApiResponses(value={@ApiResponse(code=4000,message = "데이터베이스 연결에 실패하였습니다.")})
-    public List<GetRecipeRes> recommendRecipesList(@RequestBody String user_profile) {
-        // Flask API 엔드포인트 URL
-        String apiUrl = "http://15.164.139.103:5000/recommend-recipes";
-
-        // HTTP 헤더 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        // 요청 본문 생성
-        HttpEntity<String> request = new HttpEntity<>(user_profile, headers);
-
-        // RestTemplate을 사용하여 Flask API로 POST 요청 보내기
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(
-                apiUrl,
-                HttpMethod.POST,
-                request,
-                String.class
-        );
-
-        // Flask API에서 반환한 응답을 가져옵니다.
-        String jsonResponse = response.getBody();
-
-        //System.out.println(jsonResponse);
-
-        // JSON 응답을 처리하기 위해 ObjectMapper를 생성합니다.
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        try {
-            // JSON 문자열에서 레시피 목록을 역직렬화합니다.
-            List<String> recommendedRecipes = objectMapper.readValue(jsonResponse, new TypeReference<List<String>>() {});
-            //System.out.println(recommendedRecipes);
-
-            List<GetRecipeRes> recipeResList = new ArrayList();
-
-            for (int i = 0; i < recommendedRecipes.size(); i++) {
-                String recipeName = recommendedRecipes.get(i);
-                GetRecipeRes recipeRes = recipeService.searchGetRecipeResByKeyword(recipeName);
-
-                if (recipeRes != null) {
-                    recipeResList.add(recipeRes);
-                } else {
-                    // 검색 결과가 null인 경우 로그에 기록
-                    System.out.println("Recipe for " + recipeName + " not found.");
-
-                }
-            }
-
-            return recipeResList;
-        } catch (Exception e) {
-            if (e.getMessage() != null) {
-                System.out.println("예외 발생: " + e.getMessage());
-            } else {
-                System.out.println("예외 발생: " + e.toString());
-            }
-            return Collections.emptyList(); // 빈 목록 반환
-        }
-    }
+//    @PostMapping("/recommend-recipeList")
+//    @ApiOperation(value="키워드 기반 사용자 맞춤 레시피 추천 - 좋아하는 식자재만", notes="\"{  \"user_profile\" : \"새우 오징어 밀가루\" \" \n 이렇게 식자재를 입력해서 보내면 가장 많이 포함된 음식 재료명을 추출함")
+//    @ApiResponses(value={@ApiResponse(code=4000,message = "데이터베이스 연결에 실패하였습니다.")})
+//    public List<GetRecipeRes> recommendRecipesList(@RequestBody String user_profile) {
+//        // Flask API 엔드포인트 URL
+//        String apiUrl = "http://15.164.139.103:5000/recommend-recipes";
+//
+//        // HTTP 헤더 설정
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        // 요청 본문 생성
+//        HttpEntity<String> request = new HttpEntity<>(user_profile, headers);
+//
+//        // RestTemplate을 사용하여 Flask API로 POST 요청 보내기
+//        RestTemplate restTemplate = new RestTemplate();
+//        ResponseEntity<String> response = restTemplate.exchange(
+//                apiUrl,
+//                HttpMethod.POST,
+//                request,
+//                String.class
+//        );
+//
+//        // Flask API에서 반환한 응답을 가져옵니다.
+//        String jsonResponse = response.getBody();
+//
+//        //System.out.println(jsonResponse);
+//
+//        // JSON 응답을 처리하기 위해 ObjectMapper를 생성합니다.
+//        ObjectMapper objectMapper = new ObjectMapper();
+//
+//        try {
+//            // JSON 문자열에서 레시피 목록을 역직렬화합니다.
+//            List<String> recommendedRecipes = objectMapper.readValue(jsonResponse, new TypeReference<List<String>>() {});
+//            //System.out.println(recommendedRecipes);
+//
+//            List<GetRecipeRes> recipeResList = new ArrayList();
+//
+//            for (int i = 0; i < recommendedRecipes.size(); i++) {
+//                String recipeName = recommendedRecipes.get(i);
+//                GetRecipeRes recipeRes = recipeService.searchGetRecipeResByKeyword(recipeName);
+//
+//                if (recipeRes != null) {
+//                    recipeResList.add(recipeRes);
+//                } else {
+//                    // 검색 결과가 null인 경우 로그에 기록
+//                    System.out.println("Recipe for " + recipeName + " not found.");
+//
+//                }
+//            }
+//
+//            return recipeResList;
+//        } catch (Exception e) {
+//            if (e.getMessage() != null) {
+//                System.out.println("예외 발생: " + e.getMessage());
+//            } else {
+//                System.out.println("예외 발생: " + e.toString());
+//            }
+//            return Collections.emptyList(); // 빈 목록 반환
+//        }
+//    }
 
 
 
     @PostMapping("/recommend-recipe")
-    @ApiOperation(value="키워드 기반 사용자 맞춤 레시피 추천 - 좋아하는 식재료 + 알러지 ", notes="데이터가 작아서 출력이 이상함")
+    @ApiOperation(value="키워드 기반 사용자 맞춤 레시피 추천 - 좋아하는 식재료 + 알러지 ", notes="header 값이 필요업음")
     @ApiResponses(value={@ApiResponse(code=4000,message = "데이터베이스 연결에 실패하였습니다.")})
     public List<GetRecipeRes> recommendRecipes(@RequestBody FlaskDTO user_profile) {
         // Flask API 엔드포인트 URL
@@ -203,7 +203,7 @@ public class RecommendController {
     }
 
     @PostMapping("/recommend-user")
-    @ApiOperation(value="협업 필터링 기반 사용자 맞춤 레시피 추천 - 리뷰 평점 ", notes="리뷰 평점으로 결과 출력")
+    @ApiOperation(value="협업 필터링 기반 사용자 맞춤 레시피 추천 - 리뷰 평점 ", notes="리뷰 평점으로 결과 출력 \n header 값이 필요함 \n - X-ACCESS-TOKEN : jwt")
     @ApiResponses(value={@ApiResponse(code=4000,message = "데이터베이스 연결에 실패하였습니다.")})
     public BaseResponse<List<GetRecipeRes>> recommendRecipesCollaborative() {
         try {
