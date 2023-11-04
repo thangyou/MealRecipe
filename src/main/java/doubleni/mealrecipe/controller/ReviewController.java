@@ -175,11 +175,36 @@ public class ReviewController {
     }
 
 
+    /**
+     * 리뷰 삭제 api
+     * [DELETE] /review/{reviewId}
+     *
+     * @return BaseResponse<String>
+     */
 
+    @DeleteMapping("/review/{reviewId}")
+    @ApiOperation(value="작성한 리뷰 삭제", notes="review")
+    @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
+            @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),
+            @ApiResponse(code=4031,message = "파일 수정 실패")
+    })
+    public BaseResponse<String> ReviewByDelete (@PathVariable Long reviewId){
 
+        try{
+            Long idx = jwtService.getUserIdx();
 
+            if (idx == 0) {
+                return new BaseResponse<>(USERS_EMPTY_USER_ID);
+            }
 
+            reviewService.ReviewIdDeleteImage(reviewId);
+            reviewService.ReviewIdDelete(reviewId);
 
+            return new BaseResponse<>("리뷰가 삭제 되었습니다.");
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 
     //저장된 이미지 조회
