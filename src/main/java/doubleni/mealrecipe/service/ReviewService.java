@@ -132,6 +132,43 @@ public class ReviewService {
 
 
 
+
+    //reviewId 삭제
+    public void ReviewIdDelete (Long reviewId) throws BaseException{
+        try{
+            Optional<Review> reviewOptional = reviewRepository.findByReviewId(reviewId);
+            if (reviewOptional.isPresent()){
+                Review review = reviewOptional.get();
+
+                reviewRepository.delete(review);
+
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //reviewId 의 이미지 삭제
+    public void ReviewIdDeleteImage (Long reviewId) throws BaseException{
+        try{
+            Optional<Review> reviewOptional = reviewRepository.findByReviewId(reviewId);
+            if (reviewOptional.isPresent()){
+                Review review = reviewOptional.get();
+
+                Optional<ReviewImage> imageOptional = reviewImageRepository.findByReview(review);
+                if (imageOptional.isPresent()){
+                    ReviewImage reviewImage = imageOptional.get();
+                    reviewImageRepository.delete(reviewImage);
+                }
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
+
+
     // 사용자가 작성한 리뷰 조회
     public List<GetReviewRes> getReviewByUser(Long userIdx) throws BaseException {
         try {
