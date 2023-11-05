@@ -309,6 +309,10 @@ public class RecipeService {
                 getRecipeIdRes.setManualImg20(recipe.getManualImg20());
                 getRecipeIdRes.setRcpNaTip(recipe.getRcpNaTip());
 
+                // 평균 평점 계산
+                double averageRating = recipe.getAverageRating();
+                getRecipeIdRes.setReviewAverge(averageRating);
+
                 return getRecipeIdRes;
             }
         } catch (Exception exception){
@@ -486,6 +490,10 @@ public class RecipeService {
                 getRecipeIdRes.setManualImg20(recipe.getManualImg20());
                 getRecipeIdRes.setRcpNaTip(recipe.getRcpNaTip());
 
+                // 평균 평점 계산
+                double averageRating = recipe.getAverageRating();
+                getRecipeIdRes.setReviewAverge(averageRating);
+
                 return getRecipeIdRes;
 
             }
@@ -574,6 +582,10 @@ public class RecipeService {
                 getRecipeIdRes.setManual20(recipe.getManual20());
                 getRecipeIdRes.setManualImg20(recipe.getManualImg20());
                 getRecipeIdRes.setRcpNaTip(recipe.getRcpNaTip());
+
+                // 평균 평점 계산
+                double averageRating = recipe.getAverageRating();
+                getRecipeIdRes.setReviewAverge(averageRating);
 
                 return getRecipeIdRes;
 
