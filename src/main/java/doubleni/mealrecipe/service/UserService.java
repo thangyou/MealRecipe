@@ -2,6 +2,7 @@ package doubleni.mealrecipe.service;
 
 import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.model.DTO.*;
+import doubleni.mealrecipe.model.Review;
 import doubleni.mealrecipe.model.User;
 import doubleni.mealrecipe.model.UserImage;
 import doubleni.mealrecipe.repository.UserImageRepositorty;
@@ -273,6 +274,38 @@ public class UserService {
             }
 
         }catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void deleteByUser (Long id) throws BaseException {
+        try{
+            Optional<User> userOptional = userRepository.findById(id);
+            if (userOptional.isPresent()){
+                User user = userOptional.get();
+                
+                userRepository.delete(user);
+
+            }
+
+        }catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void deleteByUserImage (Long id) throws BaseException {
+        try {
+            Optional<User> userOptional = userRepository.findById(id);
+            if (userOptional.isPresent()){
+                User user = userOptional.get();
+
+                Optional<UserImage> imageOptional = userImageRepositorty.findByUser(user);
+                if (imageOptional.isPresent()){
+                    UserImage userImage = imageOptional.get();
+                    userImageRepositorty.delete(userImage);
+                }
+            }
+        } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
     }
