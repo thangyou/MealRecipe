@@ -112,7 +112,7 @@ public class ReviewController {
     @GetMapping("/review/{reviewId}")
     @ApiOperation(value="reviewId 리뷰 조회", notes="review")
     @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
-            @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요.")
+            @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),@ApiResponse(code=2036,message = "저장된 리뷰가 없습니다.")
     })
     public BaseResponse<GetReviewRes> ReviewByReviewId (@PathVariable Long reviewId){
 
@@ -145,7 +145,7 @@ public class ReviewController {
     @ApiOperation(value="사용자 본인이 작성한 리뷰 조회", notes="review")
     @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
             @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),
-            @ApiResponse(code=2011,message = "존재하지 않는 유저입니다.")
+            @ApiResponse(code=2011,message = "존재하지 않는 유저입니다."),@ApiResponse(code=2036,message = "저장된 리뷰가 없습니다.")
     })
     public BaseResponse<List<GetReviewRes>> ReviewByUserId (){
 
@@ -172,10 +172,10 @@ public class ReviewController {
      * @return BaseResponse<List<GGetReviewRes>>
      */
 
-    @GetMapping("/review/{rcpId}")
+    @GetMapping("/review/recipe/{rcpId}")
     @ApiOperation(value="레시피 별 리뷰 조회", notes="review")
     @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
-            @ApiResponse(code=2050,message = "존재하지 않는 레시피입니다.")
+            @ApiResponse(code=2050,message = "존재하지 않는 레시피입니다."),@ApiResponse(code=2036,message = "저장된 리뷰가 없습니다.")
     })
     public BaseResponse<List<GetReviewRes>> ReviewByRecipeId (@PathVariable Long rcpId){
 
