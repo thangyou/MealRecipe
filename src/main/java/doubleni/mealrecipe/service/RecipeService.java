@@ -412,11 +412,12 @@ public class RecipeService {
 
 
     //키워드 기반 맞춤형 레시피 추출
-    public GetRecipeRes searchGetRecipeResByKeyword (String recipeNm) throws BaseException {
+    public GetRecipeRes searchGetRecipeResByKeyword (String rcpNm) throws BaseException {
 
         try{
+            //System.out.println(rcpNm);
 
-            Optional<Recipe> recipeOptional = recommendRepository.findByRcpNmContaining(recipeNm);
+            Optional<Recipe> recipeOptional = recommendRepository.findByRcpNm(rcpNm);
 
 
             if(recipeOptional.isPresent()){
@@ -490,7 +491,7 @@ public class RecipeService {
             }
             else {
                 GetRecipeRes getRecipeIdRes = new GetRecipeRes();
-                getRecipeIdRes.setRcpNm(recipeNm);
+                getRecipeIdRes.setRcpNm(rcpNm);
 
                 return getRecipeIdRes;
             }

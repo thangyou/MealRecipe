@@ -23,6 +23,7 @@ public class Recipe {
     private Long rcpId;
 
     private String rcpSeq; // 일련 번호
+    @Column(name = "rcp_nm")
     private String rcpNm; // 레시피명
     private String rcpWay2; // 조리 방법
     private String rcpPat2; // 요리 종류
