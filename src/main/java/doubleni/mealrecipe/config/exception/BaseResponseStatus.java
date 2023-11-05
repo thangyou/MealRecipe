@@ -50,6 +50,7 @@ public enum BaseResponseStatus {
     POST_REVIEWS_NO_CONTEXT(false,2033,"리뷰 내용을 입력해주세요."),
     POST_REVIEWS_NO_RATINGS(false,2034,"리뷰 평점을 입력해주세요."),
     POST_REVIEWS_FAILS(false,2035,"리뷰 작성 실패하였습니다."),
+    REVIEW_NO_EXISTS(false,2036,"저장된 리뷰가 없습니다."),
 
 
 

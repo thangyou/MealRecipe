@@ -124,10 +124,12 @@ public class ReviewService {
 
                 return getReviewRes;
             }
+            else {
+                throw new BaseException(REVIEW_NO_EXISTS);
+            }
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
-        return null;
     }
 
 
@@ -177,6 +179,9 @@ public class ReviewService {
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
                 List<Review> reviewList = reviewRepository.findByUserOrderByReviewRatingDesc(user);
+                if (reviewList.size() == 0){
+                    throw new BaseException(REVIEW_NO_EXISTS);
+                }
 
                 // Review 엔티티를 GetReviewRes로 변환
                 List<GetReviewRes> getReviewResList = new ArrayList<>();
@@ -202,7 +207,7 @@ public class ReviewService {
                 throw new BaseException(USERS_NOT_EXISTS);
             }
         } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
+            throw new BaseException(REVIEW_NO_EXISTS);
         }
     }
 
@@ -216,6 +221,9 @@ public class ReviewService {
             if (recipeOptional.isPresent()) {
                 Recipe recipe = recipeOptional.get();
                 List<Review> reviewList = reviewRepository.findByRecipeOrderByReviewRatingDesc(recipe);
+                if (reviewList.size() == 0){
+                    throw new BaseException(REVIEW_NO_EXISTS);
+                }
 
                 // Review 엔티티를 GetReviewRes로 변환
                 List<GetReviewRes> getReviewResList = new ArrayList<>();
@@ -241,7 +249,7 @@ public class ReviewService {
                 throw new BaseException(RECIPE_NOT_EXISTS);
             }
         } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
+            throw new BaseException(REVIEW_NO_EXISTS);
         }
     }
 
