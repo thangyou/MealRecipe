@@ -268,18 +268,18 @@ public class BoardController {
     }
 
     /** 파일 다운로드 **/
-    @GetMapping("/file-download") // fail 왜 갑자기 이질ㄹ랄
-    @ApiOperation(value = "파일 다운로드", notes = "파일 다운로드")
-    public ResponseEntity<Resource> fileDownload(@RequestParam("fileId") Long fileId) throws IOException {
-        FileReq fileDto = fileService.getFile(fileId);
-        Path path = Paths.get(fileDto.getFilePath());
-        Resource resource = new InputStreamResource(Files.newInputStream(path));
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDto.getOrigFilename() + "\"")
-                .body(resource);
-    }
+//    @GetMapping("/file-download") // fail 왜 갑자기 이질ㄹ랄
+//    @ApiOperation(value = "파일 다운로드", notes = "파일 다운로드")
+//    public ResponseEntity<Resource> fileDownload(@RequestParam("fileId") Long fileId) throws IOException {
+//        FileReq fileDto = fileService.getFile(fileId);
+//        Path path = Paths.get(fileDto.getFilePath());
+//        Resource resource = new InputStreamResource(Files.newInputStream(path));
+//
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType("application/octet-stream"))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDto.getOrigFilename() + "\"")
+//                .body(resource);
+//    }
 
     /**
      * 게시글 수정 api

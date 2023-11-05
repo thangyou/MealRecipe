@@ -5,6 +5,7 @@ import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.model.DTO.GetRecipeRes;
 import doubleni.mealrecipe.model.DTO.GetReviewRes;
 import doubleni.mealrecipe.model.Recipe;
+import doubleni.mealrecipe.model.Review;
 import doubleni.mealrecipe.repository.RecipeRepository;
 import doubleni.mealrecipe.repository.RecommendRepository;
 import lombok.RequiredArgsConstructor;
@@ -227,15 +228,19 @@ public class RecipeService {
 
     /* 전체 레시피 조회 */
     public List<GetRecipeRes> getAllRecipes() throws BaseException {
-        List<GetRecipeRes> getRecipeRes =
-                recipeRepository.findAll()
-                        .stream()
-                        .map(GetRecipeRes::new)
-                        .toList();
+        List<Recipe> recipes = recipeRepository.findAll();
+        List<GetRecipeRes> getRecipeRes = recipes.stream()
+                .map(GetRecipeRes::new)
+                .collect(Collectors.toList());
+
+//        List<GetRecipeRes> getRecipeRes =
+//                recipeRepository.findAll()
+//                        .stream()
+//                        .map(GetRecipeRes::new)
+//                        .toList();
 
         if (getRecipeRes.isEmpty()) {
             throw new BaseException(DATABASE_ERROR);
-//            throw new IllegalStateException();
         }
         return getRecipeRes;
     }
