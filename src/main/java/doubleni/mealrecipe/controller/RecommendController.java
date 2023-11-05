@@ -182,6 +182,8 @@ public class RecommendController {
                 String recipeName = recommendedRecipes.get(i);
                 GetRecipeRes recipeRes = recipeService.searchGetRecipeResByKeyword(recipeName);
 
+                //System.out.println(recipeRes);
+
                 if (recipeRes != null) {
                     recipeResList.add(recipeRes);
                 } else {
