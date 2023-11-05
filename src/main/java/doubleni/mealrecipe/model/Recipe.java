@@ -107,6 +107,18 @@ public class Recipe {
         this.likeCnt = likeCnt;
     }
 
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    private List<Review> reviews;
+    private double reviewAverge;
+
+
+    public double getAverageRating() {
+        return reviews.stream()
+                .mapToDouble(Review::getReviewRating)
+                .average()
+                .orElse(0.0);
+    }
+
 
 
 }

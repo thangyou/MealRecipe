@@ -43,7 +43,8 @@ public class Review {
     @JsonIgnore
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    //하나의 recipe는 여러개의 review를 가질 수 있지만, 각각의 review는 하나의 recipe에만 속할 수 있음
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rcpId")
     @JsonIgnore
     private Recipe recipe;
