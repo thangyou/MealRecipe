@@ -242,6 +242,37 @@ public class UserController {
         }
     }
 
+    /**
+     * 회원탈퇴 API
+     * [DELETE] /users
+     *
+     * @return BaseResponse<St>
+     *
+     * */
+    @ResponseBody
+    @DeleteMapping("/users")
+    @ApiOperation(value="회원 탈퇴", notes="회원 탈퇴")
+    public BaseResponse<String> deleteUsers() {
+        try{
+            Long id_jwt = jwtService.getUserIdx();
+
+            if(id_jwt != 0){
+                return new BaseResponse<>(USERS_EMPTY_USER_ID);
+            }
+
+            //회원 이미지 삭제
+            userService.deleteByUserImage(id_jwt);
+
+            //회원 삭제
+            userService.deleteByUser(id_jwt);
+
+            return new BaseResponse<>("회원 탈퇴를 설공했습니다!");
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 
 
