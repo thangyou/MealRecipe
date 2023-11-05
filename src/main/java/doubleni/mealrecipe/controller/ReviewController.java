@@ -37,7 +37,7 @@ public class ReviewController {
      * 리뷰 작성 api
      * [POST] /review
      *
-     * @return BaseResponse<GetRecipeIdRes>
+     * @return BaseResponse<GetReviewRes>
      */
 
     @PostMapping("/review")
@@ -79,13 +79,34 @@ public class ReviewController {
 
     }
 
+    /**
+     * 리뷰 전체 조회 api
+     * [GET] /review
+     *
+     * @return BaseResponse<List<GetReviewRes>>
+     */
+
+    @GetMapping("/review")
+    @ApiOperation(value="리뷰 전체 조회", notes="review")
+    @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다.")
+    })
+    public BaseResponse<List<GetReviewRes>> ReviewByAll (){
+
+        try{
+            List<GetReviewRes> getReviewRes = reviewService.getReviewByAll();
+            return new BaseResponse<>(getReviewRes);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 
     /**
      * reviewId 리뷰 조회 api
      * [GET] /review/{reviewId}
      *
-     * @return BaseResponse<GetRecipeIdRes>
+     * @return BaseResponse<GetReviewRes>
      */
 
     @GetMapping("/review/{reviewId}")
@@ -115,12 +136,12 @@ public class ReviewController {
 
     /**
      * 사용자 리뷰 조회 api
-     * [GET] /review/{reviewId}
+     * [GET] /review/users
      *
-     * @return BaseResponse<List<GetRecipeIdRes>>
+     * @return BaseResponse<List<GetReviewRes>>
      */
 
-    @GetMapping("/review")
+    @GetMapping("/review/users")
     @ApiOperation(value="사용자 본인이 작성한 리뷰 조회", notes="review")
     @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
             @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),
@@ -136,6 +157,30 @@ public class ReviewController {
             }
 
             List<GetReviewRes> getReviewRes = reviewService.getReviewByUser(idx);
+            return new BaseResponse<>(getReviewRes);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
+
+    /**
+     * 레시피별 리뷰 조회 api
+     * [GET] /review/{rcpId}
+     *
+     * @return BaseResponse<List<GGetReviewRes>>
+     */
+
+    @GetMapping("/review/{rcpId}")
+    @ApiOperation(value="레시피 별 리뷰 조회", notes="review")
+    @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
+            @ApiResponse(code=2050,message = "존재하지 않는 레시피입니다.")
+    })
+    public BaseResponse<List<GetReviewRes>> ReviewByRecipeId (@PathVariable Long rcpId){
+
+        try{
+            List<GetReviewRes> getReviewRes = reviewService.getReviewByRecipeId(rcpId);
             return new BaseResponse<>(getReviewRes);
         }catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
