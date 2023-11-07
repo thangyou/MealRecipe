@@ -10,6 +10,8 @@ import doubleni.mealrecipe.service.FileService;
 import doubleni.mealrecipe.utils.JwtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
@@ -84,13 +86,14 @@ public class BoardController {
      * @return BaseResponse<List>
      */
     @GetMapping("/list")
-    @ApiOperation(value="모든 게시글 조회", notes="모든 게시글(리스트) 조회")
-    public ResponseEntity<List<BoardRes>> getBoards() {
+    @ApiOperation(value="모든 게시글 조회", notes="모든 게시글(리스트)을 조회한다.")
+    @ApiResponses(value={@ApiResponse(code =3000,message = "값을 불러오는데 실패하였습니다.")})
+    public BaseResponse<List<BoardRes>> getBoards() {
         try {
             List<BoardRes> boards = boardService.getBoards();
-            return ResponseEntity.ok(boards);
+            return new BaseResponse<>(boards);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return new BaseResponse<>(RESPONSE_ERROR);
         }
     }
 
@@ -101,13 +104,23 @@ public class BoardController {
      * @return BaseResponse<Board> or <BoardRes>
      */
     @GetMapping("/boardId={boardId}")
-    @ApiOperation(value="게시글 조회", notes="boardId 게시글 조회")
-    public ResponseEntity<BoardRes> getBoardByBoardId(@PathVariable long boardId) {
+    @ApiOperation(value="게시글 조회", notes="boardId로 게시글을 조회한다.")
+    @ApiResponses(value={@ApiResponse(code =2000,message = "입력값을 확인해주세요."),
+            @ApiResponse(code =2063,message = "존재 하지 않거나 삭제된 게시글 입니다."),
+            @ApiResponse(code =3000,message = "값을 불러오는데 실패하였습니다.")})
+   public BaseResponse<BoardRes> getBoardBy(@PathVariable Long boardId) {
+        if (boardId == null) {
+            return new BaseResponse<>(RESPONSE_ERROR);
+        }
         try {
             Board board = boardService.getBoardById(boardId);
-            return ResponseEntity.ok().body(new BoardRes(board));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            if (board == null) {
+                return new BaseResponse<>(BOARD_NOT_EXISTS);
+            }
+            BoardRes boardRes = new BoardRes(board);
+            return new BaseResponse<>(boardRes);
+        } catch (Exception exception) {
+            return new BaseResponse<>(RESPONSE_ERROR);
         }
    }
 
@@ -172,7 +185,7 @@ public class BoardController {
     // http://localhost:8080/board/search-board-of-?keyword={keyword}
     // 검색 조건 : 작성자, 제목, 본문
     @GetMapping("/search-board-of-writer")
-    @ApiOperation(value="작성자 검색", notes="작성자 검색")
+    @ApiOperation(value="작성자 검색", notes="작성자로 게시글을 검색한다.")
     public ResponseEntity<List<BoardRes>> getBoardByUserId(@RequestParam("writer") String writer) {
         try {
             List<BoardRes> board_list = boardService.searchBoardByUserNickname(writer);
@@ -182,7 +195,7 @@ public class BoardController {
         }
     }
     @GetMapping("/search-board-of-title")
-    @ApiOperation(value = "제목 검색", notes = "제목 검색")
+    @ApiOperation(value = "제목 검색", notes = "제목으로 게시글을 검색한다.")
     public ResponseEntity<List<BoardRes>> searchBoardByTitle(@RequestParam("keyword") String keyword) {
         try {
             List<BoardRes> boardList  = boardService.searchBoardByTitle(keyword);
@@ -193,7 +206,7 @@ public class BoardController {
     }
 
     @GetMapping("/search-board-of-content")
-    @ApiOperation(value = "본문 검색", notes = "본문 검색")
+    @ApiOperation(value = "본문 검색", notes = "본문으로 게시글을 검색한다.")
     public ResponseEntity<List<BoardRes>> searchBoardByContent(@RequestParam("keyword") String keyword) {
         try {
             List<BoardRes> boardList  = boardService.searchBoardByContent(keyword);
@@ -213,7 +226,12 @@ public class BoardController {
      * @return BaseResponse<String>
      */
     @PostMapping("/add")
-    @ApiOperation(value = "게시글 등록", notes = "게시글 등록")
+    @ApiOperation(value = "게시글 등록", notes = "게시글을 등록한다. \n headers = {\"X-ACCESS-TOKEN\": jwt}; 설정해주기(jwt는 로그인하면 반환되는 jwt이다. \n Body에서 files, title, content 입력하면 됨")
+    @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
+            @ApiResponse(code=2060,message = "제목을 입력해주세요."),
+            @ApiResponse(code=2061,message = "내용을 입력해주세요."),
+            @ApiResponse(code=2064,message = "게시글 등록을 실패하였습니다.")
+    })
 //    public BaseResponse<String> save(@RequestBody BoardReq req, @RequestParam Long id) {
 //        try {
 //            Long idx = jwtService.getUserIdx();
@@ -258,6 +276,15 @@ public class BoardController {
 
             Long fileId = fileService.saveFile(fileDto);
             boardDto.setFileId(fileId);
+
+            if (boardDto.getTitle() == null) {
+                return new BaseResponse<>(POST_BOARD_EMPTY_TITLE);
+            }
+
+            if (boardDto.getContent() == null) {
+                return new BaseResponse<>(POST_BOARD_EMPTY_CONTENT);
+            }
+
             boardService.save(boardDto, id);
             return new BaseResponse<>("게시글 저장 완료 !");
         } catch(BaseException exception) {
@@ -289,7 +316,8 @@ public class BoardController {
      */
     // http://localhost:8080/board/update?boardId={boardId}
     @PatchMapping("/update")
-    @ApiOperation(value = "게시글 수정", notes = "게시글 수정")
+    @ApiOperation(value = "게시글 수정", notes = "게시글을 수정한다. \n headers = {\"X-ACCESS-TOKEN\": jwt}; 설정해주기(jwt는 로그인하면 반환되는 jwt이다.")
+    @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다.")})
     public BaseResponse<String> updateBoard(@RequestParam("boardId") Long boardId,
                                        BoardReq req, @RequestParam Long id,
                                        @RequestParam(value = "files", required = false) MultipartFile files) {
@@ -336,7 +364,7 @@ public class BoardController {
      */
     // http://localhost:8080/board/delete?boardId={boardId}
     @DeleteMapping("/delete")
-    @ApiOperation(value = "게시글 삭제", notes = "게시글 삭제")
+    @ApiOperation(value = "게시글 삭제", notes = "게시글을 삭제한다. \n headers = {\"X-ACCESS-TOKEN\": jwt}; 설정해주기(jwt는 로그인하면 반환되는 jwt이다.")
     public BaseResponse<String> deleteBoard(@RequestParam("boardId") Long boardId, @RequestParam Long id) {
         try {
             Long idx = jwtService.getUserIdx();

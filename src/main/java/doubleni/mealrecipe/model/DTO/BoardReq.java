@@ -29,17 +29,19 @@ public class BoardReq {
                 .user(user)
                 .boardId(boardId)
                 .title(title)
+                .likeCnt(0)
                 .content(content)
                 .fileId(fileId)
                 .build();
     }
 
     @Builder
-    public BoardReq(Long boardId, String nickname, String title, String content, Long fileId) {
+    public BoardReq(Long boardId, String nickname, String title, String content, Long fileId, Integer likeCnt) {
         this.boardId = boardId;
         this.nickname = nickname;
         this.title = title;
         this.content = content;
         this.fileId = fileId;
+        this.likeCnt = likeCnt;
     }
 }
