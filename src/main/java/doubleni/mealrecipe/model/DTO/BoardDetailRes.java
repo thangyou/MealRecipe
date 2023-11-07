@@ -25,7 +25,7 @@ public class BoardDetailRes {
         this.nickname = board.getUser().getNickname();
         this.title = board.getTitle();
         this.content = board.getContent();
-//        this.likeCnt = board.getLikeCnt();
+        this.likeCnt = board.getLikeCnt();
         this.createdAt = board.getCreatedAt();
         this.updatedAt = board.getUpdatedAt();
 //        if (board.getFileId() != null) {

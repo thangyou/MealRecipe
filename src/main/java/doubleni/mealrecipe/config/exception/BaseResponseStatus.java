@@ -66,6 +66,7 @@ public enum BaseResponseStatus {
     POST_BOARD_EMPTY_CONTENT(false,2061, "내용을 입력해주세요."),
     POST_BOARD_EMPTY_FILES(false, 2062, "이미지를 업로드하세요."),
     BOARD_NOT_EXISTS(false,2063,"존재 하지 않거나 삭제된 게시글 입니다."),
+    POST_BOARD_FAILS(false, 2064, "게시글 등록을 실패하였습니다."),
 
     /**
      * 3000 : Response 오류

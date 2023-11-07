@@ -68,12 +68,13 @@ public class Board {
 
 
     @Builder
-    public Board(Long boardId, String title, String content, User user, Long fileId) {
+    public Board(Long boardId, String title, String content, User user, Long fileId, Integer likeCnt) {
         this.boardId = boardId;
         this.title = title;
         this.content = content;
         this.user = user;
         this.fileId = fileId;
+        this.likeCnt = likeCnt;
     }
 
     public void updateBoard(BoardReq req) {

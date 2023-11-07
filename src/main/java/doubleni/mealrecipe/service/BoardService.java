@@ -10,6 +10,7 @@ import doubleni.mealrecipe.model.User;
 import doubleni.mealrecipe.repository.BoardRepository;
 import doubleni.mealrecipe.repository.FileRepository;
 import doubleni.mealrecipe.repository.UserRepository;
+import doubleni.mealrecipe.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static doubleni.mealrecipe.config.exception.BaseResponseStatus.*;
 
 @Service
 @Transactional
@@ -124,46 +127,62 @@ public class BoardService {
 
     /* 게시글 추가 */
     @Transactional
-    public void save(BoardReq addBoard, Long id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            boardRepository.save(addBoard.toEntity(user.get()));
-            ResponseEntity.ok("-> 게시글 등록 완료");
-        } else {
-            ResponseEntity.badRequest().body("not found : " + id);
+    public void save(BoardReq addBoard, Long id) throws BaseException {
+        try {
+            Optional<User> user = userRepository.findById(id);
+            if (user.isPresent()) {
+                boardRepository.save(addBoard.toEntity(user.get()));
+                ResponseEntity.ok("-> 게시글 등록 완료");
+            } else {
+                throw new BaseException(USERS_EMPTY_USER_ID);
+            }
+        } catch (Exception exception) {
+            throw new BaseException(POST_BOARD_FAILS);
         }
+
 
     }
 
     /* 게시글 수정 */
     @Transactional
-    public void updateBoard(long boardId, BoardReq update) {
-        Optional<Board> findBoard = boardRepository.findById(boardId);
-        System.out.println("--- update 전 ---");
-        System.out.println("title : " + findBoard.get().getTitle());
-        System.out.println("content : " + findBoard.get().getContent());
-        System.out.println("file id : " + findBoard.get().getFileId());
+    public void updateBoard(long boardId, BoardReq update) throws BaseException {
 
-        findBoard.get().updateBoard(update);
-        System.out.println("--- update 후 ---");
-        System.out.println("title : " + findBoard.get().getTitle());
-        System.out.println("content : " + findBoard.get().getContent());
-        System.out.println("file id : " + findBoard.get().getFileId());
+        try {
+            Optional<Board> findBoard = boardRepository.findById(boardId);
+            System.out.println("--- update 전 ---");
+            System.out.println("title : " + findBoard.get().getTitle());
+            System.out.println("content : " + findBoard.get().getContent());
+            System.out.println("file id : " + findBoard.get().getFileId());
 
-        ResponseEntity.ok("-> 게시글 수정 완료");
+            findBoard.get().updateBoard(update);
+            System.out.println("--- update 후 ---");
+            System.out.println("title : " + findBoard.get().getTitle());
+            System.out.println("content : " + findBoard.get().getContent());
+            System.out.println("file id : " + findBoard.get().getFileId());
+
+            ResponseEntity.ok("-> 게시글 수정 완료");
+
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
     }
 
     /* 게시글 삭제 */
-    public void deleteBoard(Long boardId) {
-        Optional<Board> findBoard = boardRepository.findById(boardId);
-        if (findBoard.isPresent()) {
-            Long filedId = findBoard.get().getFileId();
-            fileRepository.deleteById(filedId);
-            boardRepository.deleteByBoardId(boardId);
-            ResponseEntity.ok("-> 게시글 삭제 완료");
-        } else {
-            ResponseEntity.badRequest().body("not found : " + boardId);
+    public void deleteBoard(Long boardId) throws BaseException {
+        try {
+            Optional<Board> findBoard = boardRepository.findById(boardId);
+            if (findBoard.isPresent()) {
+                Long filedId = findBoard.get().getFileId();
+                fileRepository.deleteById(filedId);
+                boardRepository.deleteByBoardId(boardId);
+                ResponseEntity.ok("-> 게시글 삭제 완료");
+            } else {
+                ResponseEntity.badRequest().body("not found : " + boardId);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
         }
+
 
     }
 
