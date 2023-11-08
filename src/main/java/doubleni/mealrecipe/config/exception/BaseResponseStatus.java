@@ -52,14 +52,12 @@ public enum BaseResponseStatus {
     POST_REVIEWS_FAILS(false,2035,"리뷰 작성 실패하였습니다."),
     REVIEW_NO_EXISTS(false,2036,"저장된 리뷰가 없습니다."),
 
-
-
     // category
     CATEGORIES_EMPTY_CATEGORY(false, 2040, "존재하지 않는 카테고리입니다."),
 
     // recipe
     RECIPE_NOT_EXISTS(false, 2050, "존재하지 않는 레시피입니다."),
-    RECIPE_ID_NOEXISTS(false,2051,"레시피 아이디를 입력해주세요"),
+    RECIPE_ID_NO_EXISTS(false,2051,"레시피 아이디를 입력해주세요"),
 
     // board
     POST_BOARD_EMPTY_TITLE(false,2060, "제목을 입력해주세요."),
@@ -103,12 +101,20 @@ public enum BaseResponseStatus {
     ADD_FAIL_BOARD(false, 4020, "게시판 등록 실패"),
     UPDATE_FAIL_BOARD(false, 4021, "게시판 수정 실패"),
     DELETE_FAIL_BOARD(false, 4022, "게시판 삭제 실패"),
+    SHOW_FAIL_BOARD(false, 4023, "게시판 조회 실패"),
 
     // files
     ADD_FAIL_FILES(false, 4030, "파일 등록 실패"),
     UPDATE_FAIL_FILES(false, 4031, "파일 수정 실패"),
     DELETE_FAIL_FILES(false, 4032, "파일 삭제 실패"),
-    SHOW_FAIL_FILES(false, 4032, "파일 조회 실패");
+    SHOW_FAIL_FILES(false, 4032, "파일 조회 실패"),
+
+    // comment
+    ADD_FAIL_COMMENT(false, 4040, "댓글 등록 실패"),
+    UPDATE_FAIL_COMMENT(false, 4041, "댓글 수정 실패"),
+    DELETE_FAIL_COMMENT(false, 4042, "댓글 삭제 실패"),
+    SHOW_FAIL_COMMENT(false, 4043, "댓글 조회 실패");
+
 
     private final boolean isSuccess;
     private final int code;

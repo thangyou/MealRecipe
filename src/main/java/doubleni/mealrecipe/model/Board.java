@@ -30,7 +30,8 @@ public class Board {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-//    private int hits; // 조회수
+    @Column(columnDefinition = "integer default 0", nullable = false)
+    private Integer hits; // 조회수
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user; // 작성자
@@ -47,9 +48,9 @@ public class Board {
     private List<BoardLike> boardLikes;       // 좋아요
     private Integer likeCnt;        // 좋아요 수
 
-//    @OneToMany(mappedBy = "board", orphanRemoval = true)
-//    private List<Comment> comments; // 댓글
-////    private Integer commentCnt;     // 댓글 수
+    @OneToMany(mappedBy = "board", orphanRemoval = true)
+    private List<Comment> comments; // 댓글
+    private Integer commentCnt;     // 댓글 수
 
     @CreatedDate // 엔티티가 생성될 때 생성 시간 저장
     @Column(name = "created_at")
@@ -68,13 +69,16 @@ public class Board {
 
 
     @Builder
-    public Board(Long boardId, String title, String content, User user, Long fileId, Integer likeCnt) {
+    public Board(Long boardId, String title, String content, User user, Long fileId,
+                 Integer likeCnt, Integer hits, Integer commentCnt) {
         this.boardId = boardId;
         this.title = title;
         this.content = content;
         this.user = user;
         this.fileId = fileId;
         this.likeCnt = likeCnt;
+        this.hits = hits;
+        this.commentCnt = commentCnt;
     }
 
     public void updateBoard(BoardReq req) {
@@ -93,9 +97,9 @@ public class Board {
         this.likeCnt = likeCnt;
     }
 
-//    public void commentChange(Integer commentCnt) {
-//        this.commentCnt = commentCnt;
-//    }
+    public void commentChange(Integer commentCnt) {
+        this.commentCnt = commentCnt;
+    }
 
 
 

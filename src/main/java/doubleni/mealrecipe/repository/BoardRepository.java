@@ -1,6 +1,7 @@
 package doubleni.mealrecipe.repository;
 
 import doubleni.mealrecipe.model.Board;
+import doubleni.mealrecipe.model.Recipe;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,6 +24,10 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     List<Board> findByContentContaining(@Param("keyword") String keyword);
     void deleteByBoardId(Long BoardId);
 
+    // 정렬
+    List<Board> findAllByOrderByHitsDesc(); // 조회수
+    List<Board> findAllByOrderByLikeCntDesc(); // 좋아요
+    List<Board> findAllByOrderByCommentCntDesc(); // 댓글
 
 
 
