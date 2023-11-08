@@ -8,6 +8,7 @@ import doubleni.mealrecipe.model.Board;
 import doubleni.mealrecipe.model.DTO.*;
 import doubleni.mealrecipe.model.User;
 import doubleni.mealrecipe.repository.BoardRepository;
+import doubleni.mealrecipe.repository.CommentRepository;
 import doubleni.mealrecipe.repository.FileRepository;
 import doubleni.mealrecipe.repository.UserRepository;
 import doubleni.mealrecipe.utils.JwtService;
@@ -45,11 +46,6 @@ public class BoardService {
     private final FileRepository fileRepository;
 
     /* TEST */
-//    @Transactional
-//    public void savePost(BoardReq boardReq, Long id) {
-//        Optional<User> user = userRepository.findById(id);
-//        boardRepository.save(boardReq.toEntity(user.get()));
-//    }
 
     // ==========================================================
 
@@ -78,10 +74,65 @@ public class BoardService {
     }
 
     /* board id로 게시글 조회 */
-    public Board getBoardById(long boardId) {
+    public Board getBoardById(Long boardId) { // 내 글 불러 오는 겨
         return boardRepository.findByBoardId(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("not found : " + boardId));
     }
+    public Board getBoardByBoardId(Long boardId) throws BaseException { // 조회수 증가
+        Optional<Board> findBoard = this.boardRepository.findByBoardId(boardId);
+        if (findBoard.isPresent()) {
+            Board board = findBoard.get();
+            board.setHits(board.getHits()+1);
+            this.boardRepository.save(board);
+            return board;
+        } else {
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+    }
+
+    /* 게시글 정렬 */
+    public List<BoardRes> getBoardByOrderByHitsDesc() throws BaseException { // 조회 수
+        List<BoardRes> getBoards =
+                boardRepository.findAllByOrderByHitsDesc()
+                        .stream()
+                        .map(BoardRes::new)
+                        .toList();
+
+        if (getBoards.isEmpty()) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+        return getBoards;
+    }
+
+    public List<BoardRes> getBoardByOrderByLikeCntDesc() throws BaseException { // 좋아요
+        List<BoardRes> getBoards =
+                boardRepository.findAllByOrderByLikeCntDesc()
+                        .stream()
+                        .map(BoardRes::new)
+                        .toList();
+
+        if (getBoards.isEmpty()) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+        return getBoards;
+    }
+
+    public List<BoardRes> getBoardByOrderByCommentCntDesc() throws BaseException { // 댓글 수
+        List<BoardRes> getBoards =
+                boardRepository.findAllByOrderByCommentCntDesc()
+                        .stream()
+                        .map(BoardRes::new)
+                        .toList();
+
+        if (getBoards.isEmpty()) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+        return getBoards;
+    }
+
+
+
 
     /* 게시글 검색 */
     public List<BoardRes> searchBoardByUserNickname(String writer) {

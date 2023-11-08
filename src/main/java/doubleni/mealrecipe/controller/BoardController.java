@@ -4,8 +4,10 @@ import doubleni.mealrecipe.config.MD5Generator;
 import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.config.exception.BaseResponse;
 import doubleni.mealrecipe.model.Board;
+import doubleni.mealrecipe.model.Comment;
 import doubleni.mealrecipe.model.DTO.*;
 import doubleni.mealrecipe.service.BoardService;
+import doubleni.mealrecipe.service.CommentService;
 import doubleni.mealrecipe.service.FileService;
 import doubleni.mealrecipe.utils.JwtService;
 import io.swagger.annotations.Api;
@@ -35,6 +37,7 @@ import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static doubleni.mealrecipe.config.exception.BaseResponseStatus.*;
@@ -56,9 +59,9 @@ public class BoardController {
     private final BoardService boardService;
     private final JwtService jwtService;
     private final FileService fileService;
+    private final CommentService commentService;
 
     /* TEST */
-
 
     // ==============================================================================
 
@@ -104,16 +107,24 @@ public class BoardController {
      * @return BaseResponse<Board> or <BoardRes>
      */
     @GetMapping("/boardId={boardId}")
-    @ApiOperation(value="게시글 조회", notes="boardId로 게시글을 조회한다.")
+    @ApiOperation(value="게시글 조회", notes="boardId로 게시글을 조회한다. \n headers = {\"X-ACCESS-TOKEN\": jwt}; 설정해주기(jwt는 로그인하면 반환되는 jwt이다.")
     @ApiResponses(value={@ApiResponse(code =2000,message = "입력값을 확인해주세요."),
             @ApiResponse(code =2063,message = "존재 하지 않거나 삭제된 게시글 입니다."),
             @ApiResponse(code =3000,message = "값을 불러오는데 실패하였습니다.")})
-   public BaseResponse<BoardRes> getBoardBy(@PathVariable Long boardId) {
+   public BaseResponse<BoardRes> getBoardByBoardId(@PathVariable Long boardId) {
         if (boardId == null) {
             return new BaseResponse<>(RESPONSE_ERROR);
         }
         try {
-            Board board = boardService.getBoardById(boardId);
+            Long idx = jwtService.getUserIdx();
+            Long userId = boardService.getBoardById(boardId).getUser().getId();
+            System.out.println("idx : " + idx + ", userId : " + userId);
+            Board board;
+            if (Objects.equals(idx, userId)) {
+                board = boardService.getBoardById(boardId);
+            } else {
+                board = boardService.getBoardByBoardId(boardId);
+            }
             if (board == null) {
                 return new BaseResponse<>(BOARD_NOT_EXISTS);
             }
@@ -124,19 +135,19 @@ public class BoardController {
         }
    }
 
-   @GetMapping("/display") // 작성 중
-   public BaseResponse<FileReq> getPost(@RequestParam long boardId) {
-       Board board = boardService.getBoardById(boardId);
-       BoardRes res = new BoardRes(board);
-       Long filedId = board.getFileId();
-       FileReq fileReq = fileService.getFile(filedId);
-
-       // 파일 경로
-       String filePath = fileReq.getFilePath();
-
-
-       return new BaseResponse<>(fileReq);
-   }
+//   @GetMapping("/display") // 작성 중
+//   public BaseResponse<FileReq> getPost(@RequestParam long boardId) {
+//       Board board = boardService.getBoardById(boardId);
+//       BoardRes res = new BoardRes(board);
+//       Long filedId = board.getFileId();
+//       FileReq fileReq = fileService.getFile(filedId);
+//
+//       // 파일 경로
+//       String filePath = fileReq.getFilePath();
+//
+//
+//       return new BaseResponse<>(fileReq);
+//   }
 
 //    @GetMapping("/board/detail")
 //    public ResponseEntity<BaseResponse<BoardDetailRes>> getBoardDetail(@RequestParam("boardId") Long boardId) {
@@ -167,7 +178,41 @@ public class BoardController {
      */
     /* 정렬 */
     // 조회수(hits), 좋아요 수(likeCnt), 댓글 수(commentCnt)
+    @GetMapping("/list-order-by-hits")
+    @ApiOperation(value="게시판 조건 정렬 API", notes="조회수 높은 순 게시판 정렬")
+    @ApiResponses(value={@ApiResponse(code =3000,message = "값을 불러오는데 실패하였습니다.")})
+    public BaseResponse<List<BoardRes>> getBoardByOrderByHitsDesc() {
+        try {
+            List<BoardRes> getBoardRes  = boardService.getBoardByOrderByHitsDesc();
+            return new BaseResponse<>(getBoardRes);
+        } catch (Exception e) {
+            return new BaseResponse<>(RESPONSE_ERROR);
+        }
+    }
 
+    @GetMapping("/list-order-by-like")
+    @ApiOperation(value="게시판 조건 정렬 API", notes="좋아요 높은 순 게시판 정렬")
+    @ApiResponses(value={@ApiResponse(code =3000,message = "값을 불러오는데 실패하였습니다.")})
+    public BaseResponse<List<BoardRes>> getBoardByOrderByLikeCntDesc() {
+        try {
+            List<BoardRes> getBoardRes  = boardService.getBoardByOrderByLikeCntDesc();
+            return new BaseResponse<>(getBoardRes);
+        } catch (Exception e) {
+            return new BaseResponse<>(RESPONSE_ERROR);
+        }
+    }
+
+    @GetMapping("/list-order-by-comment")
+    @ApiOperation(value="게시판 조건 정렬 API", notes="댓글 수 많은 순 게시판 정렬")
+    @ApiResponses(value={@ApiResponse(code =3000,message = "값을 불러오는데 실패하였습니다.")})
+    public BaseResponse<List<BoardRes>> getBoardByOrderByCommentCntDesc() {
+        try {
+            List<BoardRes> getBoardRes  = boardService.getBoardByOrderByCommentCntDesc();
+            return new BaseResponse<>(getBoardRes);
+        } catch (Exception e) {
+            return new BaseResponse<>(RESPONSE_ERROR);
+        }
+    }
 
 
     // ==================================================================================

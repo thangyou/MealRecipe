@@ -59,7 +59,7 @@ public class ReviewController {
         }
 
         if (recipeId == null) {
-            return new BaseResponse<>(RECIPE_ID_NOEXISTS);
+            return new BaseResponse<>(RECIPE_ID_NO_EXISTS);
         }
 
 

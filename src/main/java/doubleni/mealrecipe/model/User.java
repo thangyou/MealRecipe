@@ -54,12 +54,12 @@ public class User {
         this.receivedLikeCnt = receivedLikeCnt;
     }
 
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Comment> comments; // 댓글
+
     /*
     @ManyToMany(mappedBy = "recipes", cascade = CascadeType.ALL)
     private List<Recipe> recipes = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private List<Comment> comments; // 댓글
     */
 
 }
