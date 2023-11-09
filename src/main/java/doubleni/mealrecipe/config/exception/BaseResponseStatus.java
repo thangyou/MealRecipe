@@ -62,9 +62,11 @@ public enum BaseResponseStatus {
     // board
     POST_BOARD_EMPTY_TITLE(false,2060, "제목을 입력해주세요."),
     POST_BOARD_EMPTY_CONTENT(false,2061, "내용을 입력해주세요."),
-    POST_BOARD_EMPTY_FILES(false, 2062, "이미지를 업로드하세요."),
     BOARD_NOT_EXISTS(false,2063,"존재 하지 않거나 삭제된 게시글 입니다."),
     POST_BOARD_FAILS(false, 2064, "게시글 등록을 실패하였습니다."),
+
+    // comment
+    COMMENT_NOT_EXISTS(false, 2070, "존재 하지 않거나 삭제된 댓글 입니다."),
 
     /**
      * 3000 : Response 오류
@@ -107,13 +109,11 @@ public enum BaseResponseStatus {
     ADD_FAIL_FILES(false, 4030, "파일 등록 실패"),
     UPDATE_FAIL_FILES(false, 4031, "파일 수정 실패"),
     DELETE_FAIL_FILES(false, 4032, "파일 삭제 실패"),
-    SHOW_FAIL_FILES(false, 4032, "파일 조회 실패"),
 
     // comment
     ADD_FAIL_COMMENT(false, 4040, "댓글 등록 실패"),
     UPDATE_FAIL_COMMENT(false, 4041, "댓글 수정 실패"),
-    DELETE_FAIL_COMMENT(false, 4042, "댓글 삭제 실패"),
-    SHOW_FAIL_COMMENT(false, 4043, "댓글 조회 실패");
+    DELETE_FAIL_COMMENT(false, 4042, "댓글 삭제 실패");
 
 
     private final boolean isSuccess;

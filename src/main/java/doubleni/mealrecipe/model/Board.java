@@ -1,6 +1,7 @@
 package doubleni.mealrecipe.model;
 
 import doubleni.mealrecipe.model.DTO.BoardReq;
+import doubleni.mealrecipe.model.DTO.BoardRes;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -14,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
+@Builder
 @Table(name = "board")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -30,13 +31,12 @@ public class Board {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Column(columnDefinition = "integer default 0", nullable = false)
     private Integer hits; // 조회수
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user; // 작성자
 
-    @Column(name = "file_id", nullable = false)
+    @Column(name = "file_id")
     private Long fileId;
 
     /**
@@ -60,6 +60,7 @@ public class Board {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+
     // 조건 검색 ***********************************************
 //    private String keyfilter;
 //    private String keyword;
@@ -67,8 +68,6 @@ public class Board {
 //    private String enddate;
     // **********************************************************
 
-
-    @Builder
     public Board(Long boardId, String title, String content, User user, Long fileId,
                  Integer likeCnt, Integer hits, Integer commentCnt) {
         this.boardId = boardId;
@@ -76,14 +75,9 @@ public class Board {
         this.content = content;
         this.user = user;
         this.fileId = fileId;
-        this.likeCnt = likeCnt;
         this.hits = hits;
+        this.likeCnt = likeCnt;
         this.commentCnt = commentCnt;
-    }
-
-    public void updateBoard(BoardReq req) {
-        this.title = req.getTitle();
-        this.content = req.getContent();
     }
 
 //    @OneToOne(mappedBy = "files")

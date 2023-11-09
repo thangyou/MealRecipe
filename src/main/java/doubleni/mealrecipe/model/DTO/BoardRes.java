@@ -16,8 +16,8 @@ public class BoardRes {
     private String nickname;
     private String title;
     private String content;
-    private Integer likeCnt;
     private Integer hits;
+    private Integer likeCnt;
     private Integer commentCnt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -28,13 +28,12 @@ public class BoardRes {
         this.nickname = board.getUser().getNickname();
         this.title = board.getTitle();
         this.content = board.getContent();
-        this.likeCnt = board.getLikeCnt();
         this.hits = board.getHits();
+        this.likeCnt = board.getLikeCnt();
         this.commentCnt = board.getCommentCnt();
         this.createdAt = board.getCreatedAt();
         this.updatedAt = board.getUpdatedAt();
         this.fileId = board.getFileId();
     }
-
 
 }

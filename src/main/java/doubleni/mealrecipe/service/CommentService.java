@@ -11,6 +11,7 @@ import doubleni.mealrecipe.repository.BoardRepository;
 import doubleni.mealrecipe.repository.CommentRepository;
 import doubleni.mealrecipe.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,72 +39,49 @@ public class CommentService {
         return comments;
     }
 
-    public List<Comment> findAll(Long boardId) {
-        return commentRepository.findAllByBoard_BoardId(boardId);
+    public List<CommentRes> getMyCommentById(Long idx) {
+        List<CommentRes> mycomments =
+                commentRepository.findAllByUser_Id(idx)
+                        .stream()
+                        .map(CommentRes::new)
+                        .toList();
+        return mycomments;
     }
 
-    public void addComment(Long boardId, CommentReq req, Long id) {
+    public CommentRes addComment(Long boardId, CommentReq req, Long idx) {
         Board board = boardRepository.findById(boardId).get();
-        User user = userRepository.findById(id).get();
+        User user = userRepository.findById(idx).get();
+
         board.commentChange(board.getCommentCnt() + 1);
-        commentRepository.save(req.toEntity(board, user));
-//        try {
-//            Optional<User> user = userRepository.findById(id);
-//            if (user.isPresent()) {
-//                Optional<Board> board = boardRepository.findByBoardId(boardId);
-//                    board.commentChange(board.getCommentCnt() + 1);
-//                    commentRepository.save(req.toEntity(board, user));
-//                }
-//                ResponseEntity.ok("-> 게시글 등록 완료");
-//            } else {
-//                throw new BaseException(USERS_EMPTY_USER_ID);
-//            }
-//        } catch (Exception exception) {
-//            throw new BaseException(POST_BOARD_FAILS); // Comment 에러 코드 추가
-//        }
+        Comment comment = commentRepository.save(req.toEntity(board, user));
+
+        return new CommentRes(comment);
     }
 
 
     @Transactional
-    public Long updateComment(Long commentId, String newBody, Long id) throws BaseException {
-        Optional<Comment> findComment = commentRepository.findById(commentId);
-        Optional<User> findUser = userRepository.findById(id);
-        Long writer = findComment.get().getUser().getId();
-        Long user = findUser.get().getId();
-        System.out.println("writer : " + writer + ", user : " + user);
-        // comment 의 user id 값과 로그인 한 user id 값 잘 받아옴
-        // 아래 코드만 수정 하면 될 듯
-        if (writer.equals(user)) {
-            Comment comment = findComment.get();
-            comment.update(newBody);
-
-            return comment.getBoard().getBoardId();
-        } else { // (!writer.equals(user))
-            throw new BaseException(UPDATE_FAIL_COMMENT);
+    public CommentRes updateComment(Long commentId, String newBody, Long idx) throws BaseException {
+        try {
+            Optional<Comment> findComment = commentRepository.findById(commentId);
+            if (findComment.isPresent()) {
+                if (idx.equals(findComment.get().getUser().getId())) {
+                    Comment comment = findComment.get();
+                    comment.update(newBody);
+                    return new CommentRes(comment);
+                } else {
+                    throw new BaseException(INVALID_USER_JWT);
+                }
+            } else {
+                throw new BaseException(COMMENT_NOT_EXISTS);
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
         }
-
-//        if (findComment.isEmpty() || findUser.isEmpty()) {
-//            return null;
-//        }
-//        if (!findComment.get().getUser().equals(findUser.get())) {
-//            return null;
-//        }
-//        if ((!findComment.get().getUser().getId().equals(findUser.get().getId()))) { // 이거 안돼
-//            // id = 2인 user가 작성한 comment id는 2번임
-//            // 근데 comment 1번 수정하니까
-//            // null 값 출력 되쟈냐 이거 고쳐
-//            System.out.println(findUser.get().getId() + "가 작성한 댓글이 아닌뎅..?");
-//            return null;
-//        }
-//        Comment comment = findComment.get();
-//        comment.update(newBody);
-//
-//        return comment.getBoard().getBoardId();
     }
 
-    public Long deleteComment(Long commentId, Long id) {
+    public Long deleteComment(Long commentId, Long idx) {
         Optional<Comment> findComment = commentRepository.findById(commentId);
-        Optional<User> findUser = userRepository.findById(id);
+        Optional<User> findUser = userRepository.findById(idx);
         if (findComment.isEmpty() || findUser.isEmpty() ||
                 (!findComment.get().getUser().equals(findUser.get()))) {
             return null;

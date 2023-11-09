@@ -16,14 +16,16 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class CommentRes {
-    private String nickname;
     private Long id;
+    private Long boardId;
+    private String nickname;
     private String body;
     private LocalDateTime createdAt;
 
     public CommentRes(Comment comment) {
-        this.nickname = comment.getUser().getNickname();
         this.id = comment.getId();
+        this.boardId = comment.getBoard().getBoardId();
+        this.nickname = comment.getUser().getNickname();
         this.body = comment.getBody();
         this.createdAt = comment.getBoard().getCreatedAt();
     }

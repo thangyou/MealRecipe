@@ -1,6 +1,7 @@
 package doubleni.mealrecipe.service;
 
 import doubleni.mealrecipe.config.MD5Generator;
+import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.model.DTO.FileReq;
 import doubleni.mealrecipe.model.ImageFile;
 import doubleni.mealrecipe.repository.FileRepository;
@@ -14,6 +15,8 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
+import static doubleni.mealrecipe.config.exception.BaseResponseStatus.*;
+
 @Service
 public class FileService {
     private final FileRepository fileRepository;
@@ -23,13 +26,19 @@ public class FileService {
     }
 
     @Transactional
-    public Long saveFile(FileReq fileReq) {
-        return fileRepository.save(fileReq.toEntity()).getFileId();
+    public Long saveFile(FileReq fileReq) throws BaseException {
+        Long fileId = fileReq.getFileId();
+        Optional<ImageFile> findFile = fileRepository.findByFileId(fileId);
 
+        if (findFile.isPresent()) {
+            throw new BaseException(ADD_FAIL_FILES);
+        }
+
+        return fileRepository.save(fileReq.toEntity()).getFileId();
     }
 
     @Transactional
-    public void updateFile(Long fileId, MultipartFile files) {
+    public void updateFile(Long fileId, MultipartFile files) throws BaseException {
         Optional<ImageFile> findFile = fileRepository.findByFileId(fileId);
 
         if (findFile.isPresent()) {
@@ -68,7 +77,6 @@ public class FileService {
                 System.out.println("Filename : " + updateFile.getFilename());
                 System.out.println("FilePath : " + updateFile.getFilePath());
 
-
                 ResponseEntity.ok("-> 파일 수정 완료");
 
             } catch (IOException | NoSuchAlgorithmException exception) {
@@ -77,11 +85,10 @@ public class FileService {
 
         } else {
 //            findFile.get().updateFile(req);
-            ResponseEntity.badRequest().body("not found : " + fileId);
+            throw new BaseException(UPDATE_FAIL_FILES);
         }
     }
 
-    @Transactional
     public FileReq getFile(Long fileId) {
         ImageFile imageFile = fileRepository.findByFileId(fileId).get();
 
