@@ -318,6 +318,11 @@ public class RecipeService {
                 double averageRating = recipe.getAverageRating();
                 getRecipeIdRes.setReviewAverge(averageRating);
 
+                recipe.setReviewAverge(averageRating);
+
+                //update
+                recipeRepository.save(recipe);
+
                 return getRecipeIdRes;
             }
         } catch (Exception exception){
@@ -499,6 +504,11 @@ public class RecipeService {
                 double averageRating = recipe.getAverageRating();
                 getRecipeIdRes.setReviewAverge(averageRating);
 
+                recipe.setReviewAverge(averageRating);
+
+                //update
+                recipeRepository.save(recipe);
+
                 return getRecipeIdRes;
 
             }
@@ -592,6 +602,12 @@ public class RecipeService {
                 double averageRating = recipe.getAverageRating();
                 getRecipeIdRes.setReviewAverge(averageRating);
 
+
+                recipe.setReviewAverge(averageRating);
+
+                //update
+                recipeRepository.save(recipe);
+
                 return getRecipeIdRes;
 
             }
@@ -604,6 +620,21 @@ public class RecipeService {
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
+    }
+
+    //레시피를 반환해 리뷰 평균점수를 위한
+    public Recipe getRecipeByRcpId(Long rcpId) throws BaseException {
+        try{
+            Optional<Recipe> recipeOptional = recipeRepository.findByRcpId(rcpId);
+            if (recipeOptional.isPresent()){
+                Recipe recipe = recipeOptional.get();
+
+                return recipe;
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+        return null;
     }
 
 

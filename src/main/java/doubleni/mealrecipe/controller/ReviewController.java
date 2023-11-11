@@ -2,9 +2,9 @@ package doubleni.mealrecipe.controller;
 
 import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.config.exception.BaseResponse;
-import doubleni.mealrecipe.model.DTO.GetReviewRecipeRes;
-import doubleni.mealrecipe.model.DTO.GetReviewRes;
-import doubleni.mealrecipe.model.DTO.ReviewResponse;
+import doubleni.mealrecipe.model.DTO.*;
+import doubleni.mealrecipe.model.Recipe;
+import doubleni.mealrecipe.service.RecipeService;
 import doubleni.mealrecipe.service.ReviewService;
 import doubleni.mealrecipe.utils.JwtService;
 import io.swagger.annotations.Api;
@@ -32,6 +32,7 @@ import static doubleni.mealrecipe.config.exception.BaseResponseStatus.*;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final RecipeService recipeService;
     private final JwtService jwtService;
 
 
@@ -180,11 +181,12 @@ public class ReviewController {
     @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
             @ApiResponse(code=2050,message = "존재하지 않는 레시피입니다."),@ApiResponse(code=2036,message = "저장된 리뷰가 없습니다.")
     })
-    public BaseResponse<ReviewResponse> ReviewByRecipeId (@PathVariable Long rcpId){
+    public BaseResponse<ReviewRecipeResponse> ReviewByRecipeId (@PathVariable Long rcpId){
 
         try{
-            List<GetReviewRecipeRes> getReviewRes = reviewService.getReviewByRecipeId(rcpId);
-            ReviewResponse response = new ReviewResponse(getReviewRes);
+            List<GetReviewRes> getReviewRes = reviewService.getReviewByRecipeId(rcpId);
+            Recipe recipe = recipeService.getRecipeByRcpId(rcpId);
+            ReviewRecipeResponse response = new ReviewRecipeResponse(getReviewRes,recipe);
             return new BaseResponse<>(response);
         }catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
