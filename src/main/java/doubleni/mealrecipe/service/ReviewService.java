@@ -217,7 +217,7 @@ public class ReviewService {
 
 
     // 레시피별 작성한 리뷰 조회
-    public List<GetReviewRecipeRes> getReviewByRecipeId(Long rcpId) throws BaseException {
+    public List<GetReviewRes> getReviewByRecipeId(Long rcpId) throws BaseException {
         try {
             Optional<Recipe> recipeOptional = recipeRepository.findByRcpId(rcpId);
 
@@ -229,9 +229,9 @@ public class ReviewService {
                 }
 
                 // Review 엔티티를 GetReviewRes로 변환
-                List<GetReviewRecipeRes> getReviewResList = new ArrayList<>();
+                List<GetReviewRes> getReviewResList = new ArrayList<>();
                 for (Review review : reviewList) {
-                    GetReviewRecipeRes reviewRes = new GetReviewRecipeRes();
+                    GetReviewRes reviewRes = new GetReviewRes();
                     reviewRes.setReviewId(review.getReviewId());
                     reviewRes.setUserId(review.getUser().getId());
                     reviewRes.setRecipeId(review.getRecipe().getRcpId());
@@ -242,7 +242,6 @@ public class ReviewService {
                     reviewRes.setReviewModified(review.getModifiedDate());
                     reviewRes.setNickName(review.getUser().getNickname());
                     reviewRes.setRecipeName(review.getRecipe().getRcpNm());
-                    reviewRes.setReviewAverage(recipe.getAverageRating());
 
                     getReviewResList.add(reviewRes);
                 }

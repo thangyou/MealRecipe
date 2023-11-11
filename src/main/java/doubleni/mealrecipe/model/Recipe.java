@@ -109,6 +109,7 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<Review> reviews;
+    @Column(name = "review_averge")
     private double reviewAverge;
 
 
