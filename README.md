@@ -1,7 +1,7 @@
 # MealRecipe
 
 <div align="center">
-<img width="329" alt="image" src="">
+<img width="329" alt="image" src="src/main/resources/templates/image/hansang_logo.png">
   
 > **한-상, 한국인의 밥상** <br/> **개발기간: 2023.09 ~ 2023.11**
 
