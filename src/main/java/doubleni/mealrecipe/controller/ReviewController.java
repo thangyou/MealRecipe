@@ -2,7 +2,9 @@ package doubleni.mealrecipe.controller;
 
 import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.config.exception.BaseResponse;
+import doubleni.mealrecipe.model.DTO.GetReviewRecipeRes;
 import doubleni.mealrecipe.model.DTO.GetReviewRes;
+import doubleni.mealrecipe.model.DTO.ReviewResponse;
 import doubleni.mealrecipe.service.ReviewService;
 import doubleni.mealrecipe.utils.JwtService;
 import io.swagger.annotations.Api;
@@ -83,18 +85,19 @@ public class ReviewController {
      * 리뷰 전체 조회 api
      * [GET] /review
      *
-     * @return BaseResponse<List<GetReviewRes>>
+     * @return BaseResponse<List<GetReviewRecipeRes>>
      */
 
     @GetMapping("/review")
     @ApiOperation(value="리뷰 전체 조회", notes="review")
     @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다.")
     })
-    public BaseResponse<List<GetReviewRes>> ReviewByAll (){
+    public BaseResponse<ReviewResponse> ReviewByAll (){
 
         try{
-            List<GetReviewRes> getReviewRes = reviewService.getReviewByAll();
-            return new BaseResponse<>(getReviewRes);
+            List<GetReviewRecipeRes> getReviewRes = reviewService.getReviewByAll();
+            ReviewResponse response = new ReviewResponse(getReviewRes);
+            return new BaseResponse<>(response);
         }catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
@@ -106,7 +109,7 @@ public class ReviewController {
      * reviewId 리뷰 조회 api
      * [GET] /review/{reviewId}
      *
-     * @return BaseResponse<GetReviewRes>
+     * @return BaseResponse<GetReviewRecipeRes>
      */
 
     @GetMapping("/review/{reviewId}")
@@ -114,7 +117,7 @@ public class ReviewController {
     @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
             @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),@ApiResponse(code=2036,message = "저장된 리뷰가 없습니다.")
     })
-    public BaseResponse<GetReviewRes> ReviewByReviewId (@PathVariable Long reviewId){
+    public BaseResponse<GetReviewRecipeRes> ReviewByReviewId (@PathVariable Long reviewId){
 
         try{
 
@@ -124,7 +127,7 @@ public class ReviewController {
                 return new BaseResponse<>(USERS_EMPTY_USER_ID);
             }
 
-            GetReviewRes getReviewRes = reviewService.getReviewId(reviewId);
+            GetReviewRecipeRes getReviewRes = reviewService.getReviewId(reviewId);
             return new BaseResponse<>(getReviewRes);
         }catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
@@ -138,7 +141,7 @@ public class ReviewController {
      * 사용자 리뷰 조회 api
      * [GET] /review/users
      *
-     * @return BaseResponse<List<GetReviewRes>>
+     * @return BaseResponse<List<GetReviewRecipeRes>>
      */
 
     @GetMapping("/review/users")
@@ -147,8 +150,7 @@ public class ReviewController {
             @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),
             @ApiResponse(code=2011,message = "존재하지 않는 유저입니다."),@ApiResponse(code=2036,message = "저장된 리뷰가 없습니다.")
     })
-    public BaseResponse<List<GetReviewRes>> ReviewByUserId (){
-
+    public BaseResponse<ReviewResponse> ReviewByUserId (){
         try{
             Long idx = jwtService.getUserIdx();
 
@@ -156,8 +158,9 @@ public class ReviewController {
                 return new BaseResponse<>(USERS_EMPTY_USER_ID);
             }
 
-            List<GetReviewRes> getReviewRes = reviewService.getReviewByUser(idx);
-            return new BaseResponse<>(getReviewRes);
+            List<GetReviewRecipeRes> getReviewRes = reviewService.getReviewByUser(idx);
+            ReviewResponse response = new ReviewResponse(getReviewRes);
+            return new BaseResponse<>(response);
         }catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
@@ -169,7 +172,7 @@ public class ReviewController {
      * 레시피별 리뷰 조회 api
      * [GET] /review/{rcpId}
      *
-     * @return BaseResponse<List<GGetReviewRes>>
+     * @return BaseResponse<List<GetReviewRecipeRes>>
      */
 
     @GetMapping("/review/recipe/{rcpId}")
@@ -177,11 +180,12 @@ public class ReviewController {
     @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
             @ApiResponse(code=2050,message = "존재하지 않는 레시피입니다."),@ApiResponse(code=2036,message = "저장된 리뷰가 없습니다.")
     })
-    public BaseResponse<List<GetReviewRes>> ReviewByRecipeId (@PathVariable Long rcpId){
+    public BaseResponse<ReviewResponse> ReviewByRecipeId (@PathVariable Long rcpId){
 
         try{
-            List<GetReviewRes> getReviewRes = reviewService.getReviewByRecipeId(rcpId);
-            return new BaseResponse<>(getReviewRes);
+            List<GetReviewRecipeRes> getReviewRes = reviewService.getReviewByRecipeId(rcpId);
+            ReviewResponse response = new ReviewResponse(getReviewRes);
+            return new BaseResponse<>(response);
         }catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
