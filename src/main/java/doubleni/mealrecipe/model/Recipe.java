@@ -113,10 +113,10 @@ public class Recipe {
 
 
     public double getAverageRating() {
-        return reviews.stream()
+        return Math.round(reviews.stream()
                 .mapToDouble(Review::getReviewRating)
                 .average()
-                .orElse(0.0);
+                .orElse(0.0) * 10) / 10.0;
     }
 
 
