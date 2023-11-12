@@ -210,7 +210,7 @@ public class RecommendController {
 
     @PostMapping("/recommend-user")
     @ApiOperation(value="협업 필터링 기반 사용자 맞춤 레시피 추천 - 리뷰 평점 ", notes="리뷰 평점으로 결과 출력 \n header 값이 필요함 \n - X-ACCESS-TOKEN : jwt")
-    @ApiResponses(value={@ApiResponse(code=4000,message = "데이터베이스 연결에 실패하였습니다.")})
+    @ApiResponses(value={@ApiResponse(code=4000,message = "데이터베이스 연결에 실패하였습니다."), @ApiResponse(code=2090,message = "기록 저장을 실패하였습니다.")})
     public BaseResponse<List<GetRecipeRes>> recommendRecipesCollaborative() {
         try {
             // Flask API 엔드포인트 URL
