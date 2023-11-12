@@ -50,7 +50,7 @@ public class ReviewController {
             @ApiResponse(code=2033,message = "리뷰 내용을 입력해주세요."),@ApiResponse(code=2034,message = "리뷰 평점을 입력해주세요."),
             @ApiResponse(code=2035,message = "리뷰 작성 실패하였습니다.")
     })
-    public BaseResponse<GetReviewRes> ReviewPost (@RequestParam String reviewContext, @RequestParam double reviewRating, @RequestParam Long recipeId,
+    public BaseResponse<GetReviewRes> ReviewPost (@RequestParam String reviewContext, @RequestParam Double reviewRating, @RequestParam Long recipeId,
                                        @RequestPart(value = "images" ,required = false) MultipartFile imageFile)
     {
         if (reviewContext == null){
@@ -207,7 +207,7 @@ public class ReviewController {
             @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),
             @ApiResponse(code=4031,message = "파일 수정 실패")
     })
-    public BaseResponse<GetReviewRes> ReviewByFIX (@PathVariable Long reviewId, @RequestParam(required = false) String reviewContext, @RequestParam(required = false) double reviewRating,
+    public BaseResponse<GetReviewRes> ReviewByFIX (@PathVariable Long reviewId, @RequestParam(required = false) String reviewContext, @RequestParam(required = false) Double reviewRating,
                                                          @RequestPart(value = "images" ,required = false) MultipartFile imageFile){
 
         try{
