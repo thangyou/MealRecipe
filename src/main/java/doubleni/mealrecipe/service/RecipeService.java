@@ -1,13 +1,15 @@
 package doubleni.mealrecipe.service;
 
 import doubleni.mealrecipe.config.exception.BaseException;
-//import doubleni.mealrecipe.model.DTO.GetRecipeOrderRes;
 import doubleni.mealrecipe.model.DTO.GetRecipeRes;
-import doubleni.mealrecipe.model.DTO.GetReviewRes;
+import doubleni.mealrecipe.model.DTO.GetRecord;
 import doubleni.mealrecipe.model.Recipe;
-import doubleni.mealrecipe.model.Review;
+import doubleni.mealrecipe.model.Record;
+import doubleni.mealrecipe.model.User;
 import doubleni.mealrecipe.repository.RecipeRepository;
 import doubleni.mealrecipe.repository.RecommendRepository;
+import doubleni.mealrecipe.repository.RecordRepository;
+import doubleni.mealrecipe.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -30,6 +32,8 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final RecommendRepository recommendRepository;
+    private final RecordRepository recordRepository;
+    private final UserRepository userRepository;
 
     /* json 파일 읽기 */
     public void read() throws BaseException{
@@ -636,6 +640,29 @@ public class RecipeService {
         }
         return null;
     }
+
+    //이전 레코드 가져오기
+    public GetRecord getRecipeByUser (Long userId) throws BaseException {
+        try {
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isPresent()){
+                User user = userOptional.get();
+                Record record = recordRepository.findByUser(user).orElse(null);
+
+                GetRecord getRecord = new GetRecord();
+                getRecord.setRecordId(record != null ? record.getRecordId() : null);
+                getRecord.setUser(user);
+                getRecord.setRecordNum(record != null ? record.getRecordNum() : new ArrayList<>());
+
+                return getRecord;
+            }
+            return null;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
 
 
 

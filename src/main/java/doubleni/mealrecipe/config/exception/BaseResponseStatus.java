@@ -73,6 +73,9 @@ public enum BaseResponseStatus {
     LIKE_BOARD_ALREADY_EXISTS(false, 2081, "이미 좋아요한 게시글입니다."),
     LIKE_RECIPE_ALREADY_EXISTS(false, 2082, "이미 좋아요한 레시피입니다."),
 
+    //record
+    RECORD_SAVE_ERROR(false,2090,"기록 저장을 실패하였습니다."),
+
     /**
      * 3000 : Response 오류
      */

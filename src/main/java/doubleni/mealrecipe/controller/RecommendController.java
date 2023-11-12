@@ -5,7 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import doubleni.mealrecipe.config.exception.BaseResponse;
 import doubleni.mealrecipe.model.DTO.FlaskDTO;
 import doubleni.mealrecipe.model.DTO.GetRecipeRes;
+import doubleni.mealrecipe.model.DTO.GetRecord;
+import doubleni.mealrecipe.model.DTO.UserFlaskDTO;
 import doubleni.mealrecipe.service.RecipeService;
+import doubleni.mealrecipe.service.RecordService;
 import doubleni.mealrecipe.utils.JwtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,6 +34,7 @@ public class RecommendController {
 
     private final RecipeService recipeService;
     private final JwtService jwtService;
+    private final RecordService recordService;
 
 
 //    @PostMapping("/recommend-recipes")
@@ -222,8 +226,14 @@ public class RecommendController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
+            GetRecord getRecord = recipeService.getRecipeByUser(idx);
+
+            UserFlaskDTO userFlaskDTO = new UserFlaskDTO();
+            userFlaskDTO.setUserId(idx);
+            userFlaskDTO.setRecordNum(getRecord.getRecordNum());
+
             // 요청 본문 생성
-            HttpEntity<Long> request = new HttpEntity<>(idx, headers);
+            HttpEntity<UserFlaskDTO> request = new HttpEntity<>(userFlaskDTO, headers);
 
             // RestTemplate을 사용하여 Flask API로 POST 요청 보내기
             RestTemplate restTemplate = new RestTemplate();
@@ -245,6 +255,8 @@ public class RecommendController {
             // JSON 문자열에서 레시피 목록을 역직렬화합니다.
             List<String> recommendedRecipes = objectMapper.readValue(jsonResponse, new TypeReference<List<String>>() {});
             //System.out.println(recommendedRecipes);
+
+            recordService.saveRecord(recommendedRecipes,idx);
 
             List<GetRecipeRes> recipeResList = new ArrayList<>();
 
