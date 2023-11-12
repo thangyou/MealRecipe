@@ -17,11 +17,11 @@ public class GetReviewRecipeRes {
     private String reviewImageUrl;
     private Timestamp reviewCreated;
     private Timestamp reviewModified;
-    private double reviewRating;
+    private Double reviewRating;
     private Long userId;
     private String nickName;
     private Long recipeId;
     private String recipeName;
 
-    private double reviewAverage;
+    private Double reviewAverage;
 }

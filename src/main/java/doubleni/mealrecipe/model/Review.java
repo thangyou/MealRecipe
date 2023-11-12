@@ -34,7 +34,7 @@ public class Review {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp modifiedDate;
 
-    private double reviewRating;
+    private Double reviewRating;
 
     //다대일 관계
     //한 개의 User이 여러 개의 Review를 가질 수 있지만, 각각의 Review는 하나의 User에만 속할 수 있는 관계

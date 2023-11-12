@@ -33,7 +33,7 @@ public class ReviewService {
     private final ReviewImageRepository reviewImageRepository;
 
     //리뷰 작성
-    public GetReviewRes postReview (String reviewContext, double reviewRating, Long recipeId , MultipartFile imageFile, Long userId) throws BaseException {
+    public GetReviewRes postReview (String reviewContext, Double reviewRating, Long recipeId , MultipartFile imageFile, Long userId) throws BaseException {
         try{
             Optional<User> userOptional = userRepository.findById(userId);
             Optional<Recipe> recipeOptional = recipeRepository.findByRcpId(recipeId);
@@ -291,7 +291,7 @@ public class ReviewService {
 
 
     //리뷰 수정
-    public GetReviewRes reviewfixinfo(String reviewContext, double reviewRating, MultipartFile imageFile, Long reviewId) throws BaseException {
+    public GetReviewRes reviewfixinfo(String reviewContext, Double reviewRating, MultipartFile imageFile, Long reviewId) throws BaseException {
         try {
             Optional<Review> reviewOptional = reviewRepository.findByReviewId(reviewId);
 

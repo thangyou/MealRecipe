@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ReviewRecipeResponse {
     private int count;
-    private double reviewAverage;
+    private Double reviewAverage;
     private List<GetReviewRes> reviews;
 
 
