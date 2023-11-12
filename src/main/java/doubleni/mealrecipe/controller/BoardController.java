@@ -46,7 +46,7 @@ import static doubleni.mealrecipe.config.exception.BaseResponseStatus.*;
 @RestController
 @RequiredArgsConstructor
 @Controller
-@Api(tags = "Board", description = "사용자 레시피 게시판")
+@Api(tags = "Board", description = "사용자 커뮤니티 게시판")
 @RequestMapping("/board")
 public class BoardController {
     /**
