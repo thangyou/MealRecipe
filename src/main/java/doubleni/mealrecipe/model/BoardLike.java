@@ -26,4 +26,5 @@ public class BoardLike {
     @JoinColumn(name = "board_id")
     private Board board;
 
+
 }

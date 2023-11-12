@@ -68,6 +68,11 @@ public enum BaseResponseStatus {
     // comment
     COMMENT_NOT_EXISTS(false, 2070, "존재 하지 않거나 삭제된 댓글 입니다."),
 
+    // likes
+    LIKE_NOT_EXISTS(false, 2080, "좋아요가 존재 하지 않읍니다."),
+    LIKE_BOARD_ALREADY_EXISTS(false, 2081, "이미 좋아요한 게시글입니다."),
+    LIKE_RECIPE_ALREADY_EXISTS(false, 2082, "이미 좋아요한 레시피입니다."),
+
     /**
      * 3000 : Response 오류
      */
@@ -113,7 +118,11 @@ public enum BaseResponseStatus {
     // comment
     ADD_FAIL_COMMENT(false, 4040, "댓글 등록 실패"),
     UPDATE_FAIL_COMMENT(false, 4041, "댓글 수정 실패"),
-    DELETE_FAIL_COMMENT(false, 4042, "댓글 삭제 실패");
+    DELETE_FAIL_COMMENT(false, 4042, "댓글 삭제 실패"),
+
+    // like
+    ADD_FAIL_LIKE(false, 4050, "좋아요 추가 실패"),
+    DELETE_FAIL_LIKE(false, 4051, "좋아요 삭제 실패");
 
 
     private final boolean isSuccess;
