@@ -23,7 +23,7 @@ public class GetReviewRes {
 
     private Timestamp reviewModified;
 
-    private double reviewRating;
+    private Double reviewRating;
 
     private Long userId;
 
