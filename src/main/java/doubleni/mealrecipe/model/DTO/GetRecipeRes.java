@@ -81,7 +81,7 @@ public class GetRecipeRes {
     private String manualImg20;
     private String rcpNaTip;
 
-    private double reviewAverge;
+    private Double reviewAverge;
 
     public GetRecipeRes(Recipe r) {
         this.rcpId = r.getRcpId();
