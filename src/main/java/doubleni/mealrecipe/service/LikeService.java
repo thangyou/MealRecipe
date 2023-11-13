@@ -117,7 +117,7 @@ public class LikeService {
 
     // ================================================================================
 
-    public List<RecipeLikeRes> getRecipeLike() {
+    public List<RecipeLikeRes> getAllRecipeLike() {
         List<RecipeLikeRes> recipeLikes = recipeLikeRepository.findAll()
                 .stream()
                 .map(RecipeLikeRes::new)
@@ -127,6 +127,21 @@ public class LikeService {
             throw new IllegalStateException();
         }
         return recipeLikes;
+    }
+
+    public List<RecipeLikeRes> getRecipeLike(Long idx) throws BaseException {
+        try {
+            Optional<User> optUser = userRepository.findById(idx);
+            if (optUser.isPresent()) {
+                User user = optUser.get();
+                return recipeLikeRepository.findRecipeLikesByUser(user)
+                        .stream().map(RecipeLikeRes::new).toList();
+            } else {
+                throw new BaseException(USERS_NOT_EXISTS);
+            }
+        } catch (Exception e) {
+            throw new BaseException(LIKE_NOT_EXISTS);
+        }
     }
 
 
@@ -146,6 +161,7 @@ public class LikeService {
                     RecipeLike recipeLike = recipeLikeRepository.save(RecipeLike.builder()
                             .user(user)
                             .recipe(recipe)
+                            .checkLike(1L)
                             .build());
 
                     return new RecipeLikeRes(recipeLike);
@@ -184,7 +200,7 @@ public class LikeService {
                     recipe.likeChange(recipe.getLikeCnt() - 1);
                     recipeLikeRepository.deleteByUserIdAndRecipe_RcpId(idx, rcpId);
                 } else {
-                    throw new BaseException(DATABASE_ERROR);
+                    throw new BaseException(LIKE_NOT_EXISTS);
                 }
             } else {
                 throw new BaseException(DELETE_FAIL_LIKE);
@@ -194,4 +210,26 @@ public class LikeService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+
+    public Long checkRecipeLike(Long idx, Long rcpId) throws BaseException {
+        try {
+            Optional<User> optUser = userRepository.findById(idx);
+            Optional<Recipe> optRecipe = recipeRepository.findById(rcpId);
+
+            if (optUser.isPresent() && optRecipe.isPresent()) {
+                User user = optUser.get();
+                RecipeLike checkRecipeLike = recipeLikeRepository.findRecipeLikeByUserAndRecipe_RcpId(user, rcpId);
+                return checkRecipeLike.getCheckLike();
+            } else {
+                throw new BaseException(DATABASE_ERROR);
+            }
+        } catch(Exception exception) {
+            throw new BaseException(LIKE_NOT_EXISTS);
+        }
+    }
+
+
+
+
 }
