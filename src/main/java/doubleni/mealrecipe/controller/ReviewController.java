@@ -48,7 +48,7 @@ public class ReviewController {
     @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
             @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),@ApiResponse(code=2051,message = "레시피 아이디를 입력해주세요."),
             @ApiResponse(code=2033,message = "리뷰 내용을 입력해주세요."),@ApiResponse(code=2034,message = "리뷰 평점을 입력해주세요."),
-            @ApiResponse(code=2035,message = "리뷰 작성 실패하였습니다.")
+            @ApiResponse(code=2035,message = "리뷰 작성 실패하였습니다."),@ApiResponse(code=2037,message = "이미 작성한 리뷰가 존재합니다.")
     })
     public BaseResponse<GetReviewRes> ReviewPost (@RequestParam String reviewContext, @RequestParam Double reviewRating, @RequestParam Long recipeId,
                                        @RequestPart(value = "images" ,required = false) MultipartFile imageFile)
