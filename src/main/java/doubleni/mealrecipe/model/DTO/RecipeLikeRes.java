@@ -15,6 +15,9 @@ public class RecipeLikeRes {
     private String nickname;
     private Long rcp_id;
     private String rcp_nm;
+    private String attFileNoMain; // 이미지 경로(소)
+    private String attFileNoMk; // 이미지 경로(대)
+    private Long checkLike;
 
     public RecipeLikeRes(RecipeLike recipeLike) {
         this.likeId = recipeLike.getLikeId();
@@ -22,5 +25,8 @@ public class RecipeLikeRes {
         this.nickname = recipeLike.getUser().getNickname();
         this.rcp_id = recipeLike.getRecipe().getRcpId();
         this.rcp_nm = recipeLike.getRecipe().getRcpNm();
+        this.attFileNoMain = recipeLike.getRecipe().getAttFileNoMain();
+        this.attFileNoMk = recipeLike.getRecipe().getAttFileNoMk();
+        this.checkLike = recipeLike.getCheckLike();
     }
 }

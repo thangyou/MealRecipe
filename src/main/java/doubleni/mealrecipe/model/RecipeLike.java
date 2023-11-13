@@ -26,5 +26,6 @@ public class RecipeLike {
     @JoinColumn(name = "rcp_id")
     private Recipe recipe;
 
+    private Long checkLike; // 레시피 좋아요
 
 }
