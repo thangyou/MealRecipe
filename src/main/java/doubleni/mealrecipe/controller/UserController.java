@@ -23,7 +23,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import static doubleni.mealrecipe.config.exception.BaseResponseStatus.*;
-import static doubleni.mealrecipe.utils.ValidationRegex.isRegexPhone;
 
 @RestController
 @RequiredArgsConstructor
