@@ -2,7 +2,6 @@ package doubleni.mealrecipe.service;
 
 import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.model.DTO.*;
-import doubleni.mealrecipe.model.Review;
 import doubleni.mealrecipe.model.User;
 import doubleni.mealrecipe.model.UserImage;
 import doubleni.mealrecipe.repository.UserImageRepositorty;
@@ -100,8 +99,12 @@ public class UserService {
             } else {
                 throw new BaseException(USERS_EMPTY_USER_ID);
             }
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
+        } catch (BaseException exception) {
+            if(exception.getStatus().equals(USERS_EMPTY_USER_ID)){
+                throw exception;
+            } else {
+                throw new BaseException(DATABASE_ERROR);
+            }
         }
     }
 
@@ -215,12 +218,20 @@ public class UserService {
                 throw new BaseException(UPDATE_FAIL_USER);
             }
 
-        }catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
+        }catch (BaseException exception){
+            if(exception.getStatus().equals(UPDATE_FAIL_USER)){
+                throw exception;
+            } else if (exception.getStatus().equals(POST_USERS_EXISTS_TELNUM)) {
+                throw exception;
+            } else if (exception.getStatus().equals(POST_USERS_INVALID_NICKNAME)) {
+                throw exception;
+            } else if (exception.getStatus().equals(POST_USERS_EXISTS_NICKNAME)) {
+                throw exception;
+            } else{
+                throw new BaseException(DATABASE_ERROR);
+            }
         }
     }
-
-
 
 
 
@@ -239,8 +250,12 @@ public class UserService {
             } else {
                 throw new BaseException(FAILED_TO_LOGIN);
             }
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
+        } catch (BaseException exception) {
+            if(exception.getStatus().equals(FAILED_TO_LOGIN)){
+                throw exception;
+            } else{
+                throw new BaseException(DATABASE_ERROR);
+            }
         }
     }
 
@@ -273,8 +288,12 @@ public class UserService {
                 throw new BaseException(UPDATE_FAIL_USER);
             }
 
-        }catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
+        }catch (BaseException exception){
+            if(exception.getStatus().equals(UPDATE_FAIL_USER)){
+                throw exception;
+            } else{
+                throw new BaseException(DATABASE_ERROR);
+            }
         }
     }
 
@@ -285,7 +304,6 @@ public class UserService {
                 User user = userOptional.get();
 
                 userRepository.delete(user);
-
             }
 
         }catch (Exception exception){
