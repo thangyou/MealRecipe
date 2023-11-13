@@ -51,6 +51,7 @@ public enum BaseResponseStatus {
     POST_REVIEWS_NO_RATINGS(false,2034,"리뷰 평점을 입력해주세요."),
     POST_REVIEWS_FAILS(false,2035,"리뷰 작성 실패하였습니다."),
     REVIEW_NO_EXISTS(false,2036,"저장된 리뷰가 없습니다."),
+    REVIEW_ALREADY_EXISTS(false,2037,"이미 작성한 리뷰가 존재합니다."),
 
     // category
     CATEGORIES_EMPTY_CATEGORY(false, 2040, "존재하지 않는 카테고리입니다."),

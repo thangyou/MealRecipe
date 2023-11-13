@@ -18,4 +18,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByRecipeOrderByReviewRatingDesc (Recipe recipe);
 
     List<Review> findAllByOrderByReviewRatingDesc();
+
+    Optional<Review> findByUserAndRecipe (User user, Recipe recipe);
 }

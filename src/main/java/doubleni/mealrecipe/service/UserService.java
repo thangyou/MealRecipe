@@ -283,7 +283,7 @@ public class UserService {
             Optional<User> userOptional = userRepository.findById(id);
             if (userOptional.isPresent()){
                 User user = userOptional.get();
-                
+
                 userRepository.delete(user);
 
             }
@@ -313,5 +313,3 @@ public class UserService {
 
 
 }
-
-
