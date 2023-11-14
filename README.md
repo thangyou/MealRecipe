@@ -40,9 +40,9 @@
 </tr>
 <tr>
     <td><img width="160px" alt="image" src="src/main/resources/templates/image/1c7503a5-a10f-4746-8703-9aac989c218a_강아지2.jpg" /></td>
-    <td><img width="160px" src="" alt="" /></td>
-    <td><img width="160px" src="" alt="" /></td>
-    <td><img width="160px" src="" alt="" /></td>
+    <td><img width="160px" alt="image" src="https://github.com/YuneeeM/MealRecipe/assets/117428920/412ae0d9-feec-4a67-bbc4-83bc37ca818a" /></td>
+    <td><img width="160px" alt="image" src="" /></td>
+    <td><img width="160px" alt="image" src="" /></td>
 </tr>
 <tr align="center">
     <td><a href="https://github.com/YuneeeM">@YuneeeM</a></td>
