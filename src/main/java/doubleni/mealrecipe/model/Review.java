@@ -34,7 +34,7 @@ public class Review {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp modifiedDate;
 
-    private double reviewRating;
+    private Double reviewRating;
 
     //다대일 관계
     //한 개의 User이 여러 개의 Review를 가질 수 있지만, 각각의 Review는 하나의 User에만 속할 수 있는 관계
@@ -43,7 +43,8 @@ public class Review {
     @JsonIgnore
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    //하나의 recipe는 여러개의 review를 가질 수 있지만, 각각의 review는 하나의 recipe에만 속할 수 있음
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rcpId")
     @JsonIgnore
     private Recipe recipe;

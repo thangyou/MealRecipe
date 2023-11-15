@@ -1,6 +1,7 @@
 package doubleni.mealrecipe.model;
 
 import doubleni.mealrecipe.model.DTO.BoardReq;
+import doubleni.mealrecipe.model.DTO.BoardRes;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -14,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
+@Builder
 @Table(name = "board")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -30,12 +31,12 @@ public class Board {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-//    private int hits; // 조회수
+    private Integer hits; // 조회수
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user; // 작성자
 
-    @Column(name = "file_id", nullable = false)
+    @Column(name = "file_id")
     private Long fileId;
 
     /**
@@ -47,9 +48,9 @@ public class Board {
     private List<BoardLike> boardLikes;       // 좋아요
     private Integer likeCnt;        // 좋아요 수
 
-//    @OneToMany(mappedBy = "board", orphanRemoval = true)
-//    private List<Comment> comments; // 댓글
-////    private Integer commentCnt;     // 댓글 수
+    @OneToMany(mappedBy = "board", orphanRemoval = true)
+    private List<Comment> comments; // 댓글
+    private Integer commentCnt;     // 댓글 수
 
     @CreatedDate // 엔티티가 생성될 때 생성 시간 저장
     @Column(name = "created_at")
@@ -59,6 +60,7 @@ public class Board {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+
     // 조건 검색 ***********************************************
 //    private String keyfilter;
 //    private String keyword;
@@ -66,19 +68,16 @@ public class Board {
 //    private String enddate;
     // **********************************************************
 
-
-    @Builder
-    public Board(Long boardId, String title, String content, User user, Long fileId) {
+    public Board(Long boardId, String title, String content, User user, Long fileId,
+                 Integer likeCnt, Integer hits, Integer commentCnt) {
         this.boardId = boardId;
         this.title = title;
         this.content = content;
         this.user = user;
         this.fileId = fileId;
-    }
-
-    public void updateBoard(BoardReq req) {
-        this.title = req.getTitle();
-        this.content = req.getContent();
+        this.hits = hits;
+        this.likeCnt = likeCnt;
+        this.commentCnt = commentCnt;
     }
 
 //    @OneToOne(mappedBy = "files")
@@ -92,9 +91,9 @@ public class Board {
         this.likeCnt = likeCnt;
     }
 
-//    public void commentChange(Integer commentCnt) {
-//        this.commentCnt = commentCnt;
-//    }
+    public void commentChange(Integer commentCnt) {
+        this.commentCnt = commentCnt;
+    }
 
 
 

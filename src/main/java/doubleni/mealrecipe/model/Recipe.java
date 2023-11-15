@@ -23,6 +23,7 @@ public class Recipe {
     private Long rcpId;
 
     private String rcpSeq; // 일련 번호
+    @Column(name = "rcp_nm")
     private String rcpNm; // 레시피명
     private String rcpWay2; // 조리 방법
     private String rcpPat2; // 요리 종류
@@ -104,6 +105,19 @@ public class Recipe {
 
     public void likeChange(Integer likeCnt) {
         this.likeCnt = likeCnt;
+    }
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    private List<Review> reviews;
+    @Column(name = "review_averge")
+    private Double reviewAverge;
+
+
+    public double getAverageRating() {
+        return Math.round(reviews.stream()
+                .mapToDouble(Review::getReviewRating)
+                .average()
+                .orElse(0.0) * 10) / 10.0;
     }
 
 

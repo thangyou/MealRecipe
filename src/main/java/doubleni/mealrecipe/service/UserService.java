@@ -99,8 +99,12 @@ public class UserService {
             } else {
                 throw new BaseException(USERS_EMPTY_USER_ID);
             }
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
+        } catch (BaseException exception) {
+            if(exception.getStatus().equals(USERS_EMPTY_USER_ID)){
+                throw exception;
+            } else {
+                throw new BaseException(DATABASE_ERROR);
+            }
         }
     }
 
@@ -214,12 +218,20 @@ public class UserService {
                 throw new BaseException(UPDATE_FAIL_USER);
             }
 
-        }catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
+        }catch (BaseException exception){
+            if(exception.getStatus().equals(UPDATE_FAIL_USER)){
+                throw exception;
+            } else if (exception.getStatus().equals(POST_USERS_EXISTS_TELNUM)) {
+                throw exception;
+            } else if (exception.getStatus().equals(POST_USERS_INVALID_NICKNAME)) {
+                throw exception;
+            } else if (exception.getStatus().equals(POST_USERS_EXISTS_NICKNAME)) {
+                throw exception;
+            } else{
+                throw new BaseException(DATABASE_ERROR);
+            }
         }
     }
-
-
 
 
 
@@ -238,8 +250,12 @@ public class UserService {
             } else {
                 throw new BaseException(FAILED_TO_LOGIN);
             }
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
+        } catch (BaseException exception) {
+            if(exception.getStatus().equals(FAILED_TO_LOGIN)){
+                throw exception;
+            } else{
+                throw new BaseException(DATABASE_ERROR);
+            }
         }
     }
 
@@ -272,7 +288,42 @@ public class UserService {
                 throw new BaseException(UPDATE_FAIL_USER);
             }
 
+        }catch (BaseException exception){
+            if(exception.getStatus().equals(UPDATE_FAIL_USER)){
+                throw exception;
+            } else{
+                throw new BaseException(DATABASE_ERROR);
+            }
+        }
+    }
+
+    public void deleteByUser (Long id) throws BaseException {
+        try{
+            Optional<User> userOptional = userRepository.findById(id);
+            if (userOptional.isPresent()){
+                User user = userOptional.get();
+
+                userRepository.delete(user);
+            }
+
         }catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void deleteByUserImage (Long id) throws BaseException {
+        try {
+            Optional<User> userOptional = userRepository.findById(id);
+            if (userOptional.isPresent()){
+                User user = userOptional.get();
+
+                Optional<UserImage> imageOptional = userImageRepositorty.findByUser(user);
+                if (imageOptional.isPresent()){
+                    UserImage userImage = imageOptional.get();
+                    userImageRepositorty.delete(userImage);
+                }
+            }
+        } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -280,5 +331,3 @@ public class UserService {
 
 
 }
-
-

@@ -43,7 +43,7 @@ public class ImageFile {
         this.filePath = req.getFilePath();
     }
 
-//    @OneToOne(mappedBy = "board")
+//    @OneToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "file_id")
 //    private Board board;
 

@@ -2,7 +2,9 @@ package doubleni.mealrecipe.service;
 
 import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.model.*;
+import doubleni.mealrecipe.model.DTO.GetReviewRecipeRes;
 import doubleni.mealrecipe.model.DTO.GetReviewRes;
+import doubleni.mealrecipe.model.Record;
 import doubleni.mealrecipe.repository.RecipeRepository;
 import doubleni.mealrecipe.repository.ReviewImageRepository;
 import doubleni.mealrecipe.repository.ReviewRepository;
@@ -32,7 +34,7 @@ public class ReviewService {
     private final ReviewImageRepository reviewImageRepository;
 
     //리뷰 작성
-    public GetReviewRes postReview (String reviewContext, double reviewRating, Long recipeId , MultipartFile imageFile, Long userId) throws BaseException {
+    public GetReviewRes postReview (String reviewContext, Double reviewRating, Long recipeId , MultipartFile imageFile, Long userId) throws BaseException {
         try{
             Optional<User> userOptional = userRepository.findById(userId);
             Optional<Recipe> recipeOptional = recipeRepository.findByRcpId(recipeId);
@@ -41,13 +43,19 @@ public class ReviewService {
                 User user = userOptional.get();
                 Recipe recipe = recipeOptional.get();
 
-                Review review = Review.builder()
-                        .reviewContext(reviewContext)
-                        .user(user)
-                        .reviewRating(reviewRating)
-                        .reviewCreated(new Timestamp(System.currentTimeMillis()))
-                        .recipe(recipe)
-                        .build();
+                Optional<Review> reviewOptional = reviewRepository.findByUserAndRecipe(user,recipe);
+                if (reviewOptional.isPresent()){
+                    throw new BaseException(REVIEW_ALREADY_EXISTS);
+                }
+
+                Review review = new Review();
+                review.setReviewContext(reviewContext);
+                review.setReviewRating(reviewRating);
+                review.setReviewCreated(new Timestamp(System.currentTimeMillis()));
+                review.setUser(user);
+                review.setRecipe(recipe);
+
+
 
                 if(imageFile != null){
 
@@ -96,21 +104,27 @@ public class ReviewService {
             } else {
                 throw new BaseException(USERS_EMPTY_USER_ID);
             }
-        } catch (Exception exception){
-            throw new BaseException(POST_REVIEWS_FAILS);
+        } catch (BaseException exception){
+            if(exception.getStatus().equals(REVIEW_ALREADY_EXISTS)){
+                throw exception;
+            } else if (exception.getStatus().equals(USERS_EMPTY_USER_ID)) {
+                throw exception;
+            } else {
+                throw new BaseException(POST_REVIEWS_FAILS);
+            }
         }
     }
 
 
 
     //reviewId 조회
-    public GetReviewRes getReviewId (Long reviewId) throws BaseException{
+    public GetReviewRecipeRes getReviewId (Long reviewId) throws BaseException{
         try{
             Optional<Review> reviewOptional = reviewRepository.findByReviewId(reviewId);
             if (reviewOptional.isPresent()){
                 Review review = reviewOptional.get();
 
-                GetReviewRes getReviewRes = new GetReviewRes();
+                GetReviewRecipeRes getReviewRes = new GetReviewRecipeRes();
                 getReviewRes.setReviewId(review.getReviewId());
                 getReviewRes.setUserId(review.getUser().getId());
                 getReviewRes.setRecipeId(review.getRecipe().getRcpId());
@@ -121,25 +135,120 @@ public class ReviewService {
                 getReviewRes.setReviewModified(review.getModifiedDate());
                 getReviewRes.setNickName(review.getUser().getNickname());
                 getReviewRes.setRecipeName(review.getRecipe().getRcpNm());
+                getReviewRes.setReviewAverage(review.getRecipe().getAverageRating());
 
                 return getReviewRes;
             }
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
+            else {
+                throw new BaseException(REVIEW_NO_EXISTS);
+            }
+        } catch (BaseException exception){
+            if(exception.getStatus().equals(REVIEW_NO_EXISTS)){
+                throw exception;
+            }
+            else{
+                throw new BaseException(DATABASE_ERROR);
+            }
         }
-        return null;
     }
 
 
 
+
+    //reviewId 삭제
+    public void ReviewIdDelete (Long reviewId) throws BaseException{
+        try{
+            Optional<Review> reviewOptional = reviewRepository.findByReviewId(reviewId);
+            if (reviewOptional.isPresent()){
+                Review review = reviewOptional.get();
+
+                reviewRepository.delete(review);
+
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //reviewId 의 이미지 삭제
+    public void ReviewIdDeleteImage (Long reviewId) throws BaseException{
+        try{
+            Optional<Review> reviewOptional = reviewRepository.findByReviewId(reviewId);
+            if (reviewOptional.isPresent()){
+                Review review = reviewOptional.get();
+
+                Optional<ReviewImage> imageOptional = reviewImageRepository.findByReview(review);
+                if (imageOptional.isPresent()){
+                    ReviewImage reviewImage = imageOptional.get();
+                    reviewImageRepository.delete(reviewImage);
+                }
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
     // 사용자가 작성한 리뷰 조회
-    public List<GetReviewRes> getReviewByUser(Long userIdx) throws BaseException {
+    public List<GetReviewRecipeRes> getReviewByUser(Long userIdx) throws BaseException {
         try {
             Optional<User> userOptional = userRepository.findById(userIdx);
 
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
-                List<Review> reviewList = reviewRepository.findByUser(user);
+                List<Review> reviewList = reviewRepository.findByUserOrderByReviewRatingDesc(user);
+                if (reviewList.size() == 0){
+                    throw new BaseException(REVIEW_NO_EXISTS);
+                }
+
+                // Review 엔티티를 GetReviewRes로 변환
+                List<GetReviewRecipeRes> getReviewResList = new ArrayList<>();
+                for (Review review : reviewList) {
+                    GetReviewRecipeRes reviewRes = new GetReviewRecipeRes();
+                    reviewRes.setReviewId(review.getReviewId());
+                    reviewRes.setUserId(review.getUser().getId());
+                    reviewRes.setRecipeId(review.getRecipe().getRcpId());
+                    reviewRes.setReviewContext(review.getReviewContext());
+                    reviewRes.setReviewImageUrl(review.getReviewImageUrl());
+                    reviewRes.setReviewRating(review.getReviewRating());
+                    reviewRes.setReviewCreated(review.getReviewCreated());
+                    reviewRes.setReviewModified(review.getModifiedDate());
+                    reviewRes.setNickName(review.getUser().getNickname());
+                    reviewRes.setRecipeName(review.getRecipe().getRcpNm());
+                    reviewRes.setReviewAverage(review.getRecipe().getAverageRating());
+
+                    getReviewResList.add(reviewRes);
+                }
+
+                return getReviewResList;
+            } else {
+                // 사용자를 찾지 못한 경우 에러 처리
+                throw new BaseException(USERS_NOT_EXISTS);
+            }
+        } catch (BaseException exception) {
+            if(exception.getStatus().equals(USERS_NOT_EXISTS)){
+                throw exception;
+            } else if (exception.getStatus().equals(REVIEW_NO_EXISTS)) {
+                throw exception;
+            } else {
+                throw new BaseException(REVIEW_NO_EXISTS);
+            }
+        }
+    }
+
+
+
+    // 레시피별 작성한 리뷰 조회
+    public List<GetReviewRes> getReviewByRecipeId(Long rcpId) throws BaseException {
+        try {
+            Optional<Recipe> recipeOptional = recipeRepository.findByRcpId(rcpId);
+
+            if (recipeOptional.isPresent()) {
+                Recipe recipe = recipeOptional.get();
+                List<Review> reviewList = reviewRepository.findByRecipeOrderByReviewRatingDesc(recipe);
+                if (reviewList.size() == 0){
+                    throw new BaseException(REVIEW_NO_EXISTS);
+                }
 
                 // Review 엔티티를 GetReviewRes로 변환
                 List<GetReviewRes> getReviewResList = new ArrayList<>();
@@ -161,9 +270,48 @@ public class ReviewService {
 
                 return getReviewResList;
             } else {
-                // 사용자를 찾지 못한 경우 에러 처리
-                throw new BaseException(USERS_NOT_EXISTS);
+                // 레시피를 찾지 못한 경우 에러 처리
+                throw new BaseException(RECIPE_NOT_EXISTS);
             }
+        } catch (BaseException exception) {
+            if(exception.getStatus().equals(RECIPE_NOT_EXISTS)){
+                throw exception;
+            } else if (exception.getStatus().equals(REVIEW_NO_EXISTS)) {
+                throw exception;
+            } else {
+                throw new BaseException(REVIEW_NO_EXISTS);
+            }
+        }
+    }
+
+
+
+    public List<GetReviewRecipeRes> getReviewByAll() throws BaseException {
+        try {
+                List<Review> reviewList = reviewRepository.findAllByOrderByReviewRatingDesc();
+
+                // Review 엔티티를 GetReviewRes로 변환
+                List<GetReviewRecipeRes> getReviewResList = new ArrayList<>();
+                for (Review review : reviewList) {
+                    GetReviewRecipeRes reviewRes = new GetReviewRecipeRes();
+                    reviewRes.setReviewId(review.getReviewId());
+                    reviewRes.setUserId(review.getUser().getId());
+                    reviewRes.setRecipeId(review.getRecipe().getRcpId());
+                    reviewRes.setReviewContext(review.getReviewContext());
+                    reviewRes.setReviewImageUrl(review.getReviewImageUrl());
+                    reviewRes.setReviewRating(review.getReviewRating());
+                    reviewRes.setReviewCreated(review.getReviewCreated());
+                    reviewRes.setReviewModified(review.getModifiedDate());
+                    reviewRes.setNickName(review.getUser().getNickname());
+                    reviewRes.setRecipeName(review.getRecipe().getRcpNm());
+                    reviewRes.setReviewAverage(review.getRecipe().getAverageRating());
+
+
+                    getReviewResList.add(reviewRes);
+                }
+
+                return getReviewResList;
+
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
@@ -171,7 +319,7 @@ public class ReviewService {
 
 
     //리뷰 수정
-    public GetReviewRes reviewfixinfo(String reviewContext, double reviewRating, MultipartFile imageFile, Long reviewId) throws BaseException {
+    public GetReviewRes reviewfixinfo(String reviewContext, Double reviewRating, MultipartFile imageFile, Long reviewId) throws BaseException {
         try {
             Optional<Review> reviewOptional = reviewRepository.findByReviewId(reviewId);
 
@@ -248,8 +396,12 @@ public class ReviewService {
             } else {
                 throw new BaseException(UPDATE_FAIL_FILES);
             }
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
+        } catch (BaseException exception){
+            if(exception.getStatus().equals(UPDATE_FAIL_FILES)){
+                throw exception;
+            } else {
+                throw new BaseException(DATABASE_ERROR);
+            }
         }
 
     }

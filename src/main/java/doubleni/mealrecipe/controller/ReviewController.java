@@ -2,7 +2,9 @@ package doubleni.mealrecipe.controller;
 
 import doubleni.mealrecipe.config.exception.BaseException;
 import doubleni.mealrecipe.config.exception.BaseResponse;
-import doubleni.mealrecipe.model.DTO.GetReviewRes;
+import doubleni.mealrecipe.model.DTO.*;
+import doubleni.mealrecipe.model.Recipe;
+import doubleni.mealrecipe.service.RecipeService;
 import doubleni.mealrecipe.service.ReviewService;
 import doubleni.mealrecipe.utils.JwtService;
 import io.swagger.annotations.Api;
@@ -30,6 +32,7 @@ import static doubleni.mealrecipe.config.exception.BaseResponseStatus.*;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final RecipeService recipeService;
     private final JwtService jwtService;
 
 
@@ -37,7 +40,7 @@ public class ReviewController {
      * 리뷰 작성 api
      * [POST] /review
      *
-     * @return BaseResponse<GetRecipeIdRes>
+     * @return BaseResponse<GetReviewRes>
      */
 
     @PostMapping("/review")
@@ -45,9 +48,9 @@ public class ReviewController {
     @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
             @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),@ApiResponse(code=2051,message = "레시피 아이디를 입력해주세요."),
             @ApiResponse(code=2033,message = "리뷰 내용을 입력해주세요."),@ApiResponse(code=2034,message = "리뷰 평점을 입력해주세요."),
-            @ApiResponse(code=2035,message = "리뷰 작성 실패하였습니다.")
+            @ApiResponse(code=2035,message = "리뷰 작성 실패하였습니다."),@ApiResponse(code=2037,message = "이미 작성한 리뷰가 존재합니다.")
     })
-    public BaseResponse<GetReviewRes> ReviewPost (@RequestParam String reviewContext, @RequestParam double reviewRating, @RequestParam Long recipeId,
+    public BaseResponse<GetReviewRes> ReviewPost (@RequestParam String reviewContext, @RequestParam Double reviewRating, @RequestParam Long recipeId,
                                        @RequestPart(value = "images" ,required = false) MultipartFile imageFile)
     {
         if (reviewContext == null){
@@ -59,7 +62,7 @@ public class ReviewController {
         }
 
         if (recipeId == null) {
-            return new BaseResponse<>(RECIPE_ID_NOEXISTS);
+            return new BaseResponse<>(RECIPE_ID_NO_EXISTS);
         }
 
 
@@ -79,21 +82,43 @@ public class ReviewController {
 
     }
 
+    /**
+     * 리뷰 전체 조회 api
+     * [GET] /review
+     *
+     * @return BaseResponse<List<GetReviewRecipeRes>>
+     */
+
+    @GetMapping("/review")
+    @ApiOperation(value="리뷰 전체 조회", notes="review")
+    @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다.")
+    })
+    public BaseResponse<ReviewResponse> ReviewByAll (){
+
+        try{
+            List<GetReviewRecipeRes> getReviewRes = reviewService.getReviewByAll();
+            ReviewResponse response = new ReviewResponse(getReviewRes);
+            return new BaseResponse<>(response);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 
     /**
      * reviewId 리뷰 조회 api
      * [GET] /review/{reviewId}
      *
-     * @return BaseResponse<GetRecipeIdRes>
+     * @return BaseResponse<GetReviewRecipeRes>
      */
 
     @GetMapping("/review/{reviewId}")
     @ApiOperation(value="reviewId 리뷰 조회", notes="review")
     @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
-            @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요.")
+            @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),@ApiResponse(code=2036,message = "저장된 리뷰가 없습니다.")
     })
-    public BaseResponse<GetReviewRes> ReviewByReviewId (@PathVariable Long reviewId){
+    public BaseResponse<GetReviewRecipeRes> ReviewByReviewId (@PathVariable Long reviewId){
 
         try{
 
@@ -103,7 +128,7 @@ public class ReviewController {
                 return new BaseResponse<>(USERS_EMPTY_USER_ID);
             }
 
-            GetReviewRes getReviewRes = reviewService.getReviewId(reviewId);
+            GetReviewRecipeRes getReviewRes = reviewService.getReviewId(reviewId);
             return new BaseResponse<>(getReviewRes);
         }catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
@@ -115,19 +140,18 @@ public class ReviewController {
 
     /**
      * 사용자 리뷰 조회 api
-     * [GET] /review/{reviewId}
+     * [GET] /review/users
      *
-     * @return BaseResponse<List<GetRecipeIdRes>>
+     * @return BaseResponse<List<GetReviewRecipeRes>>
      */
 
-    @GetMapping("/review")
+    @GetMapping("/review/users")
     @ApiOperation(value="사용자 본인이 작성한 리뷰 조회", notes="review")
     @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
             @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),
-            @ApiResponse(code=2011,message = "존재하지 않는 유저입니다.")
+            @ApiResponse(code=2011,message = "존재하지 않는 유저입니다."),@ApiResponse(code=2036,message = "저장된 리뷰가 없습니다.")
     })
-    public BaseResponse<List<GetReviewRes>> ReviewByUserId (){
-
+    public BaseResponse<ReviewResponse> ReviewByUserId (){
         try{
             Long idx = jwtService.getUserIdx();
 
@@ -135,8 +159,35 @@ public class ReviewController {
                 return new BaseResponse<>(USERS_EMPTY_USER_ID);
             }
 
-            List<GetReviewRes> getReviewRes = reviewService.getReviewByUser(idx);
-            return new BaseResponse<>(getReviewRes);
+            List<GetReviewRecipeRes> getReviewRes = reviewService.getReviewByUser(idx);
+            ReviewResponse response = new ReviewResponse(getReviewRes);
+            return new BaseResponse<>(response);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
+
+    /**
+     * 레시피별 리뷰 조회 api
+     * [GET] /review/{rcpId}
+     *
+     * @return BaseResponse<List<GetReviewRecipeRes>>
+     */
+
+    @GetMapping("/review/recipe/{rcpId}")
+    @ApiOperation(value="레시피 별 리뷰 조회", notes="review")
+    @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
+            @ApiResponse(code=2050,message = "존재하지 않는 레시피입니다."),@ApiResponse(code=2036,message = "저장된 리뷰가 없습니다.")
+    })
+    public BaseResponse<ReviewRecipeResponse> ReviewByRecipeId (@PathVariable Long rcpId){
+
+        try{
+            List<GetReviewRes> getReviewRes = reviewService.getReviewByRecipeId(rcpId);
+            Recipe recipe = recipeService.getRecipeByRcpId(rcpId);
+            ReviewRecipeResponse response = new ReviewRecipeResponse(getReviewRes,recipe);
+            return new BaseResponse<>(response);
         }catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
@@ -156,7 +207,7 @@ public class ReviewController {
             @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),
             @ApiResponse(code=4031,message = "파일 수정 실패")
     })
-    public BaseResponse<GetReviewRes> ReviewByFIX (@PathVariable Long reviewId, @RequestParam(required = false) String reviewContext, @RequestParam(required = false) double reviewRating,
+    public BaseResponse<GetReviewRes> ReviewByFIX (@PathVariable Long reviewId, @RequestParam(required = false) String reviewContext, @RequestParam(required = false) Double reviewRating,
                                                          @RequestPart(value = "images" ,required = false) MultipartFile imageFile){
 
         try{
@@ -175,11 +226,36 @@ public class ReviewController {
     }
 
 
+    /**
+     * 리뷰 삭제 api
+     * [DELETE] /review/{reviewId}
+     *
+     * @return BaseResponse<String>
+     */
 
+    @DeleteMapping("/review/{reviewId}")
+    @ApiOperation(value="작성한 리뷰 삭제", notes="review")
+    @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
+            @ApiResponse(code=2010,message = "유저 아이디 값을 확인해주세요."),
+            @ApiResponse(code=4031,message = "파일 수정 실패")
+    })
+    public BaseResponse<String> ReviewByDelete (@PathVariable Long reviewId){
 
+        try{
+            Long idx = jwtService.getUserIdx();
 
+            if (idx == 0) {
+                return new BaseResponse<>(USERS_EMPTY_USER_ID);
+            }
 
+            reviewService.ReviewIdDeleteImage(reviewId);
+            reviewService.ReviewIdDelete(reviewId);
 
+            return new BaseResponse<>("리뷰가 삭제 되었습니다.");
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 
     //저장된 이미지 조회

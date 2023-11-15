@@ -1,5 +1,6 @@
 package doubleni.mealrecipe.model.DTO;
 
+import doubleni.mealrecipe.model.Board;
 import doubleni.mealrecipe.model.Recipe;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 public class GetRecipeRes {
     private Long rcpId;
 
@@ -80,6 +81,8 @@ public class GetRecipeRes {
     private String manualImg20;
     private String rcpNaTip;
 
+    private Double reviewAverge;
+
     public GetRecipeRes(Recipe r) {
         this.rcpId = r.getRcpId();
         this.rcpSeq = r.getRcpSeq();
@@ -137,6 +140,9 @@ public class GetRecipeRes {
         this.manual20 = r.getManual20();
         this.manualImg20 = r.getManualImg20();
         this.rcpNaTip = r.getRcpNaTip();
+//        this.reviewAverge = r.getReviewAverge();
+        this.reviewAverge = r.getAverageRating();
+
     }
 
 

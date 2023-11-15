@@ -50,21 +50,37 @@ public enum BaseResponseStatus {
     POST_REVIEWS_NO_CONTEXT(false,2033,"리뷰 내용을 입력해주세요."),
     POST_REVIEWS_NO_RATINGS(false,2034,"리뷰 평점을 입력해주세요."),
     POST_REVIEWS_FAILS(false,2035,"리뷰 작성 실패하였습니다."),
-
-
+    REVIEW_NO_EXISTS(false,2036,"저장된 리뷰가 없습니다."),
+    REVIEW_ALREADY_EXISTS(false,2037,"이미 작성한 리뷰가 존재합니다."),
 
     // category
     CATEGORIES_EMPTY_CATEGORY(false, 2040, "존재하지 않는 카테고리입니다."),
 
     // recipe
     RECIPE_NOT_EXISTS(false, 2050, "존재하지 않는 레시피입니다."),
-    RECIPE_ID_NOEXISTS(false,2051,"레시피 아이디를 입력해주세요"),
+    RECIPE_ID_NO_EXISTS(false,2051,"레시피 아이디를 입력해주세요"),
 
     // board
-    POST_BOARD_EMPTY_TITLE(false,2060, "제목을 입력해주세요."),
-    POST_BOARD_EMPTY_CONTENT(false,2061, "내용을 입력해주세요."),
-    POST_BOARD_EMPTY_FILES(false, 2062, "이미지를 업로드하세요."),
-    BOARD_NOT_EXISTS(false,2063,"존재 하지 않거나 삭제된 게시글 입니다."),
+    POST_BOARD_FAILS(false, 2060, "게시글 등록을 실패하였습니다."),
+    BOARD_NOT_EXISTS(false,2061,"존재 하지 않거나 삭제된 게시글 입니다."),
+    POST_BOARD_EMPTY_TITLE(false,2062, "제목을 입력해주세요."),
+    POST_BOARD_EMPTY_CONTENT(false,2063, "내용을 입력해주세요."),
+    // files
+    POST_FILE_FAILS(false, 2065, "파일 등록을 실패하였습니다."),
+    FILE_NOT_EXISTS(false, 2066, "존재 하지 않거나 삭제된 파일 입니다."),
+
+    // comment
+    ADD_FAIL_COMMENT(false, 2070, "댓글 등록 실패"),
+    COMMENT_NOT_EXISTS(false, 2071, "존재 하지 않거나 삭제된 댓글 입니다."),
+
+    // likes
+    ADD_FAIL_LIKE(false, 2080, "좋아요 실패"),
+    LIKE_NOT_EXISTS(false, 2081, "좋아요가 존재 하지 않습니다."),
+    LIKE_BOARD_ALREADY_EXISTS(false, 2082, "이미 좋아요한 게시글입니다."),
+    LIKE_RECIPE_ALREADY_EXISTS(false, 2083, "이미 좋아요한 레시피입니다."),
+
+    //record
+    RECORD_SAVE_ERROR(false,2090,"기록 저장을 실패하였습니다."),
 
     /**
      * 3000 : Response 오류
@@ -97,16 +113,27 @@ public enum BaseResponseStatus {
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다."),
     KAKAO_CONNECTION_ERROR(false, 4013, "카카오톡 연결에 실패하였습니다."),
 
+    SHOW_FAIL_RECIPE(false, 4020, "레시피 조회 실패"),
+
     // board
-    ADD_FAIL_BOARD(false, 4020, "게시판 등록 실패"),
     UPDATE_FAIL_BOARD(false, 4021, "게시판 수정 실패"),
     DELETE_FAIL_BOARD(false, 4022, "게시판 삭제 실패"),
+    SHOW_FAIL_BOARD(false, 4023, "게시판 조회 실패"),
 
     // files
-    ADD_FAIL_FILES(false, 4030, "파일 등록 실패"),
     UPDATE_FAIL_FILES(false, 4031, "파일 수정 실패"),
     DELETE_FAIL_FILES(false, 4032, "파일 삭제 실패"),
-    SHOW_FAIL_FILES(false, 4032, "파일 조회 실패");
+
+    // comment
+    UPDATE_FAIL_COMMENT(false, 4041, "댓글 수정 실패"),
+    DELETE_FAIL_COMMENT(false, 4042, "댓글 삭제 실패"),
+    SHOW_FAIL_COMMENT(false, 4043, "레시피 좋아요 조회 실패"),
+
+    // like
+    DELETE_FAIL_LIKE(false, 4052, "좋아요 삭제 실패"),
+    SHOW_FAIL_BOARD_LIKE(false, 4053, "게시판 좋아요 조회 실패"),
+    SHOW_FAIL_RECIPE_LIKE(false, 4054, "레시피 좋아요 조회 실패");
+
 
     private final boolean isSuccess;
     private final int code;

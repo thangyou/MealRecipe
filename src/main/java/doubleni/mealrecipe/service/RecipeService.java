@@ -1,12 +1,15 @@
 package doubleni.mealrecipe.service;
 
 import doubleni.mealrecipe.config.exception.BaseException;
-//import doubleni.mealrecipe.model.DTO.GetRecipeOrderRes;
 import doubleni.mealrecipe.model.DTO.GetRecipeRes;
-import doubleni.mealrecipe.model.DTO.GetReviewRes;
+import doubleni.mealrecipe.model.DTO.GetRecord;
 import doubleni.mealrecipe.model.Recipe;
+import doubleni.mealrecipe.model.Record;
+import doubleni.mealrecipe.model.User;
 import doubleni.mealrecipe.repository.RecipeRepository;
 import doubleni.mealrecipe.repository.RecommendRepository;
+import doubleni.mealrecipe.repository.RecordRepository;
+import doubleni.mealrecipe.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -29,6 +32,8 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final RecommendRepository recommendRepository;
+    private final RecordRepository recordRepository;
+    private final UserRepository userRepository;
 
     /* json 파일 읽기 */
     public void read() throws BaseException{
@@ -227,17 +232,29 @@ public class RecipeService {
 
     /* 전체 레시피 조회 */
     public List<GetRecipeRes> getAllRecipes() throws BaseException {
-        List<GetRecipeRes> getRecipeRes =
-                recipeRepository.findAll()
-                        .stream()
-                        .map(GetRecipeRes::new)
-                        .toList();
+        try {
+            List<Recipe> recipes = recipeRepository.findAll();
+            List<GetRecipeRes> getRecipeRes = recipes.stream()
+                    .map(GetRecipeRes::new)
+                    .toList();
 
-        if (getRecipeRes.isEmpty()) {
+            if (getRecipeRes.isEmpty()) {
+                throw new BaseException(RECIPE_NOT_EXISTS);
+            }
+            return getRecipeRes;
+
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
-//            throw new IllegalStateException();
         }
-        return getRecipeRes;
+//        List<Recipe> recipes = recipeRepository.findAll();
+//        List<GetRecipeRes> getRecipeRes = recipes.stream()
+//                .map(GetRecipeRes::new)
+//                .collect(Collectors.toList());
+//
+//        if (getRecipeRes.isEmpty()) {
+//            throw new BaseException(DATABASE_ERROR);
+//        }
+//        return getRecipeRes;
     }
 
     /* 레시피 id로 레시피 조회 */
@@ -309,6 +326,15 @@ public class RecipeService {
                 getRecipeIdRes.setManualImg20(recipe.getManualImg20());
                 getRecipeIdRes.setRcpNaTip(recipe.getRcpNaTip());
 
+                // 평균 평점 계산
+                double averageRating = recipe.getAverageRating();
+                getRecipeIdRes.setReviewAverge(averageRating);
+
+                recipe.setReviewAverge(averageRating);
+
+                //update
+                recipeRepository.save(recipe);
+
                 return getRecipeIdRes;
             }
         } catch (Exception exception){
@@ -351,31 +377,38 @@ public class RecipeService {
 
     // ====================================================================
 
-    /* 레시피(리스트) 출력 */
+    /* 레시피(리스트) 검색 */
     public List<GetRecipeRes> searchRecipeByName(String keyword) throws BaseException {
-        List<GetRecipeRes> getRecipeResList = recipeRepository.findByRcpNmContaining(keyword)
-                .stream()
-                .map(GetRecipeRes::new)
-                .collect(Collectors.toList());
+        try {
+            List<GetRecipeRes> getRecipeResList = recipeRepository.findByRcpNmContaining(keyword)
+                    .stream()
+                    .map(GetRecipeRes::new)
+                    .collect(Collectors.toList());
 
-        if(getRecipeResList.isEmpty()) {
+            if(getRecipeResList.isEmpty()) {
+                throw new BaseException(SHOW_FAIL_RECIPE);
+            }
+            return getRecipeResList;
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
-//            throw new IllegalStateException();
         }
-        return getRecipeResList;
     }
 
     public List<GetRecipeRes> searchRecipeByRcpPartsDtls(String keyword) throws BaseException {
-        List<GetRecipeRes> getRecipeResList = recipeRepository.findByRcpPartsDtlsContaining(keyword)
-                .stream()
-                .map(GetRecipeRes::new)
-                .toList();
+        try {
+            List<GetRecipeRes> getRecipeResList = recipeRepository.findByRcpPartsDtlsContaining(keyword)
+                    .stream()
+                    .map(GetRecipeRes::new)
+                    .toList();
 
-        if(getRecipeResList.isEmpty()) {
+
+            if(getRecipeResList.isEmpty()) {
+                throw new BaseException(SHOW_FAIL_RECIPE);
+            }
+            return getRecipeResList;
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
-//            throw new IllegalStateException();
         }
-        return getRecipeResList;
     }
 
     /* 재료 출력 */
@@ -412,11 +445,12 @@ public class RecipeService {
 
 
     //키워드 기반 맞춤형 레시피 추출
-    public GetRecipeRes searchGetRecipeResByKeyword (String recipeNm) throws BaseException {
+    public GetRecipeRes searchGetRecipeResByKeyword (String rcpNm) throws BaseException {
 
         try{
+            //System.out.println(rcpNm);
 
-            Optional<Recipe> recipeOptional = recommendRepository.findByRcpNmContaining(recipeNm);
+            Optional<Recipe> recipeOptional = recommendRepository.findByRcpNm(rcpNm);
 
 
             if(recipeOptional.isPresent()){
@@ -485,12 +519,21 @@ public class RecipeService {
                 getRecipeIdRes.setManualImg20(recipe.getManualImg20());
                 getRecipeIdRes.setRcpNaTip(recipe.getRcpNaTip());
 
+                // 평균 평점 계산
+                double averageRating = recipe.getAverageRating();
+                getRecipeIdRes.setReviewAverge(averageRating);
+
+                recipe.setReviewAverge(averageRating);
+
+                //update
+                recipeRepository.save(recipe);
+
                 return getRecipeIdRes;
 
             }
             else {
                 GetRecipeRes getRecipeIdRes = new GetRecipeRes();
-                getRecipeIdRes.setRcpNm(recipeNm);
+                getRecipeIdRes.setRcpNm(rcpNm);
 
                 return getRecipeIdRes;
             }
@@ -498,6 +541,143 @@ public class RecipeService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+
+
+    public GetRecipeRes searchGetRecipeResByRcpId (String recipeId) throws BaseException {
+
+        try{
+
+            Optional<Recipe> recipeOptional = recommendRepository.findByRcpSeq(recipeId);
+
+
+            if(recipeOptional.isPresent()){
+
+                Recipe recipe = recipeOptional.get();
+
+                GetRecipeRes getRecipeIdRes = new GetRecipeRes();
+                getRecipeIdRes.setRcpId(recipe.getRcpId());
+                getRecipeIdRes.setRcpSeq(recipe.getRcpSeq());
+                getRecipeIdRes.setRcpNm(recipe.getRcpNm());
+                getRecipeIdRes.setRcpWay2(recipe.getRcpWay2());
+                getRecipeIdRes.setRcpPat2(recipe.getRcpPat2());
+                getRecipeIdRes.setInfoWgt(recipe.getInfoWgt());
+                getRecipeIdRes.setInfoEng(recipe.getInfoEng());
+                getRecipeIdRes.setInfoCar(recipe.getInfoCar());
+                getRecipeIdRes.setInfoPro(recipe.getInfoPro());
+                getRecipeIdRes.setInfoFat(recipe.getInfoFat());
+                getRecipeIdRes.setInfoNa(recipe.getInfoNa());
+                getRecipeIdRes.setHashTag(recipe.getHashTag());
+                getRecipeIdRes.setAttFileNoMain(recipe.getAttFileNoMain());
+                getRecipeIdRes.setAttFileNoMk(recipe.getAttFileNoMk());
+
+                /* 재료 */
+//                getRecipeIdRes.setRcpPartsDtls(new ArrayList<>(recipe.getRcpPartsDtls()));
+                getRecipeIdRes.setRcpPartsDtls(recipe.getRcpPartsDtls());
+
+                getRecipeIdRes.setManual01(recipe.getManual01());
+                getRecipeIdRes.setManualImg01(recipe.getManualImg01());
+                getRecipeIdRes.setManual02(recipe.getManual02());
+                getRecipeIdRes.setManualImg02(recipe.getManualImg02());
+                getRecipeIdRes.setManual03(recipe.getManual03());
+                getRecipeIdRes.setManualImg03(recipe.getManualImg03());
+                getRecipeIdRes.setManual04(recipe.getManual04());
+                getRecipeIdRes.setManualImg04(recipe.getManualImg04());
+                getRecipeIdRes.setManual05(recipe.getManual05());
+                getRecipeIdRes.setManualImg05(recipe.getManualImg05());
+                getRecipeIdRes.setManual06(recipe.getManual06());
+                getRecipeIdRes.setManualImg06(recipe.getManualImg06());
+                getRecipeIdRes.setManual07(recipe.getManual07());
+                getRecipeIdRes.setManualImg07(recipe.getManualImg07());
+                getRecipeIdRes.setManual08(recipe.getManual08());
+                getRecipeIdRes.setManualImg08(recipe.getManualImg08());
+                getRecipeIdRes.setManual09(recipe.getManual09());
+                getRecipeIdRes.setManualImg09(recipe.getManualImg09());
+                getRecipeIdRes.setManual10(recipe.getManual10());
+                getRecipeIdRes.setManualImg10(recipe.getManualImg10());
+                getRecipeIdRes.setManual11(recipe.getManual11());
+                getRecipeIdRes.setManualImg11(recipe.getManualImg11());
+                getRecipeIdRes.setManual12(recipe.getManual12());
+                getRecipeIdRes.setManualImg12(recipe.getManualImg12());
+                getRecipeIdRes.setManual13(recipe.getManual13());
+                getRecipeIdRes.setManualImg13(recipe.getManualImg13());
+                getRecipeIdRes.setManual14(recipe.getManual14());
+                getRecipeIdRes.setManualImg14(recipe.getManualImg14());
+                getRecipeIdRes.setManual15(recipe.getManual15());
+                getRecipeIdRes.setManualImg15(recipe.getManualImg15());
+                getRecipeIdRes.setManual16(recipe.getManual16());
+                getRecipeIdRes.setManualImg16(recipe.getManualImg16());
+                getRecipeIdRes.setManual17(recipe.getManual17());
+                getRecipeIdRes.setManualImg17(recipe.getManualImg17());
+                getRecipeIdRes.setManual18(recipe.getManual18());
+                getRecipeIdRes.setManualImg18(recipe.getManualImg18());
+                getRecipeIdRes.setManual19(recipe.getManual19());
+                getRecipeIdRes.setManualImg19(recipe.getManualImg19());
+                getRecipeIdRes.setManual20(recipe.getManual20());
+                getRecipeIdRes.setManualImg20(recipe.getManualImg20());
+                getRecipeIdRes.setRcpNaTip(recipe.getRcpNaTip());
+
+                // 평균 평점 계산
+                double averageRating = recipe.getAverageRating();
+                getRecipeIdRes.setReviewAverge(averageRating);
+
+
+                recipe.setReviewAverge(averageRating);
+
+                //update
+                recipeRepository.save(recipe);
+
+                return getRecipeIdRes;
+
+            }
+            else {
+                GetRecipeRes getRecipeIdRes = new GetRecipeRes();
+                getRecipeIdRes.setRcpSeq(recipeId.toString());
+
+                return getRecipeIdRes;
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //레시피를 반환해 리뷰 평균점수를 위한
+    public Recipe getRecipeByRcpId(Long rcpId) throws BaseException {
+        try{
+            Optional<Recipe> recipeOptional = recipeRepository.findByRcpId(rcpId);
+            if (recipeOptional.isPresent()){
+                Recipe recipe = recipeOptional.get();
+
+                return recipe;
+            }
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+        return null;
+    }
+
+    //이전 레코드 가져오기
+    public GetRecord getRecipeByUser (Long userId) throws BaseException {
+        try {
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isPresent()){
+                User user = userOptional.get();
+                Record record = recordRepository.findByUser(user).orElse(null);
+
+                GetRecord getRecord = new GetRecord();
+                getRecord.setRecordId(record != null ? record.getRecordId() : null);
+                getRecord.setUser(user);
+                getRecord.setRecordNum(record != null ? record.getRecordNum() : new ArrayList<>());
+
+                return getRecord;
+            }
+            return null;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
 
 
 
