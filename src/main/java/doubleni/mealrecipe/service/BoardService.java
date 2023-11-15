@@ -44,16 +44,20 @@ public class BoardService {
 
     /* 모든 게시글(리스트) 조회 */
     public List<BoardRes> getBoards() throws BaseException {
-        List<BoardRes> boards =
-                boardRepository.findAll()
-                        .stream()
-                        .map(BoardRes::new)
-                        .collect(Collectors.toList());
+        try {
+            List<BoardRes> boards =
+                    boardRepository.findAll()
+                            .stream()
+                            .map(BoardRes::new)
+                            .collect(Collectors.toList());
 
-        if (boards.isEmpty()) {
-            throw new BaseException(BOARD_NOT_EXISTS);
+            if (boards.isEmpty()) {
+                throw new BaseException(SHOW_FAIL_BOARD);
+            }
+            return boards;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
         }
-        return boards;
     }
 
     /* 나의 게시글 조회 */
@@ -68,109 +72,139 @@ public class BoardService {
                                 .stream()
                                 .map(BoardRes::new)
                                 .toList();
+
+                if (myBoards.isEmpty()) {
+                    throw new BaseException(SHOW_FAIL_BOARD);
+                }
+
                 return myBoards;
             } else {
                     // 사용자를 찾지 못한 경우 에러 처리
                     throw new BaseException(USERS_NOT_EXISTS);
-                }
+            }
         } catch (Exception exception) {
-            throw new BaseException(BOARD_NOT_EXISTS);
+            throw new BaseException(DATABASE_ERROR);
         }
-
-
     }
 
     /* boardId로 게시글 조회 */
     public Board getBoardByBoardId(Long boardId, Long idx) throws BaseException {
-        Optional<Board> findBoard = this.boardRepository.findByBoardId(boardId);
-        if (findBoard.isPresent()) {
-            Board board = findBoard.get();
-            if (!idx.equals(findBoard.get().getUser().getId())) {
-                board.setHits(board.getHits()+1); // 조회수 증가
+        try {
+            Optional<Board> findBoard = this.boardRepository.findByBoardId(boardId);
+            if (findBoard.isPresent()) {
+                Board board = findBoard.get();
+                if (!idx.equals(findBoard.get().getUser().getId())) {
+                    board.setHits(board.getHits()+1); // 조회수 증가
+                }
+                this.boardRepository.save(board);
+                return board;
+            } else {
+                throw new BaseException(BOARD_NOT_EXISTS);
             }
-            this.boardRepository.save(board);
-            return board;
-        } else {
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
     /* 게시글 정렬 */
     public List<BoardRes> getBoardByOrderByHitsDesc() throws BaseException { // 조회 수
-        List<BoardRes> getBoards =
-                boardRepository.findAllByOrderByHitsDesc()
-                        .stream()
-                        .map(BoardRes::new)
-                        .toList();
+        try {
+            List<BoardRes> getBoards =
+                    boardRepository.findAllByOrderByHitsDesc()
+                            .stream()
+                            .map(BoardRes::new)
+                            .toList();
 
-        if (getBoards.isEmpty()) {
+            if (getBoards.isEmpty()) {
+                throw new BaseException(SHOW_FAIL_BOARD);
+            }
+            return getBoards;
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
-        return getBoards;
     }
 
     public List<BoardRes> getBoardByOrderByLikeCntDesc() throws BaseException { // 좋아요
-        List<BoardRes> getBoards =
-                boardRepository.findAllByOrderByLikeCntDesc()
-                        .stream()
-                        .map(BoardRes::new)
-                        .toList();
+        try {
+            List<BoardRes> getBoards =
+                    boardRepository.findAllByOrderByLikeCntDesc()
+                            .stream()
+                            .map(BoardRes::new)
+                            .toList();
 
-        if (getBoards.isEmpty()) {
+            if (getBoards.isEmpty()) {
+                throw new BaseException(SHOW_FAIL_BOARD);
+            }
+            return getBoards;
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
-        return getBoards;
     }
 
     public List<BoardRes> getBoardByOrderByCommentCntDesc() throws BaseException { // 댓글 수
-        List<BoardRes> getBoards =
-                boardRepository.findAllByOrderByCommentCntDesc()
-                        .stream()
-                        .map(BoardRes::new)
-                        .toList();
+        try {
+            List<BoardRes> getBoards =
+                    boardRepository.findAllByOrderByCommentCntDesc()
+                            .stream()
+                            .map(BoardRes::new)
+                            .toList();
 
-        if (getBoards.isEmpty()) {
+            if (getBoards.isEmpty()) {
+                throw new BaseException(SHOW_FAIL_BOARD);
+            }
+            return getBoards;
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
-        return getBoards;
     }
 
     /* 게시글 검색 */
-    public List<BoardRes> searchBoardByUserNickname(String writer) {
-        List<BoardRes> boardList = boardRepository.findByUserNicknameContaining(writer)
-                .stream()
-                .map(BoardRes::new)
-                .toList();
+    public List<BoardRes> searchBoardByUserNickname(String writer) throws BaseException {
+        try {
+            List<BoardRes> boardList = boardRepository.findByUserNicknameContaining(writer)
+                    .stream()
+                    .map(BoardRes::new)
+                    .toList();
 
-        if (boardList.isEmpty()) {
-            throw new IllegalStateException();
+            if (boardList.isEmpty()) {
+                    throw new BaseException(SHOW_FAIL_BOARD);
+            }
+            return boardList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
         }
-        return boardList;
     }
 
-    public List<BoardRes> searchBoardByTitle(String keyword) {
-        List<BoardRes> boardList = boardRepository.findByTitleContaining(keyword)
-                .stream()
-                .map(BoardRes::new)
-                .toList();
+    public List<BoardRes> searchBoardByTitle(String keyword) throws BaseException {
+        try {
+            List<BoardRes> boardList = boardRepository.findByTitleContaining(keyword)
+                    .stream()
+                    .map(BoardRes::new)
+                    .toList();
 
-        if (boardList.isEmpty()) {
-            throw new IllegalStateException();
+            if (boardList.isEmpty()) {
+                throw new BaseException(SHOW_FAIL_BOARD);
+            }
+            return boardList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
         }
-        return boardList;
     }
 
-    public List<BoardRes> searchBoardByContent(String keyword) {
-        List<BoardRes> boardList = boardRepository.findByContentContaining(keyword)
-                .stream()
-                .map(BoardRes::new)
-                .toList();
+    public List<BoardRes> searchBoardByContent(String keyword) throws BaseException {
+        try {
+            List<BoardRes> boardList = boardRepository.findByContentContaining(keyword)
+                    .stream()
+                    .map(BoardRes::new)
+                    .toList();
 
-        if (boardList.isEmpty()) {
-            throw new IllegalStateException();
+            if (boardList.isEmpty()) {
+                throw new BaseException(SHOW_FAIL_BOARD);
+            }
+            return boardList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
         }
-
-        return boardList;
     }
 
 
@@ -184,6 +218,14 @@ public class BoardService {
 
             if (optUser.isPresent()) {
                 User user = optUser.get();
+
+                if (addBoard.getTitle().isEmpty()) {
+                    throw new BaseException(POST_BOARD_EMPTY_TITLE);
+                }
+                if (addBoard.getContent().isEmpty()) {
+                    throw new BaseException(POST_BOARD_EMPTY_CONTENT);
+                }
+
                 Board board = addBoard.toEntity(user);
 
                 if (file != null) {
@@ -215,7 +257,7 @@ public class BoardService {
 
                 return new BoardRes(board);
             } else {
-                throw new BaseException(POST_BOARD_FAILS);
+                throw new BaseException(USERS_NOT_EXISTS);
             }
 
         } catch (Exception exception){
@@ -250,10 +292,11 @@ public class BoardService {
                 boardRepository.save(board);
 
                 return new BoardRes(board);
+
             } else {
-                throw new BaseException(UPDATE_FAIL_BOARD);
+                    throw new BaseException(BOARD_NOT_EXISTS);
             }
-        } catch (Exception exception){
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -270,12 +313,11 @@ public class BoardService {
                     throw new BaseException(DELETE_FAIL_FILES);
                 }
                 boardRepository.deleteByBoardId(boardId);
-                ResponseEntity.ok("-> 게시글 삭제 완료");
             } else {
                 throw new BaseException(BOARD_NOT_EXISTS);
             }
         } catch (Exception exception){
-            throw new BaseException(DELETE_FAIL_BOARD);
+            throw new BaseException(DATABASE_ERROR);
         }
     }
 

@@ -232,21 +232,29 @@ public class RecipeService {
 
     /* 전체 레시피 조회 */
     public List<GetRecipeRes> getAllRecipes() throws BaseException {
-        List<Recipe> recipes = recipeRepository.findAll();
-        List<GetRecipeRes> getRecipeRes = recipes.stream()
-                .map(GetRecipeRes::new)
-                .collect(Collectors.toList());
+        try {
+            List<Recipe> recipes = recipeRepository.findAll();
+            List<GetRecipeRes> getRecipeRes = recipes.stream()
+                    .map(GetRecipeRes::new)
+                    .toList();
 
-//        List<GetRecipeRes> getRecipeRes =
-//                recipeRepository.findAll()
-//                        .stream()
-//                        .map(GetRecipeRes::new)
-//                        .toList();
+            if (getRecipeRes.isEmpty()) {
+                throw new BaseException(RECIPE_NOT_EXISTS);
+            }
+            return getRecipeRes;
 
-        if (getRecipeRes.isEmpty()) {
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
-        return getRecipeRes;
+//        List<Recipe> recipes = recipeRepository.findAll();
+//        List<GetRecipeRes> getRecipeRes = recipes.stream()
+//                .map(GetRecipeRes::new)
+//                .collect(Collectors.toList());
+//
+//        if (getRecipeRes.isEmpty()) {
+//            throw new BaseException(DATABASE_ERROR);
+//        }
+//        return getRecipeRes;
     }
 
     /* 레시피 id로 레시피 조회 */
@@ -369,31 +377,38 @@ public class RecipeService {
 
     // ====================================================================
 
-    /* 레시피(리스트) 출력 */
+    /* 레시피(리스트) 검색 */
     public List<GetRecipeRes> searchRecipeByName(String keyword) throws BaseException {
-        List<GetRecipeRes> getRecipeResList = recipeRepository.findByRcpNmContaining(keyword)
-                .stream()
-                .map(GetRecipeRes::new)
-                .collect(Collectors.toList());
+        try {
+            List<GetRecipeRes> getRecipeResList = recipeRepository.findByRcpNmContaining(keyword)
+                    .stream()
+                    .map(GetRecipeRes::new)
+                    .collect(Collectors.toList());
 
-        if(getRecipeResList.isEmpty()) {
+            if(getRecipeResList.isEmpty()) {
+                throw new BaseException(SHOW_FAIL_RECIPE);
+            }
+            return getRecipeResList;
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
-//            throw new IllegalStateException();
         }
-        return getRecipeResList;
     }
 
     public List<GetRecipeRes> searchRecipeByRcpPartsDtls(String keyword) throws BaseException {
-        List<GetRecipeRes> getRecipeResList = recipeRepository.findByRcpPartsDtlsContaining(keyword)
-                .stream()
-                .map(GetRecipeRes::new)
-                .toList();
+        try {
+            List<GetRecipeRes> getRecipeResList = recipeRepository.findByRcpPartsDtlsContaining(keyword)
+                    .stream()
+                    .map(GetRecipeRes::new)
+                    .toList();
 
-        if(getRecipeResList.isEmpty()) {
+
+            if(getRecipeResList.isEmpty()) {
+                throw new BaseException(SHOW_FAIL_RECIPE);
+            }
+            return getRecipeResList;
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
-//            throw new IllegalStateException();
         }
-        return getRecipeResList;
     }
 
     /* 재료 출력 */

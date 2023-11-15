@@ -61,18 +61,23 @@ public enum BaseResponseStatus {
     RECIPE_ID_NO_EXISTS(false,2051,"레시피 아이디를 입력해주세요"),
 
     // board
-    POST_BOARD_EMPTY_TITLE(false,2060, "제목을 입력해주세요."),
-    POST_BOARD_EMPTY_CONTENT(false,2061, "내용을 입력해주세요."),
-    BOARD_NOT_EXISTS(false,2063,"존재 하지 않거나 삭제된 게시글 입니다."),
-    POST_BOARD_FAILS(false, 2064, "게시글 등록을 실패하였습니다."),
+    POST_BOARD_FAILS(false, 2060, "게시글 등록을 실패하였습니다."),
+    BOARD_NOT_EXISTS(false,2061,"존재 하지 않거나 삭제된 게시글 입니다."),
+    POST_BOARD_EMPTY_TITLE(false,2062, "제목을 입력해주세요."),
+    POST_BOARD_EMPTY_CONTENT(false,2063, "내용을 입력해주세요."),
+    // files
+    POST_FILE_FAILS(false, 2065, "파일 등록을 실패하였습니다."),
+    FILE_NOT_EXISTS(false, 2066, "존재 하지 않거나 삭제된 파일 입니다."),
 
     // comment
-    COMMENT_NOT_EXISTS(false, 2070, "존재 하지 않거나 삭제된 댓글 입니다."),
+    ADD_FAIL_COMMENT(false, 2070, "댓글 등록 실패"),
+    COMMENT_NOT_EXISTS(false, 2071, "존재 하지 않거나 삭제된 댓글 입니다."),
 
     // likes
-    LIKE_NOT_EXISTS(false, 2080, "좋아요가 존재 하지 않읍니다."),
-    LIKE_BOARD_ALREADY_EXISTS(false, 2081, "이미 좋아요한 게시글입니다."),
-    LIKE_RECIPE_ALREADY_EXISTS(false, 2082, "이미 좋아요한 레시피입니다."),
+    ADD_FAIL_LIKE(false, 2080, "좋아요 실패"),
+    LIKE_NOT_EXISTS(false, 2081, "좋아요가 존재 하지 않습니다."),
+    LIKE_BOARD_ALREADY_EXISTS(false, 2082, "이미 좋아요한 게시글입니다."),
+    LIKE_RECIPE_ALREADY_EXISTS(false, 2083, "이미 좋아요한 레시피입니다."),
 
     //record
     RECORD_SAVE_ERROR(false,2090,"기록 저장을 실패하였습니다."),
@@ -108,25 +113,26 @@ public enum BaseResponseStatus {
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다."),
     KAKAO_CONNECTION_ERROR(false, 4013, "카카오톡 연결에 실패하였습니다."),
 
+    SHOW_FAIL_RECIPE(false, 4020, "레시피 조회 실패"),
+
     // board
-    ADD_FAIL_BOARD(false, 4020, "게시판 등록 실패"),
     UPDATE_FAIL_BOARD(false, 4021, "게시판 수정 실패"),
     DELETE_FAIL_BOARD(false, 4022, "게시판 삭제 실패"),
     SHOW_FAIL_BOARD(false, 4023, "게시판 조회 실패"),
 
     // files
-    ADD_FAIL_FILES(false, 4030, "파일 등록 실패"),
     UPDATE_FAIL_FILES(false, 4031, "파일 수정 실패"),
     DELETE_FAIL_FILES(false, 4032, "파일 삭제 실패"),
 
     // comment
-    ADD_FAIL_COMMENT(false, 4040, "댓글 등록 실패"),
     UPDATE_FAIL_COMMENT(false, 4041, "댓글 수정 실패"),
     DELETE_FAIL_COMMENT(false, 4042, "댓글 삭제 실패"),
+    SHOW_FAIL_COMMENT(false, 4043, "레시피 좋아요 조회 실패"),
 
     // like
-    ADD_FAIL_LIKE(false, 4050, "좋아요 추가 실패"),
-    DELETE_FAIL_LIKE(false, 4051, "좋아요 삭제 실패");
+    DELETE_FAIL_LIKE(false, 4052, "좋아요 삭제 실패"),
+    SHOW_FAIL_BOARD_LIKE(false, 4053, "게시판 좋아요 조회 실패"),
+    SHOW_FAIL_RECIPE_LIKE(false, 4054, "레시피 좋아요 조회 실패");
 
 
     private final boolean isSuccess;

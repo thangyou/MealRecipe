@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,13 +64,21 @@ public class RecipeController {
      */
     @GetMapping("/list")
     @ApiOperation(value = "레시피 조회 API", notes = "모든 레시피(리스트) 조회")
-    @ApiResponses(value={@ApiResponse(code =3000,message = "값을 불러오는데 실패하였습니다.")})
+    @ApiResponses(value={@ApiResponse(code = 3000, message = "값을 불러오는데 실패하였습니다."),
+            @ApiResponse(code = 4000, message = "데이터베이스 연결에 실패하였습니다."),
+            @ApiResponse(code = 4020, message = "레시피 조회 실패")})
     public BaseResponse<List<GetRecipeRes>> getAllRecipes() throws BaseException {
-        List<GetRecipeRes> getRecipeRes = recipeService.getAllRecipes();
-        if (getRecipeRes.isEmpty()) {
+        try {
+            List<GetRecipeRes> getRecipeRes = recipeService.getAllRecipes();
+            return new BaseResponse<>(getRecipeRes);
+        } catch (Exception e) {
             return new BaseResponse<>(RESPONSE_ERROR);
         }
-        return new BaseResponse<>(getRecipeRes);
+//        List<GetRecipeRes> getRecipeRes = recipeService.getAllRecipes();
+//        if (getRecipeRes.isEmpty()) {
+//            return new BaseResponse<>(RESPONSE_ERROR);
+//        }
+//        return new BaseResponse<>(getRecipeRes);
     }
 
 
@@ -81,9 +90,9 @@ public class RecipeController {
      */
     @GetMapping("/rcpId={rcpId}")
     @ApiOperation(value="레시피 조회 API", notes="id로 레시피 조회")
-    @ApiResponses(value={@ApiResponse(code =2000,message = "입력값을 확인해주세요."),
-            @ApiResponse(code =2050,message = "존재하지 않는 레시피입니다."),
-            @ApiResponse(code =3000,message = "값을 불러오는데 실패하였습니다.")})
+    @ApiResponses(value={@ApiResponse(code = 2000, message = "입력값을 확인해주세요."),
+            @ApiResponse(code = 2050, message = "존재하지 않는 레시피입니다."),
+            @ApiResponse(code = 3000, message = "값을 불러오는데 실패하였습니다.")})
     public BaseResponse<GetRecipeRes> getRecipeById (@PathVariable Long rcpId) {
         if (rcpId == null) {
             return new BaseResponse<>(REQUEST_ERROR);
@@ -146,17 +155,23 @@ public class RecipeController {
     // 키워드로 검색 - 키워드가 레시피명에 속한 레시피 리스트 출력
     @GetMapping("/search-recipe-of")
     @ApiOperation(value="레시피 검색 API", notes="키워드로 레시피 검색")
-    @ApiResponses(value={@ApiResponse(code =2000,message = "입력값을 확인해주세요."),
-            @ApiResponse(code =2050,message = "존재하지 않는 레시피입니다.")})
-    public BaseResponse<List<GetRecipeRes>> searchRecipeByKeyword (@RequestParam("keyword") String keyword){
+    @ApiResponses(value={@ApiResponse(code = 2000, message = "입력값을 확인해주세요."),
+            @ApiResponse(code = 2050, message = "존재하지 않는 레시피입니다."),
+            @ApiResponse(code = 3000, message = "값을 불러오는데 실패하였습니다."),
+            @ApiResponse(code = 4000, message = "데이터베이스 연결에 실패하였습니다."),
+            @ApiResponse(code = 4020, message = "레시피 조회 실패")})
+    public BaseResponse<List<GetRecipeRes>> searchRecipeByKeyword (@RequestParam("keyword") String writer){
         try{
-            List<GetRecipeRes> response = recipeService.searchRecipeByName(keyword);
+            if (writer == null) {
+                return new BaseResponse<>(REQUEST_ERROR);
+            }
+            List<GetRecipeRes> response = recipeService.searchRecipeByName(writer);
             if (response.isEmpty()) {
                 return new BaseResponse<>(RECIPE_NOT_EXISTS);
             }
             return new BaseResponse<>(response);
-        }catch (BaseException exception){
-            return new BaseResponse<>(REQUEST_ERROR);
+        } catch (BaseException exception){
+            return new BaseResponse<>(RESPONSE_ERROR);
         }
     }
 
@@ -169,19 +184,24 @@ public class RecipeController {
     // 재료로 검색 - 재료가 속한 레시피 리스트 출력
     @GetMapping("/search-recipe-of-ingredient")
     @ApiOperation(value = "레시피 검색 API", notes = "재료로 레시피 검색")
-    @ApiResponses(value={@ApiResponse(code =2000,message = "입력값을 확인해주세요."),
-            @ApiResponse(code =2050,message = "존재하지 않는 레시피입니다.")})
+    @ApiResponses(value={@ApiResponse(code = 2000, message = "입력값을 확인해주세요."),
+            @ApiResponse(code = 2050, message = "존재하지 않는 레시피입니다."),
+            @ApiResponse(code = 3000, message = "값을 불러오는데 실패하였습니다."),
+            @ApiResponse(code = 4000, message = "데이터베이스 연결에 실패하였습니다.")})
     public BaseResponse<List<GetRecipeRes>> searchRecipeByRcpPartsDtls (@RequestParam("keyword") String ingredient) throws BaseException {
-        if (ingredient.isEmpty()) {
-            return new BaseResponse<>(REQUEST_ERROR);
-        }
+        try {
+            if (ingredient.isEmpty()) {
+                return new BaseResponse<>(REQUEST_ERROR);
+            }
 
-        List<GetRecipeRes> response = recipeService.searchRecipeByRcpPartsDtls(ingredient);
-        if (response.isEmpty()) {
-           return new BaseResponse<>(RECIPE_NOT_EXISTS);
+            List<GetRecipeRes> response = recipeService.searchRecipeByRcpPartsDtls(ingredient);
+            if (response.isEmpty()) {
+                return new BaseResponse<>(RECIPE_NOT_EXISTS);
+            }
+            return new BaseResponse<>(response);
+        } catch (Exception exception) {
+            return new BaseResponse<>(RESPONSE_ERROR);
         }
-        return new BaseResponse<>(response);
-
     }
 
     /**
@@ -194,18 +214,20 @@ public class RecipeController {
     @GetMapping("/search-ingredient-of-recipe")
     @ApiOperation(value = "재료 검색 API", notes = "레시피의 재료 검색")
     @ApiResponses(value={@ApiResponse(code =2000,message = "입력값을 확인해주세요."),
-            @ApiResponse(code =2050,message = "존재하지 않는 레시피입니다.")})
+            @ApiResponse(code =2050,message = "존재하지 않는 레시피입니다."),
+            @ApiResponse(code = 3000, message = "값을 불러오는데 실패하였습니다."),})
     public BaseResponse<List<String>> searchRcpPartsDtlsByRcpNm (@RequestParam("keyword") String keyword) throws BaseException {
-        if (keyword.isEmpty()) {
-            return new BaseResponse<>(REQUEST_ERROR);
+        try {
+            if (keyword.isEmpty()) {
+                return new BaseResponse<>(REQUEST_ERROR);
+            }
+            List<String> response = recipeService.searchRcpPartsDtlsByRcpNm(keyword);
+            if (response.isEmpty()) {
+                return new BaseResponse<>(RECIPE_NOT_EXISTS);
+            }
+            return new BaseResponse<>(response);
+        } catch (Exception exception) {
+            return new BaseResponse<>(RESPONSE_ERROR);
         }
-                List<String> response = recipeService.searchRcpPartsDtlsByRcpNm(keyword);
-        if (response.isEmpty()) {
-            return new BaseResponse<>(RECIPE_NOT_EXISTS);
-        }
-        return new BaseResponse<>(response);
     }
-
-
-
 }

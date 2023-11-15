@@ -1,6 +1,7 @@
 package doubleni.mealrecipe.service;
 
 import doubleni.mealrecipe.config.exception.BaseException;
+import doubleni.mealrecipe.config.exception.BaseResponse;
 import doubleni.mealrecipe.model.*;
 import doubleni.mealrecipe.model.DTO.BoardLikeRes;
 import doubleni.mealrecipe.model.DTO.RecipeLikeRes;
@@ -26,15 +27,19 @@ public class LikeService {
     private final BoardLikeRepository boardLikeRepository;
 
     public List<BoardLikeRes> getAllBoardLike() throws BaseException {
-       List<BoardLikeRes> boardLikes = boardLikeRepository.findAll()
-                .stream()
-                .map(BoardLikeRes::new)
-                .toList();
+        try {
+            List<BoardLikeRes> boardLikes = boardLikeRepository.findAll()
+                    .stream()
+                    .map(BoardLikeRes::new)
+                    .toList();
 
-        if (boardLikes.isEmpty()) {
-            throw new IllegalStateException();
+            if (boardLikes.isEmpty()) {
+                throw new BaseException(SHOW_FAIL_BOARD_LIKE);
+            }
+            return boardLikes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
         }
-        return boardLikes;
     }
 
     public List<BoardLikeRes> getBoardLike(Long idx) throws BaseException {
@@ -42,13 +47,25 @@ public class LikeService {
             Optional<User> optUser = userRepository.findById(idx);
             if (optUser.isPresent()) {
                 User user = optUser.get();
-                return boardLikeRepository.findBoardLikesByUser(user)
-                        .stream().map(BoardLikeRes::new).toList();
+                List<BoardLikeRes> myBoardLike =
+                        boardLikeRepository.findBoardLikesByUser(user)
+                                .stream()
+                                .map(BoardLikeRes::new).
+                                toList();
+
+                if (myBoardLike.isEmpty()) {
+                    throw new BaseException(SHOW_FAIL_BOARD_LIKE);
+                }
+                return myBoardLike;
+//                return boardLikeRepository.findBoardLikesByUser(user)
+//                        .stream().
+//                        map(BoardLikeRes::new).
+//                        toList();
             } else {
                 throw new BaseException(USERS_NOT_EXISTS);
             }
         } catch (Exception e) {
-            throw new BaseException(LIKE_NOT_EXISTS);
+            throw new BaseException(DATABASE_ERROR);
         }
     }
 
@@ -56,18 +73,22 @@ public class LikeService {
     public BoardLikeRes addBoardLike(Long idx, Long boardId) throws BaseException {
         try {
             Optional<User> optUser = userRepository.findById(idx);
+            Optional<Board> optBoard = boardRepository.findByBoardId(boardId);
 
             if (optUser.isPresent()) {
                 User user = optUser.get();
-                Board board = boardRepository.findByBoardId(boardId).get();
+                if (optBoard.isEmpty()) {
+                    throw new BaseException(BOARD_NOT_EXISTS);
+                }
+                Board board = optBoard.get();
                 User boardWriter = board.getUser();
 
                 // 게시글 1개당 좋아요 1번만 가능하도록 추가
                 // 이미 좋아요 누른 게시글인지 확인하기
-                BoardLike checkBoardLike  = boardLikeRepository.findBoardLikeByUserAndBoard_BoardId(user, boardId);
+                BoardLike checkBoardLike = boardLikeRepository.findBoardLikeByUserAndBoard_BoardId(user, boardId);
 
                 if (checkBoardLike == null) {
-                System.out.println("boardWriter : " + boardWriter.getId() + ", login user : " + user.getId());
+                    System.out.println("boardWriter : " + boardWriter.getId() + ", login user : " + user.getId());
 
                     if (!boardWriter.equals(user)) { // 자신이 누른 좋아요가 아니라면
                         boardWriter.likeChange(boardWriter.getReceivedLikeCnt() + 1);
@@ -81,14 +102,14 @@ public class LikeService {
                             .build());
 
                     return new BoardLikeRes(boardLike);
-                } else {
-                    throw new BaseException(DATABASE_ERROR);
+                } else { // 이미 좋아요한 게시글이라면
+                    throw new BaseException(LIKE_BOARD_ALREADY_EXISTS);
                 }
             } else {
-                throw new BaseException(ADD_FAIL_LIKE);
+                throw new BaseException(USERS_NOT_EXISTS);
             }
         } catch (Exception exception) {
-            throw new BaseException(LIKE_BOARD_ALREADY_EXISTS);
+            throw new BaseException(DATABASE_ERROR);
         }
     }
 
@@ -98,13 +119,16 @@ public class LikeService {
             Optional<User> optUser = userRepository.findById(idx);
             Optional<Board> findBoard = boardRepository.findById(boardId);
 
-            if (findBoard.isPresent()) {
+            if (optUser.isPresent()) {
                 User user = optUser.get();
+                if (findBoard.isEmpty()) {
+                    throw new BaseException(BOARD_NOT_EXISTS);
+                }
                 Board board = findBoard.get();
                 User boardWriter = board.getUser();
                 BoardLike checkBoardLike = boardLikeRepository.findBoardLikeByUserAndBoard_BoardId(user, boardId);
 
-                if(checkBoardLike != null) {
+                if (checkBoardLike != null) {
                     // 자신이 누른 좋아요가 아니라면
                     if (!boardWriter.equals(user)) {
                         boardWriter.likeChange(boardWriter.getReceivedLikeCnt() - 1);
@@ -113,11 +137,13 @@ public class LikeService {
 
                     boardLikeRepository.deleteByUserIdAndBoard_BoardId(idx, boardId);
                 } else {
-                    throw new BaseException(DELETE_FAIL_LIKE);
+                    throw new BaseException(LIKE_NOT_EXISTS);
                 }
+            } else {
+                throw new BaseException(USERS_NOT_EXISTS);
             }
-        } catch (Exception exception){
-            throw new BaseException(LIKE_NOT_EXISTS);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
         }
     }
 
@@ -126,30 +152,37 @@ public class LikeService {
             Optional<User> optUser = userRepository.findById(idx);
             Optional<Board> optBoard = boardRepository.findById(boardId);
 
-            if (optUser.isPresent() && optBoard.isPresent()) {
+            if (optUser.isPresent()) {
                 User user = optUser.get();
+                if (optBoard.isEmpty()) {
+                    throw new BaseException(BOARD_NOT_EXISTS);
+                }
                 BoardLike checkBoardLike = boardLikeRepository.findBoardLikeByUserAndBoard_BoardId(user, boardId);
                 return checkBoardLike.getCheckLike();
             } else {
-                throw new BaseException(DATABASE_ERROR);
+                throw new BaseException(LIKE_NOT_EXISTS);
             }
         } catch (Exception exception) {
-            throw new BaseException(LIKE_NOT_EXISTS);
+            throw new BaseException(DATABASE_ERROR);
         }
     }
 
     // ================================================================================
 
-    public List<RecipeLikeRes> getAllRecipeLike() {
-        List<RecipeLikeRes> recipeLikes = recipeLikeRepository.findAll()
-                .stream()
-                .map(RecipeLikeRes::new)
-                .toList();
+    public List<RecipeLikeRes> getAllRecipeLike() throws BaseException {
+        try {
+            List<RecipeLikeRes> recipeLikes = recipeLikeRepository.findAll()
+                    .stream()
+                    .map(RecipeLikeRes::new)
+                    .toList();
 
-        if (recipeLikes.isEmpty()) {
-            throw new IllegalStateException();
+            if (recipeLikes.isEmpty()) {
+                throw new BaseException(SHOW_FAIL_RECIPE_LIKE);
+            }
+            return recipeLikes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
         }
-        return recipeLikes;
     }
 
     public List<RecipeLikeRes> getRecipeLike(Long idx) throws BaseException {
@@ -157,15 +190,25 @@ public class LikeService {
             Optional<User> optUser = userRepository.findById(idx);
             if (optUser.isPresent()) {
                 User user = optUser.get();
-                return recipeLikeRepository.findRecipeLikesByUser(user)
-                        .stream().map(RecipeLikeRes::new).toList();
+                List<RecipeLikeRes> myRecipeLike =
+                        recipeLikeRepository.findRecipeLikesByUser(user)
+                                .stream()
+                                .map(RecipeLikeRes::new)
+                                .toList();
+                if (myRecipeLike.isEmpty()) {
+                    throw new BaseException(SHOW_FAIL_RECIPE_LIKE);
+                }
+                return myRecipeLike;
+//                return recipeLikeRepository.findRecipeLikesByUser(user)
+//                        .stream().map(RecipeLikeRes::new).toList();
             } else {
                 throw new BaseException(USERS_NOT_EXISTS);
             }
         } catch (Exception e) {
-            throw new BaseException(LIKE_NOT_EXISTS);
+            throw new BaseException(DATABASE_ERROR);
         }
     }
+
 
 
     @Transactional
@@ -174,8 +217,11 @@ public class LikeService {
             Optional<User> optUser = userRepository.findById(idx);
             Optional<Recipe> optRecipe = recipeRepository.findById(rcpId);
 
-            if (optUser.isPresent() && optRecipe.isPresent()) {
+            if (optUser.isPresent()) {
                 User user = optUser.get();
+                if (optRecipe.isEmpty()) {
+                    throw new BaseException(RECIPE_NOT_EXISTS);
+                }
                 Recipe recipe = optRecipe.get();
 
                 RecipeLike checkRecipeLike = recipeLikeRepository.findRecipeLikeByUserAndRecipe_RcpId(user, rcpId);
@@ -189,13 +235,13 @@ public class LikeService {
 
                     return new RecipeLikeRes(recipeLike);
                 } else {
-                    throw new BaseException(ADD_FAIL_LIKE);
+                    throw new BaseException(LIKE_RECIPE_ALREADY_EXISTS);
                 }
             } else {
-                throw new BaseException(DATABASE_ERROR);
+                throw new BaseException(USERS_NOT_EXISTS);
             }
         } catch(Exception exception) {
-            throw new BaseException(LIKE_RECIPE_ALREADY_EXISTS);
+            throw new BaseException(DATABASE_ERROR);
         }
     }
 //        Recipe recipe = recipeRepository.findById(rcpId).get();
@@ -215,8 +261,11 @@ public class LikeService {
             Optional<User> optUser = userRepository.findById(idx);
             Optional<Recipe> optRecipe = recipeRepository.findById(rcpId);
 
-            if (optUser.isPresent() && optRecipe.isPresent()) {
+            if (optUser.isPresent()) {
                 User user = optUser.get();
+                if (optRecipe.isEmpty()) {
+                    throw new BaseException(RECIPE_NOT_EXISTS);
+                }
                 Recipe recipe = optRecipe.get();
                 RecipeLike checkRecipeLike = recipeLikeRepository.findRecipeLikeByUserAndRecipe_RcpId(user, rcpId);
                 if (checkRecipeLike != null) {
@@ -226,7 +275,7 @@ public class LikeService {
                     throw new BaseException(LIKE_NOT_EXISTS);
                 }
             } else {
-                throw new BaseException(DELETE_FAIL_LIKE);
+                throw new BaseException(USERS_NOT_EXISTS);
             }
 
         } catch (Exception exception) {
@@ -240,15 +289,18 @@ public class LikeService {
             Optional<User> optUser = userRepository.findById(idx);
             Optional<Recipe> optRecipe = recipeRepository.findById(rcpId);
 
-            if (optUser.isPresent() && optRecipe.isPresent()) {
+            if (optUser.isPresent()) {
                 User user = optUser.get();
+                if (optRecipe.isEmpty()) {
+                    throw new BaseException(RECIPE_NOT_EXISTS);
+                }
                 RecipeLike checkRecipeLike = recipeLikeRepository.findRecipeLikeByUserAndRecipe_RcpId(user, rcpId);
                 return checkRecipeLike.getCheckLike();
             } else {
-                throw new BaseException(DATABASE_ERROR);
+                throw new BaseException(USERS_NOT_EXISTS);
             }
         } catch(Exception exception) {
-            throw new BaseException(LIKE_NOT_EXISTS);
+            throw new BaseException(DATABASE_ERROR);
         }
     }
 

@@ -47,6 +47,7 @@ public class BoardLikeRes {
         this.createdAt = boardLike.getBoard().getCreatedAt();
         this.updatedAt = boardLike.getBoard().getUpdatedAt();
         this.fileId = boardLike.getBoard().getFileId();
+        this.CheckLike = boardLike.getCheckLike();
     }
 
 }
