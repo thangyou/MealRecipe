@@ -110,6 +110,7 @@ public class LikeController {
     @ApiOperation(value = "Board 좋아요(저장) 삭제")
     @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
             @ApiResponse(code = 2010, message = "유저 아이디 값을 확인해주세요."),
+            @ApiResponse(code = 2080, message = "좋아요가 존재 하지 않읍니다."),
             @ApiResponse(code = 4051, message = "좋아요 삭제 실패")})
     public BaseResponse<String> deleteBoardLike(@RequestParam("boardId") Long boardId) {
         try {
@@ -121,6 +122,24 @@ public class LikeController {
             return new BaseResponse<>(boardId + "번 게시글 좋아요 취소!");
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @GetMapping("/check-board-like")
+    @ApiOperation(value = "사용자 Board 좋아요 확인", notes = "게시글 좋아요 여부 반환")
+    @ApiResponses(value={@ApiResponse(code =4000,message = "데이터베이스 연결에 실패하였습니다."),
+            @ApiResponse(code = 2010, message = "유저 아이디 값을 확인해주세요."),
+            @ApiResponse(code = 2080, message = "좋아요가 존재 하지 않읍니다.")})
+    public BaseResponse<Long> checkBoardLike(@RequestParam("boardId") Long boardId) {
+        try {
+            Long idx = jwtService.getUserIdx();
+            if (idx == 0) {
+                return new BaseResponse<>(USERS_EMPTY_USER_ID);
+            }
+            Long checkLike = likeService.checkBoardLike(idx, boardId);
+            return new BaseResponse<>(checkLike);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
         }
     }
 

@@ -77,6 +77,7 @@ public class LikeService {
                     BoardLike boardLike = boardLikeRepository.save(BoardLike.builder()
                             .user(user)
                             .board(board)
+                            .checkLike(1L)
                             .build());
 
                     return new BoardLikeRes(boardLike);
@@ -101,17 +102,39 @@ public class LikeService {
                 User user = optUser.get();
                 Board board = findBoard.get();
                 User boardWriter = board.getUser();
+                BoardLike checkBoardLike = boardLikeRepository.findBoardLikeByUserAndBoard_BoardId(user, boardId);
 
-                // 자신이 누른 좋아요가 아니라면
-                if (!boardWriter.equals(user)) {
-                    boardWriter.likeChange(boardWriter.getReceivedLikeCnt() - 1);
+                if(checkBoardLike != null) {
+                    // 자신이 누른 좋아요가 아니라면
+                    if (!boardWriter.equals(user)) {
+                        boardWriter.likeChange(boardWriter.getReceivedLikeCnt() - 1);
+                    }
+                    board.likeChange(board.getLikeCnt() - 1);
+
+                    boardLikeRepository.deleteByUserIdAndBoard_BoardId(idx, boardId);
+                } else {
+                    throw new BaseException(DELETE_FAIL_LIKE);
                 }
-                board.likeChange(board.getLikeCnt() - 1);
-
-                boardLikeRepository.deleteByUserIdAndBoard_BoardId(idx, boardId);
             }
         } catch (Exception exception){
-            throw new BaseException(DELETE_FAIL_LIKE);
+            throw new BaseException(LIKE_NOT_EXISTS);
+        }
+    }
+
+    public Long checkBoardLike(Long idx, Long boardId) throws BaseException {
+        try {
+            Optional<User> optUser = userRepository.findById(idx);
+            Optional<Board> optBoard = boardRepository.findById(boardId);
+
+            if (optUser.isPresent() && optBoard.isPresent()) {
+                User user = optUser.get();
+                BoardLike checkBoardLike = boardLikeRepository.findBoardLikeByUserAndBoard_BoardId(user, boardId);
+                return checkBoardLike.getCheckLike();
+            } else {
+                throw new BaseException(DATABASE_ERROR);
+            }
+        } catch (Exception exception) {
+            throw new BaseException(LIKE_NOT_EXISTS);
         }
     }
 
