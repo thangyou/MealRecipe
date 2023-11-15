@@ -27,77 +27,140 @@ public class FileService {
 
     @Transactional
     public Long saveFile(FileReq fileReq) throws BaseException {
-        Long fileId = fileReq.getFileId();
-        Optional<ImageFile> findFile = fileRepository.findByFileId(fileId);
+        try {
+            Long fileId = fileReq.getFileId();
+            Optional<ImageFile> findFile = fileRepository.findByFileId(fileId);
 
-        if (findFile.isPresent()) {
-            throw new BaseException(ADD_FAIL_FILES);
+            if (findFile.isPresent()) {
+                throw new BaseException(POST_FILE_FAILS);
+            }
+            return fileRepository.save(fileReq.toEntity()).getFileId();
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
         }
-
-        return fileRepository.save(fileReq.toEntity()).getFileId();
     }
 
     @Transactional
     public void updateFile(Long fileId, MultipartFile files) throws BaseException {
-        Optional<ImageFile> findFile = fileRepository.findByFileId(fileId);
+        try {
+            Optional<ImageFile> findFile = fileRepository.findByFileId(fileId);
 
-        if (findFile.isPresent()) {
+            if (findFile.isPresent()) {
+                FileReq updateFile = new FileReq();
 
-            FileReq updateFile = new FileReq();
-//            updateFile.setFileId(fileId);
+                System.out.println("--- update 전 ---");
+                System.out.println("OrigFilename : " + findFile.get().getOrigFilename());
+                System.out.println("Filename : " + findFile.get().getFilename());
+                System.out.println("FilePath : " + findFile.get().getFilePath());
 
-            System.out.println("--- update 전 ---");
-            System.out.println("OrigFilename : " + findFile.get().getOrigFilename());
-            System.out.println("Filename : " + findFile.get().getFilename());
-            System.out.println("FilePath : " + findFile.get().getFilePath());
-
-            try {
-                String origFilename = files.getOriginalFilename();
-                String filename = new MD5Generator(origFilename).toString();
-                String savePath = System.getProperty("user.dir") + "\\files";
-                 if (!new File(savePath).exists()) {
-                    try {
-                        new File(savePath).mkdir();
-                    } catch(Exception e){
-                        e.getStackTrace();
+                try {
+                    String origFilename = files.getOriginalFilename();
+                    String filename = new MD5Generator(origFilename).toString();
+                    String savePath = System.getProperty("user.dir") + "\\files";
+                    if (!new File(savePath).exists()) {
+                        try {
+                            new File(savePath).mkdir();
+                        } catch (Exception e) {
+                            e.getStackTrace();
+                        }
                     }
+                    String filePath = savePath + "\\" + filename;
+                    files.transferTo(new File(filePath));
+
+                    updateFile.setOrigFilename(origFilename);
+                    updateFile.setFilename(filename);
+                    updateFile.setFilePath(filePath);
+
+                    findFile.get().updateFile(updateFile);
+                    updateFile.setFileId(fileId);
+
+                    System.out.println("--- update 후 ---");
+                    System.out.println("OrigFilename : " + updateFile.getOrigFilename());
+                    System.out.println("Filename : " + updateFile.getFilename());
+                    System.out.println("FilePath : " + updateFile.getFilePath());
+
+                    ResponseEntity.ok("-> 파일 수정 완료");
+
+                } catch (IOException | NoSuchAlgorithmException exception) {
+                    ResponseEntity.badRequest().body(exception.getMessage());
                 }
-                String filePath = savePath + "\\" + filename;
-                files.transferTo(new File(filePath));
-
-                updateFile.setOrigFilename(origFilename);
-                updateFile.setFilename(filename);
-                updateFile.setFilePath(filePath);
-
-                findFile.get().updateFile(updateFile);
-                updateFile.setFileId(fileId);
-
-                System.out.println("--- update 후 ---");
-                System.out.println("OrigFilename : " + updateFile.getOrigFilename());
-                System.out.println("Filename : " + updateFile.getFilename());
-                System.out.println("FilePath : " + updateFile.getFilePath());
-
-                ResponseEntity.ok("-> 파일 수정 완료");
-
-            } catch (IOException | NoSuchAlgorithmException exception) {
-                ResponseEntity.badRequest().body(exception.getMessage());
+            } else {
+                throw new BaseException(UPDATE_FAIL_FILES);
             }
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+//        Optional<ImageFile> findFile = fileRepository.findByFileId(fileId);
+//
+//        if (findFile.isPresent()) {
+//
+//            FileReq updateFile = new FileReq();
+////            updateFile.setFileId(fileId);
+//
+//            System.out.println("--- update 전 ---");
+//            System.out.println("OrigFilename : " + findFile.get().getOrigFilename());
+//            System.out.println("Filename : " + findFile.get().getFilename());
+//            System.out.println("FilePath : " + findFile.get().getFilePath());
+//
+//            try {
+//                String origFilename = files.getOriginalFilename();
+//                String filename = new MD5Generator(origFilename).toString();
+//                String savePath = System.getProperty("user.dir") + "\\files";
+//                 if (!new File(savePath).exists()) {
+//                    try {
+//                        new File(savePath).mkdir();
+//                    } catch(Exception e){
+//                        e.getStackTrace();
+//                    }
+//                }
+//                String filePath = savePath + "\\" + filename;
+//                files.transferTo(new File(filePath));
+//
+//                updateFile.setOrigFilename(origFilename);
+//                updateFile.setFilename(filename);
+//                updateFile.setFilePath(filePath);
+//
+//                findFile.get().updateFile(updateFile);
+//                updateFile.setFileId(fileId);
+//
+//                System.out.println("--- update 후 ---");
+//                System.out.println("OrigFilename : " + updateFile.getOrigFilename());
+//                System.out.println("Filename : " + updateFile.getFilename());
+//                System.out.println("FilePath : " + updateFile.getFilePath());
+//
+//                ResponseEntity.ok("-> 파일 수정 완료");
+//
+//            } catch (IOException | NoSuchAlgorithmException exception) {
+//                ResponseEntity.badRequest().body(exception.getMessage());
+//            }
+//
+//        } else {
+////            findFile.get().updateFile(req);
+//            throw new BaseException(UPDATE_FAIL_FILES);
+//        }
+    }
 
-        } else {
-//            findFile.get().updateFile(req);
-            throw new BaseException(UPDATE_FAIL_FILES);
+    public FileReq getFile(Long fileId) throws BaseException {
+        try {
+            Optional<ImageFile> findFile = fileRepository.findByFileId(fileId);
+
+            if (findFile.isPresent()) {
+                ImageFile imageFile = findFile.get();
+
+                return FileReq.builder()
+                        .fileId(fileId)
+                        .origFilename(imageFile.getOrigFilename())
+                        .filename(imageFile.getFilename())
+                        .filePath(imageFile.getFilePath())
+                        .build();
+            } else {
+                throw new BaseException(FILE_NOT_EXISTS);
+            }
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
         }
     }
 
-    public FileReq getFile(Long fileId) {
-        ImageFile imageFile = fileRepository.findByFileId(fileId).get();
 
-        return FileReq.builder()
-                .fileId(fileId)
-                .origFilename(imageFile.getOrigFilename())
-                .filename(imageFile.getFilename())
-                .filePath(imageFile.getFilePath())
-                .build();
-    }
 
 }
