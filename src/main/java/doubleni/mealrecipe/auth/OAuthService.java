@@ -37,12 +37,13 @@ public class OAuthService {
     public PostUserRes saveUser(String token) throws BaseException {
         KakaoProfile profile = findProfile(token);
 
-        Optional<User> existingUser = oAuthRepository.findByEmailAndType(profile.getKakao_account().getEmail(), "KAKAO");
+        Optional<User> existingUser = oAuthRepository.findByNicknameAndType(profile.getProperties().getNickname(), "KAKAO");
 
         if (existingUser.isPresent()) {
-            loginUser(profile);
+            Long id = existingUser.get().getId();
+            String jwt = jwtService.createJwt(id);
+            return new PostUserRes(id, jwt);
         }
-
 
         try {
 
