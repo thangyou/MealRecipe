@@ -179,17 +179,59 @@ $ pip install flask-restx
 <h2>📱 화면 구성</h2>
 <table>
 <tr>
-    <th>메인 페이지</th>
+    <th>시작 페이지</th>
     <th>로그인 페이지</th>
-    <th>레시피 페이지</th>
-    <th>추천 페이지</th>
+    <th>회원가입 페이지</th>
+    <th>마이 페이지</th>
 </tr>
 <tr align="center">
-    <td> <img width="329" src="h"/></td>
-    <td> <img width="329" src="h"/></td>
-    <td> <img width="329" src="h"/></td>
-    <td> <img width="329" src="h"/></td>
+    <td> <img width="329" src="src\main\resources\templates\image\start.png"/></td>
+    <td> <img width="329" src="src\main\resources\templates\image\login.png"/></td>
+    <td> <img width="329" src="src\main\resources\templates\image\signup.png"/></td>
+    <td> <img width="329" src="src\main\resources\templates\image\mypage.png"/></td>
 </tr>
+<tr>
+    <th >추천 페이지</th>
+    <th colspan="3">선호 식자재 및 알러지 맞춤 레시피 추천</th>
+</tr>
+<tr align="center">
+    <td> <img width="329" src="src\main\resources\templates\image\recipe_recommend.png"/></td>
+    <td> <img width="329" src="src\main\resources\templates\image\recommend1.png"/></td>
+    <td> <img width="329" src="src\main\resources\templates\image\recommend2.png"/></td>
+    <td> <img width="329" src="src\main\resources\templates\image\recommend3.png"/></td>
+</tr>
+<tr>
+    <th colspan="2" >식자재 인식 페이지</th>
+    <th colspan="2">협업필터링 기반 맞춤 레시피</th>
+</tr>
+<tr align="center">
+    <td> <img width="329" src="src\main\resources\templates\image\ingredient1.png"/></td>
+    <td> <img width="329" src="src\main\resources\templates\image\ingredient2.png"/></td>
+    <td> <img width="329" src="src\main\resources\templates\image\recipe_recommend.png"/></td>
+    <td> <img width="329" src="src\main\resources\templates\image\user.png"/></td>
+</tr>
+<tr>
+    <th colspan="3" >레시피 페이지</th>
+    <th >리뷰</th>
+</tr>
+<tr align="center">
+    <td> <img width="329" src="src\main\resources\templates\image\recipe1.png"/></td>
+    <td> <img width="329" src="src\main\resources\templates\image\recipe2.png"/></td>
+    <td> <img width="329" src="src\main\resources\templates\image\recipe3.png"/></td>
+    <td> <img width="329" src="src\main\resources\templates\image\review.png"/></td>
+</tr>
+<tr>
+    <th colspan="3" >사용자 업로드 레시피 페이지</th>
+    <th >찜 페이지</th>
+</tr>
+<tr align="center">
+    <td> <img width="329" src="src\main\resources\templates\image\user1.png"/></td>
+    <td> <img width="329" src="src\main\resources\templates\image\user2.png"/></td>
+    <td> <img width="329" src="src\main\resources\templates\image\user3.png"/></td>
+    <td> <img width="329" src="src\main\resources\templates\image\like.png"/></td>
+</tr>
+
+
 </table>
 
 </div>
