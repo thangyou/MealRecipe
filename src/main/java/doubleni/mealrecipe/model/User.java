@@ -37,7 +37,8 @@ public class User {
     private Timestamp updateAt;
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private List<Recipe> recipes;     // 왜 필요할까?
+    private List<Recipe> recipes;     // 레시피 게시판도 생성? 하면!
+//    private Integer receivedRCPLikeCnt; // 유저가 받은 좋아요 개수 (본인 제외)
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<RecipeLike> recipelikes;       // 유저가 누른 레시피 좋아요 목록
