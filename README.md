@@ -157,12 +157,10 @@ $ pip install flask-restx
 
 <h4> Development </h4>
 
-![flutter](https://img.shields.io/badge/flutter-02569B?style=for-the-badge&logo=Flutter&logoColor=white)
-![springboot](https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=Springboot&logoColor=white)
-
-[//]: # (![]&#40;https://img.shields.io/badge/-?style=for-the-badge&logo=Strapi&logoColor=white&#41;)
-
-[//]: # (![]&#40;https://img.shields.io/badge/-?style=for-the-badge&logo=Next.js&logoColor=white&#41;)
+![flutter](https://img.shields.io/badge/flutter-02569B?style=for-the-badge&logo=Javascript&logoColor=white)
+![springboot](https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=react&logoColor=61DAFB)
+![](https://img.shields.io/badge/-?style=for-the-badge&logo=Strapi&logoColor=white)
+![](https://img.shields.io/badge/-?style=for-the-badge&logo=Next.js&logoColor=white)
 
 <h4> Communication </h4>
 
@@ -248,4 +246,5 @@ $ pip install flask-restx
     
 ```
 
+</div>
 </div>
