@@ -39,6 +39,7 @@ TF-IDF 와 협업 필터링을 이용해 사용자 맞춤 레시피를 제공합
     <li>개발 기간 : 2023.09 ~ 2023.11</li> 
     <li>개발 엔진 및 언어: Flutter & Spring Boot</li> 
     <li>개발팀 : 졸업시켜조</li> 
+    <li>🥉2023 컴퓨터·인공지능공학부 캡스톤디자인 경진대회 장려상 수상</li>
 </ul>
 </div>
 
@@ -59,26 +60,21 @@ TF-IDF 와 협업 필터링을 이용해 사용자 맞춤 레시피를 제공합
     <td>조윤희</td>
 </tr>
 <tr>
-    <td><img width="160px" alt="image" src="src/main/resources/templates/image/1c7503a5-a10f-4746-8703-9aac989c218a_강아지2.jpg" /></td>
-    <td><img width="160px" alt="image" src="https://github.com/YuneeeM/MealRecipe/assets/117428920/412ae0d9-feec-4a67-bbc4-83bc37ca818a" /></td>
-    <td><img width="160px" alt="image" src="" /></td>
-    <td><img width="160px" alt="image" src="" /></td>
+    <td><img width="100px" alt="image" src="https://github.com/YuneeeM.png" /></td>
+    <td><img width="100px" alt="image" src="https://github.com/YuneeeM/MealRecipe/assets/117428920/412ae0d9-feec-4a67-bbc4-83bc37ca818a" /></td>
+    <td><img width="100px" alt="image" src="" /></td>
+    <td><img width="100px" alt="image" src="https://github.com/awaaaake.png" /></td>
 </tr>
 <tr align="center">
     <td><a href="https://github.com/YuneeeM">@YuneeeM</a></td>
     <td><a href="https://github.com/thangyou">@thangyou</a></td>
     <td><a href="https://github.com/">@</a></td>
-    <td><a href="https://github.com/">@</a></td>
+    <td><a href="https://github.com/awaaaake">@awaaaake</a></td>
 </tr>
 <tr align="center">
     <td colspan="4">부경대학교 컴퓨터공학과 4학년</td>
 </tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-</tr>
+
 </table>
 
 <br>
@@ -256,10 +252,10 @@ $ pip install flask-restx
 │   │   └── OAuthService
 │   ├── config 
 │   │   ├── exception
-│   │   │   ├──
-│   │   │   ├──
-│   │   │   ├── 
-│   │   │   └── 
+│   │   │   ├── BaseException
+│   │   │   ├── BaseResponse
+│   │   │   ├── BaseResponseStatus
+│   │   │   └── Constant
 │   │   ├── MD5Generator
 │   │   ├── SecurityConfig
 │   │   └── SwaggerConfig
